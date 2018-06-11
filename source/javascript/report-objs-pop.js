@@ -7,9 +7,8 @@ function populateObjs(survey_id){
 		success: function(data){
 			console.log("Retrieved survey record.");
 			jsondata = JSON.parse(data);
-			queryFurniture(survey_id,jsondata.layout);
 			queryArea(jsondata.layout);
-			
+			queryFurniture(survey_id,jsondata.layout);
 			loadMap(parseInt(jsondata.floor));
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown) { 
@@ -17,8 +16,6 @@ function populateObjs(survey_id){
 			console.log("Error: " + errorThrown); 
 		}     
 	});
-	
-	
 }
 
 //query for furniture data
@@ -32,6 +29,7 @@ function queryFurniture(survey_id, layout_id){
 			console.log("Retrieved survey record.");
 			jsondata = JSON.parse(data);
 			popFurnMap(jsondata);
+			
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown) { 
 			console.log("Status: " + textStatus);
@@ -50,8 +48,7 @@ function queryArea(layout_id){
 			console.log("Retrieved areas.");
 			jsondata = JSON.parse(data);
 			popAreaMap(jsondata);
-			addSurveyedFurniture();
-			addSurveyedAreas();
+			
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown) { 
 			console.log("Status: " + textStatus);
@@ -86,7 +83,8 @@ function popFurnMap(jsonFurniture){
 		
 		furnMap.set(furn.furniture_id, cur_furn);
 	}
-	
+	addSurveyedFurniture();
+	addSurveyedAreas();
 }
 
 //populate the areaMap
