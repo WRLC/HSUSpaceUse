@@ -19,22 +19,32 @@
     <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"
     integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw=="
     crossorigin=""></script>
-	<script src="./javascript/report-objs-pop.js"></script>
-	<script src="./javascript/leaflet.rotatedMarker.js"></script>
-	<script src="./javascript/icons.js"></script>
+		<script src="./javascript/report-objs-pop.js"></script>
+		<script src="./javascript/leaflet.rotatedMarker.js"></script>
+		<script src="./javascript/icons.js"></script>
     <link rel="stylesheet" href="styles/layout.css" type="text/css" >
     <link rel="stylesheet" href="styles/format.css" type="text/css" >
+
+		<?php
+		if (array_key_exists("username", $_SESSION)){
+				?>
+				<h3 class="log-state"> Logged In: <?= $_SESSION["username"]?> </h3>
+				<?php
+		}
+		?>
+
 </head>
 <script type="text/javascript">
 
     var cur_selected_date;
+		var json_object;
 
     $(function(){
         $('#date-select').on("change", function(){
             var form_info = document.getElementById("choose_survey_form");
             cur_selected_date = form_info.elements["date-select"].value;
 
-            //Get rid previous select options before repopulating 
+            //Get rid previous select options before repopulating
             var select = document.getElementById('survey_id_select');
             var length = select.options.length;
             if(length > 1){
@@ -48,22 +58,27 @@
                 data:{ 'selected_date': cur_selected_date },
                 success: function(data){
 
-                    console.log("got dates");
-                    var json_object = JSON.parse(data);
+                    //console.log("got dates");
+                    json_object = JSON.parse(data);
                     var survey_select = document.getElementById('survey_id_select');
 
                     for(var i = 0; i < json_object.length; i++){
                         var obj = json_object[i];
+												//console.log(obj);
                         surv_id = obj['survey_id'];
                         lay_id = obj['layout_id'];
+												floor_num = obj['floor'];
+												surv_date_time = obj['survey_date'];
+												surv_date_time_arr = surv_date_time.split(" ");
+												surv_time = surv_date_time_arr[1];
                         var option = document.createElement('option');
                         option.value = surv_id;
-                        option.innerHTML = "Survey: " + surv_id +" for Layout" + lay_id;
+                        option.innerHTML = "Survey: " + surv_id + " for Layout " + lay_id + " on floor " + floor_num + " at " + surv_time;
                         survey_select.appendChild(option);
                     }
                 }
             });
-			
+
         });
     });
 </script>
@@ -71,8 +86,8 @@
     <header>
         <img class="logo" src="images/hsu-wm.svg">
         <h1>Library Data Collector</h1>
-    
-    
+
+
         <?php
             if (!array_key_exists("username", $_SESSION)){
                 ?>
@@ -90,7 +105,7 @@
                 </nav>
     </header>
     <main>
-        <h2><?= $_SESSION["username"]?> what shall we query today? </h2>
+
         <form class="report-selector" id="choose_survey_form">
             <fieldset>
                 <!--THIS IS A PLACEHOLDER! SELECT WILL BE POPULATED BY DATES FROM DB-->
@@ -102,34 +117,58 @@
                 </select>
                 <!--THIS IS A PLACEHOLDER! SELECT WILL BE POPULATED BY TIMES FROM DB-->
                 <select name="survey_id" id="survey_id_select">
-                    <option value="">Choose a Survey</option>
+                    <option id="chosen_survey" value="">Choose a Survey</option>
                 </select>
 
-                <input type="submit" name="submit-query" />
+
+
+                <input type="submit" name="submit-query" id="query_submit_button"/>
+
             </fieldset>
         </form>
+
+				<h2 id="query_header"><?= $_SESSION["username"]?> what shall we query today? </h2>
                 <?php
             }
         ?>
-		
+
 		<div id="mapid"></div>
 		<div id="reportDiv"></div>
+
 		<?php
-        if (array_key_exists("username", $_SESSION)){
-            ?>
-            <h3 class="log-state"> Logged In: <?= $_SESSION["username"]?> </h3>
-            <?php
-        }
-		
+
 		if (array_key_exists("survey_id", $_GET)){
 			?>
 			<script>
+
 				//create maps and grab survey_id
 				var survey_id = <?= $_GET["survey_id"] ?>;
-				
+
+				$.ajax({
+	                url: 'phpcalls/get-survey-info.php',
+	                type: 'get',
+	                data:{ 'survey_id': survey_id},
+	                success: function(data){
+	                    //console.log("got dates");
+	                  json_id = JSON.parse(data);
+
+										//console.log(obj);
+	                  lay_id = json_id[0].layout_id;
+										floor_num = json_id[0].floor;
+										surv_date_time = json_id[0].survey_date;
+										surv_date_time_arr = surv_date_time.split(" ");
+										surv_time = surv_date_time_arr[1];
+										surv_date = surv_date_time_arr[0];
+	                  var query_header = document.getElementById('query_header');
+	                	query_header.innerHTML = "Survey: " + survey_id + " for Layout " + lay_id + " on floor " + floor_num + " at " + surv_time + " on " + surv_date;
+
+	                }
+	            });
+				console.log("test id");
+				console.log(survey_id);
 				areaMap = new Map();
 				furnMap = new Map();
-				
+
 				//define objects
 				function Area(area_id, verts, area_name){
 					this.area_id = area_id;
@@ -138,7 +177,7 @@
 					this.occupants = 0;
 					this.seats = 0;
 				}
-				function Verts(x,y, order){
+				function Verts(x, y, order){
 					this.x = x;
 					this.y = y;
 					this.order = order;
@@ -158,11 +197,11 @@
 					this.count = count;
 					this.name = name;
 				}
-				
+
 				//popuate furnMap and areaMap then place on map
 				populateObjs(survey_id);
-			
-			
+
+
 			//make map
 			var mymap = L.map('mapid', {crs: L.CRS.Simple});
 			var areaLayer = L.layerGroup().addTo(mymap);
@@ -170,9 +209,9 @@
 			var bounds = [[0,0], [360,550]];
 
 			mymap.fitBounds(bounds);
-			
-			
-			
+
+
+
 			//On zoomend, resize the marker icons
         mymap.on('zoomend', function() {
             var markerSize;
@@ -189,11 +228,11 @@
             var newzoom = '' + (markerSize) +'px';
             var newLargeZoom = '' + (markerSize*2) +'px';
             $('#mapid .furnitureIcon').css({'width':newzoom,'height':newzoom});
-            $('#mapid .furnitureLargeIcon').css({'width':newLargeZoom,'height':newLargeZoom});          
+            $('#mapid .furnitureLargeIcon').css({'width':newLargeZoom,'height':newLargeZoom});
         });
-			
-			
-			
+
+
+
 			</script>
 			<?php
 		}
