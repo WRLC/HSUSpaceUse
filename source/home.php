@@ -11,7 +11,6 @@
     <title> Library Collect Home </title>
     <meta charset="utf-8" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="normalize.css" type="text/css" >
     <link rel="stylesheet" href="styles/layout.css" type="text/css" >
     <link rel="stylesheet" href="styles/format.css" type="text/css" >
 </head>
@@ -19,7 +18,7 @@
     <header>
         <img class="logo" src="images/hsu-wm.svg">
         <h1>Library Data Collector</h1>
-    
+
     <?php
         if (array_key_exists("username", $_SESSION)){
             ?>
@@ -27,7 +26,7 @@
             <?php
         }
     ?>
-    
+
         <?php
             if (!array_key_exists("username", $_SESSION)){
                 ?>
@@ -44,8 +43,16 @@
                     <p class="nav"><a href="logout.php">Logout</a></p>
                 </nav>
     </header>
-    <main>  
+    <main>
                 <h2> Welcome <?= $_SESSION["username"]?> what shall we survey today? </h2>
+                <form id="nav_form">
+                    <input type="button" class="nav_button" value="Data Collection"
+                        onclick="window.location.href='data-collection.php'" />
+                    <input type="button" class="nav_button" value="Query Report"
+                        onclick="window.location.href='query-report.php'" />
+                    <input type="button" class="nav_button" value="Create A Layout"
+                        onclick="window.location.href='editor.php'" />
+                </form>
     </main>
                 <?php
                 }

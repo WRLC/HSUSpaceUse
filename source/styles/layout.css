@@ -26,10 +26,6 @@ header > h1{
 	width: 100%;
 }
 
-h2{
-	margin-left: 5em;
-}
-
 .user-sugg{
 	display: block;
 	margin: auto;
@@ -37,6 +33,9 @@ h2{
 	margin-bottom: 2.2em;
 	text-align: center;
 	font-size: 2em;
+h2
+{
+		text-align: center;
 }
 
 p{
@@ -84,6 +83,7 @@ p{
 	margin-left: .25em;
 	display: inline;
 }
+
 
 .nav_open{
 	top: 220px;
@@ -216,18 +216,6 @@ footer > p{
 
 }
 
-#iframe
-{
-	border: none;
-	width: 45em;
-	height: 40em;
-}
-
-#mapid
-{
-	height: 100em;
-}
-
 #load-image{
 	width: 100px;
 	height: 100px;
@@ -255,6 +243,18 @@ footer > p{
 	-ms-animation: rotating .75s linear infinite;
 	-o-animation: rotating .75s linear infinite;
 	animation: rotating .75s linear infinite;
+}
+
+.nav_button{
+	display: inline;
+	width: 200px;
+	height: 200px;
+	text-align: center;
+	margin: 4px;
+}
+
+#nav_form{
+	text-align: center;
 }
 
 @keyframes rotating {

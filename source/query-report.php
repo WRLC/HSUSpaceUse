@@ -164,8 +164,6 @@
 
 	                }
 	            });
-				console.log("test id");
-				console.log(survey_id);
 				areaMap = new Map();
 				furnMap = new Map();
 
@@ -177,11 +175,13 @@
 					this.occupants = 0;
 					this.seats = 0;
 				}
+
 				function Verts(x, y, order){
 					this.x = x;
 					this.y = y;
 					this.order = order;
 				}
+
 				function Furniture(fid, numSeats, x, y, degreeOffset, ftype, inArea, occupants, activities){
 					this.fid = fid;
 					this.numSeats = numSeats;
@@ -193,6 +193,7 @@
 					this.occupants = occupants;
 					this.activities = activities;
 				}
+
 				function Activity(count, name){
 					this.count = count;
 					this.name = name;
@@ -239,7 +240,7 @@
     ?>
     </main>
     <footer>
-               <p>Designed by HSU Library Web App team. &copy; Humboldt State University</p>
+			<p>Designed by HSU Library Web App team. &copy; Humboldt State University</p>
     </footer>
 </body>
 </html>
