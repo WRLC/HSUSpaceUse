@@ -20,7 +20,7 @@
     <header>
         <img class="logo" src="images/hsu-wm.svg">
         <h1>Library Data Collector</h1>
-    
+
     <?php
         if (array_key_exists("username", $_SESSION)){
             ?>
@@ -28,8 +28,8 @@
             <?php
         }
     ?>
-    
-    
+
+
     <?php
         if (!array_key_exists("username", $_SESSION)){
             ?>
@@ -41,8 +41,8 @@
             <nav>
                 <p class="nav"><a href="home.php">Home</a></p>
                 <p class="nav"><a href="data-collection.php">Data Collection</a></p>
-                <p class="nav"><a href="query-report.php">Query Report</a></p>
-                <p class="nav"><a href="editor.php">Create A Layout</a></p>
+                <p class="nav"><a href="query-select.php">Query Report</a></p>
+                <p class="nav"><a href="editor.php">Layout Creator</a></p>
                 <p class="nav"><a href="logout.php">Logout</a></p>
             </nav>
     </header>
@@ -50,11 +50,11 @@
         <h2>Success <?= $_SESSION["username"]?>, Your layout has been recorded and saved to the database</h2>
 
 
-    </main>       
+    </main>
             <?php
         }
     ?>
-    
+
     <footer>
         <p>Designed by HSU Library Web App team. &copy; Humboldt State University</p>
     </footer>

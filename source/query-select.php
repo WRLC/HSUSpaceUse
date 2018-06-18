@@ -27,8 +27,8 @@
     <header>
         <img class="logo" src="images/hsu-wm.svg">
         <h1>Library Data Collector</h1>
-    
-    
+
+
         <?php
             if (!array_key_exists("username", $_SESSION)){
                 ?>
@@ -45,24 +45,23 @@
                 <nav>
                     <p class="nav"><a href="home.php">Home</a></p>
                     <p class="nav"><a href="data-collection.php">Data Collection</a></p>
-                    <p class="nav selected"><a href="query-report.php">Query Report</a></p>
-                    <p class="nav"><a href="editor.php">Create A Layout</a></p>
+										<p class="nav selected"><a href="query-select.php">Query Report</a></p>
+                    <p class="nav"><a href="editor.php">Layout Creator</a></p>
                     <p class="nav"><a href="logout.php">Logout</a></p>
                 </nav>
     </header>
     <main>
-        <h2 class="user-sugg"><?= $_SESSION["username"]?> please select a query type</h2>
-        <div class="query-button-container">
-            <button class="query" id="single-query" onclick="window.location = 'query-report.php'"">Query Single Report</button>
-            <button class="query" id="range-query" onclick="window.location ='query-range.php'">Query Range of Reports</button>
+        <h2>Welcome <?= $_SESSION["username"]?> please select a query type: </h2>
+        <div id="nav_form">
+            <button class="nav_button"  onclick="window.location = 'query-report.php'">Query Single Report</button>
+            <button class="nav_button"  onclick="window.location ='query-range.php'">Query Range of Reports</button>
         </div>
     </main>
             <?php
         }
     ?>
     <footer>
-        <p>Designed by Web App team</p>
-        <p> &copy; Humboldt State University</p>
+        <p>Designed by Web App team &copy; Humboldt State University</p>
     </footer>
 </body>
 </html>

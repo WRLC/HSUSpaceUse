@@ -99,8 +99,8 @@
                 <nav>
                     <p class="nav"><a href="home.php">Home</a></p>
                     <p class="nav"><a href="data-collection.php">Data Collection</a></p>
-                    <p class="nav selected"><a href="query-report.php">Query Report</a></p>
-                    <p class="nav"><a href="editor.php">Create A Layout</a></p>
+                    <p class="nav selected"><a href="query-select.php">Query Report</a></p>
+                    <p class="nav"><a href="editor.php">Layout Creator</a></p>
                     <p class="nav"><a href="logout.php">Logout</a></p>
                 </nav>
     </header>

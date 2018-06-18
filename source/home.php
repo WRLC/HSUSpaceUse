@@ -38,21 +38,24 @@
                 <nav>
                     <p class="nav selected"><a href="home.php">Home</a></p>
                     <p class="nav"><a href="data-collection.php">Data Collection</a></p>
-                    <p class="nav"><a href="query-report.php">Query Report</a></p>
-                    <p class="nav"><a href="editor.php">Create A Layout</a></p>
+                    <p class="nav"><a href="query-select.php">Query Report</a></p>
+                    <p class="nav"><a href="editor.php">Layout Creator</a></p>
                     <p class="nav"><a href="logout.php">Logout</a></p>
                 </nav>
     </header>
     <main>
                 <h2> Welcome <?= $_SESSION["username"]?> what shall we survey today? </h2>
-                <form id="nav_form">
-                    <input type="button" class="nav_button" value="Data Collection"
-                        onclick="window.location.href='data-collection.php'" />
-                    <input type="button" class="nav_button" value="Query Report"
-                        onclick="window.location.href='query-report.php'" />
-                    <input type="button" class="nav_button" value="Create A Layout"
-                        onclick="window.location.href='editor.php'" />
-                </form>
+                <div id="nav_form">
+                    <button class="nav_button" onclick="window.location.href='data-collection.php'">
+                        Data Collection
+                    </button>
+                    <button class="nav_button" onclick="window.location.href='query-select.php'">
+                        Query Report
+                    </button>
+                    <button class="nav_button" onclick="window.location.href='editor.php'">
+                        Layout Creator
+                    </button>
+                </div>
     </main>
                 <?php
                 }

@@ -25,10 +25,10 @@
     <!--scripts here are for the transfer select plugin-->
     <script src="./javascript/transfer-select-js/jquery.js"></script>
     <script src="./javascript/transfer-select-js/bootstrap-transfer.js"></script>
-    
+
 
 	<script src="./javascript/icons.js"></script>
-    
+
     <link href="styles/bootstrap-transfer.css" rel="stylesheet">
     <link rel="stylesheet" href="styles/layout.css" type="text/css" >
     <link rel="stylesheet" href="styles/format.css" type="text/css" >
@@ -41,7 +41,7 @@
                 var form_info = document.getElementById("choose_survey_form");
                 cur_selected_date = form_info.elements["date-select"].value;
 
-                //Get rid previous select options before repopulating 
+                //Get rid previous select options before repopulating
                 var select = document.getElementById('survey_id_select');
                 var length = select.options.length;
                 if(length > 1){
@@ -70,7 +70,7 @@
                         }
                     }
                 });
-                
+
             });
         });
     </script>
@@ -82,7 +82,7 @@
                 {'target_id': 'multi-select-input',
                  'height': '15em',
                  'hilite_selection': true});
-            
+
             t.populate([
                 {value:"1", content:"Apple"},
                 {value:"2", content:"Orange"},
@@ -116,8 +116,8 @@
                 <nav>
                     <p class="nav"><a href="home.php">Home</a></p>
                     <p class="nav"><a href="data-collection.php">Data Collection</a></p>
-                    <p class="nav selected"><a href="query-report.php">Query Report</a></p>
-                    <p class="nav"><a href="editor.php">Create A Layout</a></p>
+                    <p class="nav selected"><a href="query-select.php">Query Report</a></p>
+                    <p class="nav"><a href="editor.php">Layout Creator</a></p>
                     <p class="nav"><a href="logout.php">Logout</a></p>
                 </nav>
     </header>
@@ -146,7 +146,7 @@
         <div id="multi-select"></div>
 
 		<?php
-        
+
     ?>
     </main>
     <footer>

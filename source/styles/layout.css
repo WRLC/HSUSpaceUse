@@ -76,7 +76,7 @@ p{
 	top: 24px;
 	right: 24px;
 	width: 40px;
-	height: 40px;
+	height: 41px;
 	z-index: 100;
 }
 
@@ -162,15 +162,6 @@ input[type=text]{
 
 select{
 	height: 25px;
-}
-
-.query{
-	display: block;
-	min-width: 300px;
-	height: 2em;
-	margin: auto;
-	margin-bottom: .5em;
-	padding: .5em;
 }
 
 .load-submit{

@@ -23,13 +23,6 @@ button{
 	transition: background-color .5s, color .5s, top .35s;
 }
 
-.query{
-	border-radius: 25px;
-	background-color: #5C8021;
-	color: white;
-	font-size: 2em;
-}
-
 #sub_layout{
 	border: none;
 	text-decoration: bold;
