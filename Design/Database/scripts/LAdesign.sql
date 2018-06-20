@@ -131,8 +131,8 @@ CREATE TABLE `hsu_library`.`survey_record` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `survey_p_id_fk` 
-    FOREIGN KEY (`survey_period_id`) 
-    REFERENCES `hsu_library`.`survey_period` (`survey_period_id`);
+    FOREIGN KEY (`survey_period_id`)
+    REFERENCES `hsu_library`.`survey_period` (`survey_period_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 COMMENT = 'Each record of a survey is commited by one author';
