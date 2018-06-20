@@ -116,7 +116,7 @@ function updateHelper(){
 
 //On click of submission, Create's a Survey Record and Inserts each seat object into the database with that ID
 function submitSurveyHelper(){
-    submitSurvey(username, layout, furnMap);
+    submitSurvey(username, layout, furnMap, period);
 }
 
 //deletes the selected marker

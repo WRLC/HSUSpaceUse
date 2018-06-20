@@ -1,5 +1,5 @@
 /*This function is called when the survey is submitted and it populates the database with the appropriate seat objects*/
-function submitSurvey(username, layout, furnMap){
+function submitSurvey(username, layout, furnMap, period){
     var cur_survey_id;
     console.log("You are submitting the survey");
     /* Insert statment for Survey ID */
@@ -12,7 +12,8 @@ function submitSurvey(username, layout, furnMap){
         type: 'get',
         data:{
             'username': username,
-            'layout': layout
+            'layout': layout,
+            'period': period
         },
         success: function(data){
             console.log(data);
