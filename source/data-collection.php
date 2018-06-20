@@ -32,6 +32,7 @@
     <!--script for updating furniture location in DB -->
     <script src="./javascript/updateFurn.js"></script>
     <script src="./javascript/get_layouts.js"></script>
+    <script src="./javascript/get_periods.js"></script>
     <script src="./javascript/map_helpers.js"></script>
     <script src="./javascript/helpers.js"></script>
     <script src="./javascript/build_markers.js"></script>
