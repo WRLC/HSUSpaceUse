@@ -2,11 +2,16 @@
 
 In order to get the load-demo working, load the scripts to local DB in this order:
 
+0. LAdesign.sql
 1. room_populate.sql
 2. area_populate.sql
 3. furniture_type_populate.sql
 4. furniture_L1.sql
 5. activity_populate.sql
+6. period_populate.sql
+
+(0) LADESIGN.sql
+  Contains the build statements for all the tables used in the database
 
 (1) ROOM_POPULATE.SQL
   Contains the insert statments for room.
@@ -22,3 +27,6 @@ In order to get the load-demo working, load the scripts to local DB in this orde
   
 (5) ACTIVITY_POPULATE.SQL
   Contains the insert statements for activities.
+
+(6) PERIOD_POPULATE.SQL
+  Contains the insert statments for periods
