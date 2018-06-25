@@ -111,28 +111,16 @@ CREATE TABLE `hsu_library`.`activity` (
   PRIMARY KEY (`activity_id`))
 COMMENT = 'An activity is anything that should be tracked by a seat, so there is an ID and a descriptive label.';
 
-CREATE TABLE `hsu_library`.`survey_period` (
-  `survey_period_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `survey_period_name` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`survey_period_id`))
-COMMENT = 'This table contains the periods that surveys are organized under'
-
 CREATE TABLE `hsu_library`.`survey_record` (
   `survey_id` INT NOT NULL AUTO_INCREMENT,
   `surveyed_by` VARCHAR(45) NOT NULL,
   `layout_id` INT NOT NULL,
   `survey_date` DATETIME NOT NULL,
-  `survey_period_id` INT(11) NOT NULL,
   PRIMARY KEY (`survey_id`),
   INDEX `layout_id_fk_idx` (`layout_id` ASC),
   CONSTRAINT `layout_id_fk`
     FOREIGN KEY (`layout_id`)
     REFERENCES `hsu_library`.`layout` (`layout_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `survey_p_id_fk` 
-    FOREIGN KEY (`survey_period_id`)
-    REFERENCES `hsu_library`.`survey_period` (`survey_period_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 COMMENT = 'Each record of a survey is commited by one author';
