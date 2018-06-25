@@ -32,7 +32,6 @@
     <!--script for updating furniture location in DB -->
     <script src="./javascript/updateFurn.js"></script>
     <script src="./javascript/get_layouts.js"></script>
-    <script src="./javascript/get_periods.js"></script>
     <script src="./javascript/map_helpers.js"></script>
     <script src="./javascript/helpers.js"></script>
     <script src="./javascript/build_markers.js"></script>
@@ -80,9 +79,6 @@
         <main class="to-top">
             <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" class="layout-selector" id="lay-select">
                 <fieldset>
-                    <select name="survey-period" id="period-select" required="required">
-                        <option value="">Choose a Survey Period</option>
-                    </select>
                     <select name="floor-select" id="floor-select">
                         <option value="0" selected="selected">Choose a Floor</option>
                         <option value="1" >Floor 1</option>
@@ -223,7 +219,6 @@
             if(array_key_exists("layout-select", $_POST)){
                 ?>
                 layout = "<?php echo $_POST['layout-select']?>";
-                period = "<?php echo $_POST['survey-period']?>";
                 build_markers(layout);
             <?php
             }

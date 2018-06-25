@@ -1,15 +1,18 @@
 $(function(){
-    $('#period-select, #in_floor_select').on("change", function(){
-        var cur_period = document.getElementById("period-select");
+    $('#date-select-1, #date-select-2, #in_floor_select').on("change", function(){
+        var cur_date_start = document.getElementById("date-select-1").value;
+        var cur_date_end = document.getElementById("date-select-2").value;
+        console.log(cur_date_start);
+        console.log(cur_date_end);
         var cur_floor = document.getElementById("in_floor_select");
-        if(cur_period.value != "" && cur_floor.value != ""){
-            query_period = cur_period.value;
+        if(cur_date_start.value != "" && cur_date_end.value != "" && cur_floor.value != ""){
             query_floor = cur_floor.value;
             $.ajax({
                 url: 'phpcalls/multibox-select.php',
                 type: 'get',
                 data:{ 
-                    'period': query_period,
+                    'start_date': cur_date_start,
+                    'end_date': cur_date_end,
                     'floor': query_floor
                 },
                 success: function(data){

@@ -12,10 +12,18 @@
 <head>
     <title> Library Query Report </title>
     <meta charset="utf-8" />
+
+    <!-- jquery CDN-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css"
     integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
     crossorigin=""/>
+
+    <!-- scripts here are for jquery ui-->
+    <script src="./javascript/transfer-select-js/jquery.js"></script>
+    <script src="./javascript/jquery-ui-js/jquery-ui.min.js"></script>"></script>
+    <link rel="stylesheet" href="styles/jquery-ui.min.css" type="text/css">
+
     <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"
     integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw=="
     crossorigin=""></script>
@@ -23,24 +31,23 @@
 	<script src="./javascript/leaflet.rotatedMarker.js"></script>
 
     <!--scripts here are for the transfer select plugin-->
-    <script src="./javascript/transfer-select-js/jquery.js"></script>
+   
     <script src="./javascript/transfer-select-js/bootstrap-transfer.js"></script>
+
+
+
 	<script src="./javascript/icons.js"></script>
-    <script src="./javascript/get_periods.js"></script>
     <script src="./javascript/populate_multibox.js"></script>
     <link href="styles/bootstrap-transfer.css" rel="stylesheet">
     <link rel="stylesheet" href="styles/layout.css" type="text/css" >
     <link rel="stylesheet" href="styles/format.css" type="text/css" >
 
-    <!-- This script needs to be changed to period/not date after periods are enabled in the database-->
-    <script type="text/javascript">
-        var cur_period;
-    </script>
-
+    
     <!--script for enabling the bootstrapTransfer plugin-->
     <script type="text/javascript">
         $(function() {
-            
+            $("#date-select-1").datepicker();
+            $("#date-select-2").datepicker();
         });
     </script>
 </head>
@@ -73,10 +80,10 @@
     <main>
         <form class="report-selector" id="choose_period_form">
             <fieldset>
-                <select name="period" id="period-select">
-                    <option value="">Choose a Period</option>
-                    <!-- Other options are built by get_period.js-->
-                </select>
+                <p class="p-inline"> Start Date: <input type="text" name="date1" id="date-select-1"></p>
+                
+                <p class="p-inline"> End Date: <input type="text" name="date2" id="date-select-2"></p>
+
                 <select name="in-floor" id="in_floor_select">
                     <option value="">Choose Floor</option>
                     <option value="1"> First Floor</option>

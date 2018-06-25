@@ -277,3 +277,7 @@ footer > p{
 {
 	margin-top: 1em;
 }
+
+.p-inline{
+	display: inline-block;
+}
