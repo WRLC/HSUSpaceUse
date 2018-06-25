@@ -124,3 +124,10 @@ footer > p{
 .nav_button button{
 	width: 100%;
 }
+
+#submit-surveys{
+	color: black;
+	background-color: #87A625;
+	font-size: 1.1em;
+}
+

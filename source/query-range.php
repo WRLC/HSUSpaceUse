@@ -33,11 +33,9 @@
     <!--scripts here are for the transfer select plugin-->
    
     <script src="./javascript/transfer-select-js/bootstrap-transfer.js"></script>
-
-
-
 	<script src="./javascript/icons.js"></script>
     <script src="./javascript/populate_multibox.js"></script>
+    <script src="./javascript/query_survey_range.js"></script>
     <link href="styles/bootstrap-transfer.css" rel="stylesheet">
     <link rel="stylesheet" href="styles/layout.css" type="text/css" >
     <link rel="stylesheet" href="styles/format.css" type="text/css" >
@@ -90,7 +88,6 @@
                     <option value="2"> Second Floor</option>
                     <option value="3"> Third Floor</option>
                 </select>
-                <input type="submit" name="submit-query" />
             </fieldset>
         </form>
 
@@ -99,6 +96,7 @@
             }
         ?>
         <div id="multi-select"></div>
+        <button id="submit-surveys">Submit Surveys</button>
 		<?php
 
     ?>

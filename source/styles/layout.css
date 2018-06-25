@@ -281,3 +281,19 @@ footer > p{
 .p-inline{
 	display: inline-block;
 }
+
+#submit-surveys{
+	height: 4em;
+	width: 200px;
+	display: block;
+	margin: auto;
+	margin-top: 2em;
+	border-radius: 25px;
+}
+
+#multi-select{
+	width: 80%;
+	display: block;
+	margin: auto;
+	margin-top: 2em;
+}
