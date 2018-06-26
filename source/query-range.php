@@ -100,7 +100,9 @@
         ?>
         <div id="multi-select"></div>
         <button id="submit-surveys">Submit Surveys</button>
-        <div id="mapid"></div>
+        <div id="map_container" style='width: 100%; height: 100%;'>
+            <div id="mapid"></div>
+        </div>
         <div id="reportDiv"></div>
 		<?php
 

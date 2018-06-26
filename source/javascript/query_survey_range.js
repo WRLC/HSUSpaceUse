@@ -1,47 +1,54 @@
 
+//define variables used in building map
 var areaMap = new Map();
 var mymap;
 var areaLayer;
 var furnitureLayer;
 var bounds;
 
-	//define objects
-	function Area(area_id, verts, area_name){
-		this.area_id = area_id;
-		this.verts = verts;
-		this.area_name = area_name;
-		this.occupants = 0;
-		this.seats = 0;
-	}
+//define objects
+function Area(area_id, verts, area_name){
+	this.area_id = area_id;
+	this.verts = verts;
+	this.area_name = area_name;
+	this.occupants = 0;
+	this.seats = 0;
+}
 
-	function Verts(x, y, order){
-		this.x = x;
-		this.y = y;
-		this.order = order;
-	}
+function Verts(x, y, order){
+	this.x = x;
+	this.y = y;
+	this.order = order;
+}
 
-	function Furniture(fid, numSeats, x, y, degreeOffset, ftype, inArea, occupants, activities){
-		this.fid = fid;
-		this.numSeats = numSeats;
-		this.x = x;
-		this.y = y;
-		this.degreeOffset = degreeOffset;
-		this.ftype = ftype;
-		this.inArea = inArea;
-		this.occupants = occupants;
-		this.activities = activities;
-	}
+function Furniture(fid, numSeats, inArea, occupants, modified_count, activities){
+	this.fid = fid;
+	this.numSeats = numSeats;
+	this.inArea = inArea;
+	this.occupants = occupants;
+	this.modified_count = modified_count;
+	this.activities = activities;
+}
 
-	function Activity(count, name){
-		this.count = count;
-		this.name = name;
-	}
+function Activity(count, name){
+	this.count = count;
+	this.name = name;
+}
 
 $(function(){
 	$('#submit-surveys').click(function(){
 
+		if(mymap != null){
+			mymap.remove();
+			mymap = null;
+			areaLayer = null;
+			furnitureLayer = null;
+		}
+		
+		document.getElementById("mapid").style.display = "block";
 		document.getElementById("multi-select").style.display = "none";
 		document.getElementById("submit-surveys").style.display = "none";
+		document.getElementById("map_container").innerHTML = "<div id='mapid'></div>";
 
 		mymap = L.map('mapid', {crs: L.CRS.Simple});
 		areaLayer = L.layerGroup().addTo(mymap);
@@ -80,11 +87,9 @@ $(function(){
 		});
 
 		var json_string = JSON.stringify(survey_id_array);
-		console.log(json_string);
-
 		loadMap(parseInt(cur_floor.value));
 		queryAreas(cur_layout.value);
-		//queryAllFurniture(json_string, cur_layout.value);
+		queryAllFurnitureInfo(json_string, cur_layout.value);
 
 	});
 });
@@ -106,7 +111,7 @@ function queryAreas(layout_id){
 	});
 }
 
-function queryAllFurniture(survey_id_json, layout_id){
+function queryAllFurnitureInfo(survey_id_json, layout_id){
 	$.ajax({
 		url: 'phpcalls/report-multisurvey-furniture.php',
 		type: 'get',
@@ -115,9 +120,7 @@ function queryAllFurniture(survey_id_json, layout_id){
 		success: function(data){
 			console.log("Retrieved survey record.");
 			jsondata = JSON.parse(data);
-			console.log(jsondata);
-			popFurnMap(jsondata);
-			
+			console.log(jsondata);			
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown) { 
 			console.log("Status: " + textStatus);
@@ -127,6 +130,7 @@ function queryAllFurniture(survey_id_json, layout_id){
 }
 
 function popAreaMap(jsonAreas){
+	areaMap = new Map();
 	for(key in jsonAreas){
 		cur_area = jsonAreas[key];
 		verts = [];

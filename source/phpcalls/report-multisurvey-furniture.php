@@ -26,14 +26,12 @@
 	foreach($all_furn as $row){
 		//establish current furniture we are examining
 		$fid = $row['furniture_id'];
-		$x = $row['x_location'];
-		$y = $row['y_location'];
-		$degreeOffset = $row['degree_offset'];
-		$ftype = $row['furniture_type'];
 		$numSeats = $row['number_of_seats'];
 		$inArea = $row['in_area'];
 		$occupants = 0;
+		$mod_count = 0;
 		$activities = array();
+
 
 		foreach($survey_ids as $key => $value){
 		//now look at this one piece of furniture for each survey selected
@@ -57,7 +55,8 @@
 			} else {
 				//Since it's numSeats isn't 0, it isn't a room. Get seat information.
 				//get count of occupied seats in furniture
-				$occupied_furn_stmt = $dbh->prepare('SELECT count(*) occupied_seats
+				$occupied_furn_stmt = $dbh->prepare(
+					'SELECT count(*) occupied_seats
 					FROM seat
 					WHERE furniture_id = :furniture_id
 					AND occupied = 1
@@ -111,29 +110,18 @@
 			
 			$mod_furn = $mod_furn_stmt->fetch(PDO::FETCH_BOTH);
 			
-			//save original x&y to show where mod furned moved from
-			$original_x = $x;
-			$original_y = $y;
-			
 			if($mod_furn_stmt->rowCount() > 0){
-				$x = $mod_furn['new_x'];
-				$y = $mod_furn['new_y'];
-				$inArea = $mod_furn['in_area'];
+				$mod_count++;
 			}
 		}
 
 		$array_item = array( 
 			'furniture_id' => $fid,
 			'num_seats' => $numSeats,
-			'x' => $x,
-			'y' => $y,
-			'degree_offset' => $degreeOffset,
-			'furn_type' => $ftype,
 			'in_area' => $inArea,
 			'occupants' => $occupants,
-			'activities' => $activities,
-			'original_x' => $original_x,
-			'original_y' => $original_y
+			'modified_count' => $mod_count,
+			'activities' => $activities
 		);
 		array_push($data, $array_item);
 	}

@@ -1,5 +1,9 @@
 $(function(){
     $('#date-select-1, #date-select-2, #in_floor_select, #in_layout_select').on("change", function(){
+        document.getElementById("mapid").style.display = "none";
+        document.getElementById("multi-select").style.display = "block";
+        document.getElementById("submit-surveys").style.display = "block";
+        
         var cur_date_start = document.getElementById("date-select-1").value;
         var cur_date_end = document.getElementById("date-select-2").value;
         var cur_layout = document.getElementById("in_layout_select");
