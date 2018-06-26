@@ -140,7 +140,5 @@
 							  'original_y' => $original_y);
 		array_push($data, $array_item);
 	}
-	
-	
+
 	print json_encode($data);
-?>

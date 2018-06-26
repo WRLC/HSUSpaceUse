@@ -82,12 +82,15 @@
                 
                 <p class="p-inline"> End Date: <input type="text" name="date2" id="date-select-2"></p>
 
-                <select name="in-floor" id="in_floor_select">
+                <p class="p-inline"> Floor: <select name="in-floor" id="in_floor_select">
                     <option value="">Choose Floor</option>
                     <option value="1"> First Floor</option>
                     <option value="2"> Second Floor</option>
                     <option value="3"> Third Floor</option>
-                </select>
+                </select></p>
+                <p class="p-inline"> Layout: <select name="in-layout" id="in_layout_select">
+                    <option value="">Choose a Corresponding Layout</option>
+                </select></p>
             </fieldset>
         </form>
 
@@ -97,6 +100,8 @@
         ?>
         <div id="multi-select"></div>
         <button id="submit-surveys">Submit Surveys</button>
+        <div id="mapid"></div>
+        <div id="reportDiv"></div>
 		<?php
 
     ?>
