@@ -1,6 +1,7 @@
 
 //define variables used in building map
 var areaMap = new Map();
+var furnMap = new Map();
 var mymap;
 var areaLayer;
 var furnitureLayer;
@@ -11,7 +12,8 @@ function Area(area_id, verts, area_name){
 	this.area_id = area_id;
 	this.verts = verts;
 	this.area_name = area_name;
-	this.occupants = 0;
+	this.maxpopulation = 0;
+	this.useration = 0;
 	this.seats = 0;
 }
 
@@ -21,11 +23,13 @@ function Verts(x, y, order){
 	this.order = order;
 }
 
-function Furniture(fid, numSeats, inArea, occupants, modified_count, activities){
+function Furniture(fid, numSeats, inArea, avgUseRatio, avgOccupancy, sumOccupants, modified_count, activities){
 	this.fid = fid;
 	this.numSeats = numSeats;
 	this.inArea = inArea;
-	this.occupants = occupants;
+	this.avgUseRatio = avgUseRatio;
+	this.avgOccupancy = avgOccupancy;
+	this.sumOccupants = sumOccupants;
 	this.modified_count = modified_count;
 	this.activities = activities;
 }
@@ -89,7 +93,7 @@ $(function(){
 		var json_string = JSON.stringify(survey_id_array);
 		loadMap(parseInt(cur_floor.value));
 		queryAreas(cur_layout.value);
-		queryAllFurnitureInfo(json_string, cur_layout.value);
+		queryFurnitureInfo(json_string, cur_layout.value);
 
 	});
 });
@@ -111,16 +115,17 @@ function queryAreas(layout_id){
 	});
 }
 
-function queryAllFurnitureInfo(survey_id_json, layout_id){
+function queryFurnitureInfo(survey_id_json, layout_id){
 	$.ajax({
 		url: 'phpcalls/report-multisurvey-furniture.php',
 		type: 'get',
 		data:{ 'survey_ids': survey_id_json,
 				'layout_id': layout_id},
 		success: function(data){
-			console.log("Retrieved survey record.");
+			console.log("Retrieved Furn Data.");
 			jsondata = JSON.parse(data);
-			console.log(jsondata);			
+			console.log(jsondata);
+			popFurnMap(jsondata);
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown) { 
 			console.log("Status: " + textStatus);
@@ -147,6 +152,15 @@ function popAreaMap(jsonAreas){
 	addSurveyedAreas();
 }
 
+function popFurnMap(jsonFurn){
+	furnMap = new Map();
+	for(key in jsonFurn){
+		cur_furn = jsonFurn[key];
+		newFurniture = new Furniture(cur_furn.furniture_id, cur_furn.num_seats, cur_furn.inArea, cur_furn.avg_use_ratio, cur_furn.avg_occupancy, cur_furn.sum_occupants, cur_furn.modified_count, cur_furn.activities); 
+		furnMap.set(cur_furn.furniture_id, newFurniture);
+	}
+}
+
 function addSurveyedAreas(){
 	areaMap.forEach(function(key, value, map){
 		drawArea(key).addTo(mymap);
@@ -155,7 +169,6 @@ function addSurveyedAreas(){
 
 function drawArea(area){
 	var curVerts = [];
-	
 	for(var i=0; i < area.verts.length; i++){
 		area_verts = area.verts[i];
 		curVerts.push([area_verts.x,area_verts.y]);

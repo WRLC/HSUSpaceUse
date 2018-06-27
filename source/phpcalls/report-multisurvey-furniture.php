@@ -28,10 +28,11 @@
 		$fid = $row['furniture_id'];
 		$numSeats = $row['number_of_seats'];
 		$inArea = $row['in_area'];
-		$occupants = 0;
+		$ratio = 0;
+		$sum_occupants = 0;
 		$mod_count = 0;
 		$activities = array();
-
+		$num_surveys = count($survey_ids);
 
 		foreach($survey_ids as $key => $value){
 		//now look at this one piece of furniture for each survey selected
@@ -47,10 +48,11 @@
 				
 				$roomOccupantStmt->execute();
 				//place the total occupants in the room in the variable for the furniture
-				$tempOcc = $roomOccupantStmt->fetchColumn();
+				$tempOcc = (int)$roomOccupantStmt->fetchColumn();
 				
 				if($tempOcc > 0){
-					$occupants += $tempOcc;
+					$ratio += $tempOcc;
+					$sum_occupants += $tempOcc;
 				}
 			} else {
 				//Since it's numSeats isn't 0, it isn't a room. Get seat information.
@@ -68,11 +70,13 @@
 				
 				$occupied_furn_stmt->execute();
 				
-				$tempOcc = $occupied_furn_stmt->fetchColumn();
+				$tempOcc = (int)$occupied_furn_stmt->fetchColumn();
+				$tempRatio = $tempOcc/$numSeats;
 				
 				//if the column returns a number, and it is greater than 0, overwrite occupants.
 				if($tempOcc > 0){
-					$occupants += $tempOcc;
+					$ratio += $tempRatio;
+					$sum_occupants += $tempOcc;
 				}
 			}
 
@@ -115,11 +119,16 @@
 			}
 		}
 
+		$average_use_ratio = $ratio/$num_surveys;
+		$average_occupancy = $sum_occupants/$num_surveys;
+
 		$array_item = array( 
 			'furniture_id' => $fid,
 			'num_seats' => $numSeats,
 			'in_area' => $inArea,
-			'occupants' => $occupants,
+			'avg_use_ratio' => $average_use_ratio,
+			'sum_occupants' => $sum_occupants,
+			'avg_occupancy' => $average_occupancy,
 			'modified_count' => $mod_count,
 			'activities' => $activities
 		);
