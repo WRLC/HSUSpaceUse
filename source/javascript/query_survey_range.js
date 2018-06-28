@@ -6,15 +6,17 @@ var mymap;
 var areaLayer;
 var furnitureLayer;
 var bounds;
+var survey_id_array;
 
 //define objects
 function Area(area_id, verts, area_name){
 	this.area_id = area_id;
 	this.verts = verts;
 	this.area_name = area_name;
-	this.maxpopulation = 0;
-	this.useration = 0;
-	this.seats = 0;
+	this.numSeats = 0;
+	this.avgOccupancy = 0;
+	this.avgRatio = 0;
+	this.totalSeatsUsed = 0;
 }
 
 function Verts(x, y, order){
@@ -79,7 +81,7 @@ $(function(){
             $('#mapid .furnitureLargeIcon').css({'width':newLargeZoom,'height':newLargeZoom});
         });
 
-		var survey_id_array= [];
+		survey_id_array = [];
 		var i = 0;
 		var cur_layout = document.getElementById("in_layout_select");
 		var cur_floor = document.getElementById("in_floor_select");
@@ -94,6 +96,7 @@ $(function(){
 		loadMap(parseInt(cur_floor.value));
 		queryAreas(cur_layout.value);
 		queryFurnitureInfo(json_string, cur_layout.value);
+
 
 	});
 });
@@ -126,6 +129,8 @@ function queryFurnitureInfo(survey_id_json, layout_id){
 			jsondata = JSON.parse(data);
 			console.log(jsondata);
 			popFurnMap(jsondata);
+			calculateAreaData();
+			addSurveyedAreas();
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown) { 
 			console.log("Status: " + textStatus);
@@ -149,22 +154,62 @@ function popAreaMap(jsonAreas){
 		newArea = new Area(cur_area.area_id, verts, cur_area.area_name);
 		areaMap.set(cur_area.area_id, newArea);		
 	}
-	addSurveyedAreas();
+	
 }
 
 function popFurnMap(jsonFurn){
 	furnMap = new Map();
+	console.log(jsonFurn)
 	for(key in jsonFurn){
 		cur_furn = jsonFurn[key];
-		newFurniture = new Furniture(cur_furn.furniture_id, cur_furn.num_seats, cur_furn.inArea, cur_furn.avg_use_ratio, cur_furn.avg_occupancy, cur_furn.sum_occupants, cur_furn.modified_count, cur_furn.activities); 
+		if(cur_furn.in_area != null){
+			newFurniture = new Furniture(cur_furn.furniture_id, cur_furn.num_seats, cur_furn.in_area, cur_furn.avg_use_ratio, cur_furn.avg_occupancy, cur_furn.sum_occupants, cur_furn.modified_count, cur_furn.activities);
+		}
+		else{
+			newFurniture = new Furniture(cur_furn.furniture_id, cur_furn.num_seats, null, cur_furn.avg_use_ratio, cur_furn.avg_occupancy, cur_furn.sum_occupants, cur_furn.modified_count, cur_furn.activities);
+		}
 		furnMap.set(cur_furn.furniture_id, newFurniture);
 	}
+	console.log("furnMap is now Populated");
 }
 
 function addSurveyedAreas(){
 	areaMap.forEach(function(key, value, map){
 		drawArea(key).addTo(mymap);
 	});
+}
+
+function calculateAreaData(){
+	var iterateAreaMap = areaMap.values();
+	
+	for(var i of areaMap){
+		var num_surveys = survey_id_array.length;
+		var cur_area = iterateAreaMap.next().value;
+		var area_furn_count = 0; 
+		var area_avgoccu_sum = 0;
+		var area_ratio_sum = 0;
+		var max_seats = 0;
+		var total_seats_used = 0;
+		var iterateFurnMap = furnMap.values();
+		for(var j of furnMap){
+			var cur_furn = iterateFurnMap.next().value;
+			if(cur_furn != undefined){
+				if(cur_furn.inArea == cur_area.area_id){
+					area_furn_count++;
+					max_seats += parseInt(cur_furn.numSeats);
+					area_avgoccu_sum += parseInt(cur_furn.avgOccupancy);
+					area_ratio_sum += parseFloat(cur_furn.avgUseRatio);
+					total_seats_used += parseInt(cur_furn.sumOccupants);
+				}
+			}
+		}
+		cur_area.numSeats = max_seats;
+		cur_area.avgPopArea = total_seats_used/num_surveys;
+		cur_area.avgOccupancy = area_avgoccu_sum/area_furn_count;
+		cur_area.avgRatio = area_ratio_sum/area_furn_count;
+	}
+	console.log(areaMap);
+
 }
 
 function drawArea(area){
@@ -174,8 +219,16 @@ function drawArea(area){
 		curVerts.push([area_verts.x,area_verts.y]);
 	}
 	var poly = L.polygon(curVerts);
-	popupString = "<strong>"+area.area_name +"</strong></br>Total occupants: " + area.occupants + "/" + area.seats;
+	popupString = "<strong>"+area.area_name +"</strong></br>Number of Seats: " + area.numSeats +"</br>Average Area Population: " + area.avgPopArea +"</br>Percentage Use: " + ((area.avgPopArea/area.numSeats) * 100)+ "</br>Ratio of use over Period " + (area.avgRatio * 100) + "%";
 	poly.bindPopup(popupString);
+
+	if(area.avgPopArea/area.numSeats < .1){
+		poly.setStyle({fillColor:"red"});
+	}
+	else{
+		poly.setStyle({fillColor:"green"});
+	}
+	
 	
 	return poly;
 }
