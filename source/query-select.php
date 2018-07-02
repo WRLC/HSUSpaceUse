@@ -61,7 +61,7 @@
         }
     ?>
     <footer>
-        <p>Designed by Web App team &copy; Humboldt State University</p>
+        <p>Designed by HSU Library Web App team. &copy; Humboldt State University</p>
     </footer>
 </body>
 </html>

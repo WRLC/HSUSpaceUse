@@ -91,6 +91,7 @@ form.layout-selector{
 fieldset{
 	border: none;
 	background-color: #87A625;
+	padding: 15px;
 }
 
 form.layout-selector > fieldset{
@@ -129,5 +130,12 @@ footer > p{
 	color: black;
 	background-color: #87A625;
 	font-size: 1.1em;
+}
+
+#print_frame{
+	width: 1px;
+	height: 1px;
+	position: absolute;
+	left: -9999px
 }
 
