@@ -1,6 +1,5 @@
 <?php
 	//The main page for any queries that the user will grab from the DB.
-	//Needs more queries such as activities, whiteboard use.
 	//TODO: give a calendar view to choose the date of a survey record,
 	//  Load the state of the library during that survey to give us not only area_use, but furniture location
 	session_start();
@@ -13,7 +12,7 @@
     <title> Library Query Report </title>
     <meta charset="utf-8" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-	    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css"
+	   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css"
     integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
     crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"
@@ -22,6 +21,7 @@
 		<script src="./javascript/report-objs-pop.js"></script>
 		<script src="./javascript/leaflet.rotatedMarker.js"></script>
 		<script src="./javascript/icons.js"></script>
+		<script src="./javascript/leaflet.browser.print.min.js"></script>
     <link rel="stylesheet" href="styles/layout.css" type="text/css" >
     <link rel="stylesheet" href="styles/format.css" type="text/css" >
 
@@ -35,9 +35,9 @@
 
 </head>
 <script type="text/javascript">
-
     var cur_selected_date;
 		var json_object;
+		var survey_info_legend = L.control();
 
     $(function(){
         $('#date-select').on("change", function(){
@@ -81,6 +81,15 @@
 
         });
     });
+
+		/*
+		delete line: 149, 170
+		*/
+		function printReport(){
+			var map = document.getElementById('mapid').innerHTML;
+			var rFrame = document.getElementById('print_frame');
+			rFrame.contentWindow.print();
+		}
 </script>
 <body>
     <header>
@@ -108,6 +117,10 @@
 
         <form class="report-selector" id="choose_survey_form">
             <fieldset>
+
+							<div id="query_header_container">
+								<h2 id="query_header"><?= $_SESSION["username"]?> what shall we query today? </h2>
+							</div>
                 <!--THIS IS A PLACEHOLDER! SELECT WILL BE POPULATED BY DATES FROM DB-->
                 <select name="date" id="date-select">
                     <option value="0">Choose a Date</option>
@@ -120,21 +133,21 @@
                     <option id="chosen_survey" value="">Choose a Survey</option>
                 </select>
 
-
-
                 <input type="submit" name="submit-query" id="query_submit_button"/>
-
+								<input type="button" id="query_print_button" value="Print Report" style="display:none" onclick="printReport()"/>
             </fieldset>
         </form>
-
-				<h2 id="query_header"><?= $_SESSION["username"]?> what shall we query today? </h2>
                 <?php
             }
         ?>
 
-		<div id="mapid"></div>
-		<div id="reportDiv"></div>
-
+			<div id="mapid"></div>
+			<iframe id="print_frame">
+				<html>
+					<body>
+					</body>
+				</html>
+			</iframe>
 		<?php
 
 		if (array_key_exists("survey_id", $_GET)){
@@ -143,6 +156,15 @@
 
 				//create maps and grab survey_id
 				var survey_id = <?= $_GET["survey_id"] ?>;
+
+				//used to keep track of all the seats on the floor and how many are being used
+				var totalSeats = 0;
+				var seatsUsed = 0;
+				var print_header;
+				var area_string;
+				var modified_furn = 0;
+
+				document.getElementById("query_print_button").style.display = "block";
 
 				$.ajax({
 	                url: 'phpcalls/get-survey-info.php',
@@ -160,8 +182,24 @@
 										surv_time = surv_date_time_arr[1];
 										surv_date = surv_date_time_arr[0];
 	                  var query_header = document.getElementById('query_header');
-	                	query_header.innerHTML = "Survey: " + survey_id + " for Layout " + lay_id + " on floor " + floor_num + " at " + surv_time + " on " + surv_date;
+	                	query_header.style.display = "none";
 
+										survey_info_legend.onAdd = function (mymap){
+											var div = L.DomUtil.create('div', 'report_legend');
+											var header = document.createElement('p');
+											header.innerHTML = "Survey: " + survey_id + "</br>Layout: "
+														+ lay_id + "</br>Floor: " + floor_num
+														+ "</br> Time: " + surv_time + "</br> Date: " + surv_date;
+											print_header = "Survey " + survey_id + " for Layout "
+														+ lay_id + " on Floor " + floor_num
+														+ " at " + surv_time + " on " + surv_date;
+
+											div.appendChild(header);
+
+											return div;
+										}
+
+										survey_info_legend.addTo(mymap);
 	                }
 	            });
 				areaMap = new Map();
@@ -192,6 +230,8 @@
 					this.inArea = inArea;
 					this.occupants = occupants;
 					this.activities = activities;
+					totalSeats = +numSeats + +totalSeats;
+					seatsUsed = +occupants + +seatsUsed;
 				}
 
 				function Activity(count, name){
@@ -210,8 +250,6 @@
 			var bounds = [[0,0], [360,550]];
 
 			mymap.fitBounds(bounds);
-
-
 
 			//On zoomend, resize the marker icons
         mymap.on('zoomend', function() {
@@ -232,7 +270,14 @@
             $('#mapid .furnitureLargeIcon').css({'width':newLargeZoom,'height':newLargeZoom});
         });
 
+				mymap.on("browser-print-start", function(e){
+					/*on print start we already have a print map and we can create new control and add it to the print map to be able to print custom information */
+					survey_info_legend.addTo(e.printMap);
+				});
 
+				mymap.on("browser-print-end", function(e){
+					survey_info_legend.addTo(mymap);
+        });
 
 			</script>
 			<?php
