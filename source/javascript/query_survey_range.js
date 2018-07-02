@@ -219,7 +219,7 @@ function drawArea(area){
 		curVerts.push([area_verts.x,area_verts.y]);
 	}
 	var poly = L.polygon(curVerts);
-	popupString = "<strong>"+area.area_name +"</strong></br>Number of Seats: " + area.numSeats +"</br>Average Area Population: " + area.avgPopArea +"</br>Percentage Use: " + ((area.avgPopArea/area.numSeats) * 100)+ "</br>Ratio of use over Period " + (area.avgRatio * 100) + "%";
+	popupString = "<strong>"+area.area_name +"</strong></br>Number of Seats: " + area.numSeats +"</br>Average Area Population: " + area.avgPopArea +"</br>Percentage Use: " + Math.round(((area.avgPopArea/area.numSeats) * 100) * 100)/100 + "%</br>Ratio of use over Period " + Math.round((area.avgRatio * 100) * 100)/100 + "%";
 	poly.bindPopup(popupString);
 
 	if(area.avgPopArea/area.numSeats < .1){
