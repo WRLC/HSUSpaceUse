@@ -16,9 +16,10 @@ foreach($jsondata as $key => $value){
 	$area_id = $value['area_id'];
 	
 	$dbh->beginTransaction();
-	$insert_lia_stmt = $dbh->prepare('INSERT INTO area_in_layout 
-								(area_id, layout_id)
-								VALUES (:area_id, :layout_id)');
+	$insert_lia_stmt = $dbh->prepare(
+		'INSERT INTO area_in_layout (area_id, layout_id)
+		VALUES (:area_id, :layout_id)'
+	);
 						
 	$insert_lia_stmt->bindParam(':area_id', $area_id, PDO::PARAM_INT);
 	$insert_lia_stmt->bindParam(':layout_id', $layout_id, PDO::PARAM_INT);

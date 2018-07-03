@@ -44,7 +44,8 @@ function createAreas(layout){
 	                    }
 
 	                    //draw area polys and add to areaLayer
-	                    var polyArea = drawArea(item);
+	                    var polyItem = item;
+	                    var polyArea = drawArea(polyItem);
 	                    item.polyArea = polyArea;
 	                    polyArea.addTo(areaLayer);
 	                }
