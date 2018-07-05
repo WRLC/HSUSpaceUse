@@ -24,7 +24,7 @@
 		if($getDates->execute()){
 			while($row = $getDates->fetch(PDO::FETCH_ASSOC)){
 				?>
-				<option value="<?= $row['date_surveyed'] ?>"> Survey's for: <?= $row['date_surveyed'] ?> </option>
+				<option value="<?= $row['date_surveyed'] ?>"><?= $row['date_surveyed'] ?> </option>
 				<?php
 			}
 		}
