@@ -41,7 +41,7 @@ COMMENT = 'All the spaces on a layout are made up of areas. They have an ID, a h
 CREATE TABLE `hsu_library`.`area_in_layout` (
   `area_id` INT NOT NULL,
   `layout_id` INT NULL,
-  PRIMARY KEY (`area_id`),
+  PRIMARY KEY (`area_id`, `layout_id`),
   INDEX `layout_AL_fk_idx` (`layout_id` ASC),
   CONSTRAINT `area_AL_fk`
     FOREIGN KEY (`area_id`)
