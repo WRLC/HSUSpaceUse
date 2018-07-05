@@ -122,6 +122,10 @@ main{
 	transition-timing-function: ease-in-out;
 }
 
+.login_main{
+	bottom: 0;
+}
+
 .to-top{
 	position: absolute;
 	top: 0;
