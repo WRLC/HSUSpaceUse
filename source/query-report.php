@@ -251,8 +251,10 @@
 
 			mymap.fitBounds(bounds);
 
+
 			//On zoomend, resize the marker icons
         mymap.on('zoomend', function() {
+        	console.log(mymap.getZoom());
             var markerSize;
             //resize the markers depending on zoomlevel so they appear to scale
             //zoom is limited to 0-4
