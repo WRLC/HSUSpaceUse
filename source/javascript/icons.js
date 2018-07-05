@@ -3,6 +3,10 @@
 
 //contains function to return selected icon type based on furniture type
 
+var height;
+var width;
+var selectedIcon;
+
 //extend the marker class to add furniture data
 var marker = L.Marker.extend({
 	options: {
@@ -17,11 +21,11 @@ var marker = L.Marker.extend({
 //extend Icon for each different furniture icon
 var CircTableIcon = L.Icon.extend({
     options: {
-		className: 'furnitureLargeIcon',
-		iconUrl: './images/icons/circ_table.svg',
-        iconSize:     [38, 38],
-        iconAnchor:   [0,0],
-        popupAnchor:  [0, 0]
+				className: 'furnitureLargeIcon',
+				iconUrl: './images/icons/circ_table.svg',
+				iconSize: [10, 10],
+				iconAnchor: [5,5],
+				popupAnchor: [5,5]
     }
 });
 
@@ -31,9 +35,9 @@ var CouchThreeIcon = L.Icon.extend({
 	options: {
 		className: 'furnitureIcon',
 		iconUrl: './images/icons/couch_three.svg',
-		iconSize: [38,38],
-		iconAnchor: [0,0],
-		popupAnchor: [0,0]
+		iconSize: [10, 10],
+		iconAnchor: [5,5],
+		popupAnchor: [5,5]
 	}
 });
 
@@ -43,9 +47,9 @@ var CouchFourIcon = L.Icon.extend({
 	options: {
 		className: 'furnitureIcon',
 		iconUrl: './images/icons/couch_four.svg',
-		iconSize: [38,38],
-		iconAnchor: [0,0],
-		popupAnchor: [0,0]
+		iconSize: [10, 10],
+		iconAnchor: [5,5],
+		popupAnchor: [5,5]
 	}
 });
 
@@ -56,9 +60,9 @@ var ComputerStationIcon = L.Icon.extend({
 	options: {
 		className: 'furnitureIcon',
 		iconUrl: './images/icons/square_table.svg',
-		iconSize: [80,80],
-		iconAnchor: [0,0],
-		popupAnchor: [0,0]
+		iconSize: [5,5],
+		iconAnchor: [2.5,2.5],
+		popupAnchor: [2.5,2.5]
 	}
 });
 
@@ -69,9 +73,9 @@ var CollabStationIcon = L.Icon.extend({
 		className: 'furnitureLargeIcon',
 		rotationAngle: 180,
 		iconUrl: './images/icons/collab_station.svg',
-		iconSize: [38,38],
-		iconAnchor: [0,0],
-		popupAnchor: [0,0]
+		iconSize: [10,10],
+		iconAnchor: [5,5],
+		popupAnchor: [5,5]
 	}
 });
 
@@ -81,9 +85,9 @@ var CouchCurvedIcon = L.Icon.extend({
 	options: {
 		className: 'furnitureIcon',
 		iconUrl: './images/icons/couch_curved.svg',
-		iconSize: [38,38],
-		iconAnchor: [0,0],
-		popupAnchor: [0,0]
+		iconSize: [10, 10],
+		iconAnchor: [5,5],
+		popupAnchor: [5,5]
 	}
 });
 
@@ -93,9 +97,9 @@ var CouchSixIcon = L.Icon.extend({
 	options: {
 		className: 'furnitureLargeIcon',
 		iconUrl: './images/icons/couch_six.svg',
-		iconSize: [38,38],
-		iconAnchor: [0,0],
-		popupAnchor: [0,0]
+		iconSize: [10,10],
+		iconAnchor: [5,5],
+		popupAnchor: [5,5]
 	}
 });
 
@@ -105,9 +109,9 @@ var CouchTwoIcon = L.Icon.extend({
 	options: {
 		className: 'furnitureIcon',
 		iconUrl: './images/icons/couch_two.svg',
-		iconSize: [38,38],
-		iconAnchor: [0,0],
-		popupAnchor: [0,0]
+		iconSize: [10, 10],
+		iconAnchor: [5,5],
+		popupAnchor: [5,5]
 	}
 });
 
@@ -117,9 +121,9 @@ var CounterCurvedIcon = L.Icon.extend({
 	options: {
 		className: 'furnitureLargeIcon',
 		iconUrl: './images/icons/counter_curved.png',
-		iconSize: [38,38],
-		iconAnchor: [0,0],
-		popupAnchor: [0,0]
+		iconSize: [10,10],
+		iconAnchor: [5,5],
+		popupAnchor: [5,5]
 	}
 });
 
@@ -129,9 +133,9 @@ var FitDeskEmptyIcon = L.Icon.extend({
 	options: {
 		className: 'furnitureIcon',
 		iconUrl: './images/icons/fit_desk_empty.svg',
-		iconSize: [38,38],
-		iconAnchor: [0,0],
-		popupAnchor: [0,0]
+		iconSize: [10,10],
+		iconAnchor: [5,5],
+		popupAnchor: [5,5]
 	}
 });
 
@@ -141,9 +145,9 @@ var FitDeskFilledIcon = L.Icon.extend({
 	options: {
 		className: 'furnitureIcon',
 		iconUrl: './images/icons/fit_desk_filled.svg',
-		iconSize: [38,38],
-		iconAnchor: [0,0],
-		popupAnchor: [0,0]
+		iconSize: [10,10],
+		iconAnchor: [5,5],
+		popupAnchor: [5,5]
 	}
 });
 
@@ -153,9 +157,9 @@ var MedCornerEmptyIcon = L.Icon.extend({
 	options: {
 		className: 'furnitureIcon',
 		iconUrl: './images/icons/med_corner_empty.svg',
-		iconSize: [38,38],
-		iconAnchor: [0,0],
-		popupAnchor: [0,0]
+		iconSize: [10,10],
+		iconAnchor: [5,5],
+		popupAnchor: [5,5]
 	}
 });
 
@@ -165,9 +169,9 @@ var MedCornerFilledIcon = L.Icon.extend({
 	options: {
 		className: 'furnitureIcon',
 		iconUrl: './images/icons/med_corner_filled.svg',
-		iconSize: [38,38],
-		iconAnchor: [0,0],
-		popupAnchor: [0,0]
+		iconSize: [10,10],
+		iconAnchor: [5,5],
+		popupAnchor: [5,5]
 	}
 });
 
@@ -177,9 +181,9 @@ var MfReaderEmptyIcon = L.Icon.extend({
 	options: {
 		className: 'furnitureIcon',
 		iconUrl: './images/icons/mf_reader_empty.svg',
-		iconSize: [38,38],
-		iconAnchor: [0,0],
-		popupAnchor: [0,0]
+		iconSize: [10,10],
+		iconAnchor: [5,5],
+		popupAnchor: [5,5]
 	}
 });
 
@@ -189,9 +193,9 @@ var MfReaderFilledIcon = L.Icon.extend({
 	options: {
 		className: 'furnitureIcon',
 		iconUrl: './images/icons/mf_reader_filled.svg',
-		iconSize: [38,38],
-		iconAnchor: [0,0],
-		popupAnchor: [0,0]
+		iconSize: [10,10],
+		iconAnchor: [5,5],
+		popupAnchor: [5,5]
 	}
 });
 
@@ -201,9 +205,9 @@ var RectTableIcon = L.Icon.extend({
 	options: {
 		className: 'furnitureLargeIcon',
 		iconUrl: './images/icons/rect_table.svg',
-		iconSize: [38,38],
-		iconAnchor: [0,0],
-		popupAnchor: [0,0]
+		iconSize: [10,10],
+		iconAnchor: [5,5],
+		popupAnchor: [5,5]
 	}
 });
 
@@ -213,9 +217,9 @@ var RoomIcon = L.Icon.extend({
 	options: {
 		className: 'furnitureLargeIcon',
 		iconUrl: './images/icons/room.png',
-		iconSize: [38,38],
-		iconAnchor: [0,0],
-		popupAnchor: [0,0]
+		iconSize: [10,10],
+		iconAnchor: [5,5],
+		popupAnchor: [5,5]
 	}
 });
 
@@ -225,9 +229,9 @@ var SeatEmptyIcon = L.Icon.extend({
 	options: {
 		className: 'furnitureIcon',
 		iconUrl: './images/icons/seat_empty.svg',
-		iconSize: [38,38],
-		iconAnchor: [0,0],
-		popupAnchor: [0,0]
+		iconSize: [10,10],
+		iconAnchor: [5,5],
+		popupAnchor: [5,5]
 	}
 });
 
@@ -237,9 +241,9 @@ var SeatFilledIcon = L.Icon.extend({
 	options: {
 		className: 'furnitureIcon',
 		iconUrl: './images/icons/seat_filled.svg',
-		iconSize: [38,38],
-		iconAnchor: [0,0],
-		popupAnchor: [0,0]
+		iconSize: [10,10],
+		iconAnchor: [5,5],
+		popupAnchor: [5,5]
 	}
 });
 
@@ -249,9 +253,9 @@ var SeatOneSoftIcon = L.Icon.extend({
 	options: {
 		className: 'furnitureIcon',
 		iconUrl: './images/icons/seat_one_soft.svg',
-		iconSize: [38,38],
-		iconAnchor: [0,0],
-		popupAnchor: [0,0]
+		iconSize: [10,10],
+		iconAnchor: [5,5],
+		popupAnchor: [5,5]
 	}
 });
 
@@ -261,9 +265,9 @@ var SeatOneIcon = L.Icon.extend({
 	options: {
 		className: 'furnitureIcon',
 		iconUrl: './images/icons/seat_one.svg',
-		iconSize: [38,38],
-		iconAnchor: [0,0],
-		popupAnchor: [0,0]
+		iconSize: [10,10],
+		iconAnchor: [5,5],
+		popupAnchor: [5,5]
 	}
 });
 
@@ -273,9 +277,9 @@ var StudyFourIcon = L.Icon.extend({
 	options: {
 		className: 'furnitureLargeIcon',
 		iconUrl: './images/icons/study_four.svg',
-		iconSize: [38,38],
-		iconAnchor: [0,0],
-		popupAnchor: [0,0]
+		iconSize: [10,10],
+		iconAnchor: [5,5],
+		popupAnchor: [5,5]
 	}
 });
 
@@ -285,9 +289,9 @@ var StudyOneIcon = L.Icon.extend({
 	options: {
 		className: 'furnitureIcon',
 		iconUrl: './images/icons/study_one.svg',
-		iconSize: [38,38],
-		iconAnchor: [0,0],
-		popupAnchor: [0,0]
+		iconSize: [10,10],
+		iconAnchor: [5,5],
+		popupAnchor: [5,5]
 	}
 });
 
@@ -297,9 +301,9 @@ var StudyThreeIcon = L.Icon.extend({
 	options: {
 		className: 'furnitureLargeIcon',
 		iconUrl: './images/icons/study_three.svg',
-		iconSize: [38,38],
-		iconAnchor: [0,0],
-		popupAnchor: [0,0]
+		iconSize: [10,10],
+		iconAnchor: [5,5],
+		popupAnchor: [5,5]
 	}
 });
 
@@ -309,9 +313,9 @@ var StudyTwoIcon = L.Icon.extend({
 	options: {
 		className: 'furnitureLargeIcon',
 		iconUrl: './images/icons/study_two.svg',
-		iconSize: [38,38],
-		iconAnchor: [0,0],
-		popupAnchor: [0,0]
+		iconSize: [10,10],
+		iconAnchor: [5,5],
+		popupAnchor: [5,5]
 	}
 });
 
@@ -321,9 +325,9 @@ var VidViewerEmptyIcon = L.Icon.extend({
 	options: {
 		className: 'furnitureIcon',
 		iconUrl: './images/icons/vid_viewer_empty.svg',
-		iconSize: [38,38],
-		iconAnchor: [0,0],
-		popupAnchor: [0,0]
+		iconSize: [10,10],
+		iconAnchor: [5,5],
+		popupAnchor: [5,5]
 	}
 });
 
@@ -333,21 +337,20 @@ var VidViewerFilledIcon = L.Icon.extend({
 	options: {
 		className: 'furnitureIcon',
 		iconUrl: './images/icons/vid_viewer_filled.svg',
-		iconSize: [38,38],
-		iconAnchor: [0,0],
-		popupAnchor: [0,0]
+		iconSize: [10,10],
+		iconAnchor: [5,5],
+		popupAnchor: [5,5]
 	}
 });
 
 var vidViewerFilled = new VidViewerFilledIcon();
 
-//return the icon type based on furniture typefunction 
+//return the icon type based on furniture typefunction
 //takes an int
 //returns Icon object
 
 function getIconObj(furniture_type) {
-	
-	var selectedIcon;
+
 	switch(furniture_type){
 		case 1:
 		case 2:
@@ -367,7 +370,7 @@ function getIconObj(furniture_type) {
 		case 16:
 		case 17:
 		case 18:
-		case 19: selectedIcon=collabStation; break;
+		case 19: selectedIcon = collabStation; break;
 		case 20: selectedIcon=roomIcon; break;
 		case 21: selectedIcon=computerStation;break;
 		case 22: selectedIcon= seatOne; break;

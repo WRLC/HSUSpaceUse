@@ -126,11 +126,6 @@ footer > p{
 	width: 100%;
 }
 
-#submit-surveys{
-	color: black;
-	background-color: #87A625;
-	font-size: 1.1em;
-}
 
 #print_frame{
 	width: 1px;
@@ -138,4 +133,3 @@ footer > p{
 	position: absolute;
 	left: -9999px
 }
-
