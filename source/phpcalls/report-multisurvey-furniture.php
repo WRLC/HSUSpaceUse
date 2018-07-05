@@ -9,7 +9,7 @@
 	$data = array();
 
 	//setup connection to DB
-	$dbh = new PDO($dbhost, $dbh_insert_user, $dbh_insert_pw);
+	$dbh = new PDO($dbhost, $dbh_select_user, $dbh_select_pw);
 
 	//get all furntiture for the layout
 	$all_furn_stmt = $dbh->prepare('SELECT furniture_id, x_location, y_location, degree_offset, furniture_type, number_of_seats, in_area
