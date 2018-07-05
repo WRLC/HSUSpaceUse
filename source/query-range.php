@@ -31,7 +31,7 @@
 	<script src="./javascript/leaflet.rotatedMarker.js"></script>
 
     <!--scripts here are for the transfer select plugin-->
-   
+
     <script src="./javascript/transfer-select-js/bootstrap-transfer.js"></script>
 	<script src="./javascript/icons.js"></script>
     <script src="./javascript/populate_multibox.js"></script>
@@ -40,7 +40,7 @@
     <link rel="stylesheet" href="styles/layout.css" type="text/css" >
     <link rel="stylesheet" href="styles/format.css" type="text/css" >
 
-    
+
     <!--script for enabling the bootstrapTransfer plugin-->
     <script type="text/javascript">
         $(function() {
@@ -79,7 +79,7 @@
         <form class="report-selector" id="choose_period_form">
             <fieldset>
                 <p class="p-inline"> Start Date: <input type="text" name="date1" id="date-select-1"></p>
-                
+
                 <p class="p-inline"> End Date: <input type="text" name="date2" id="date-select-2"></p>
 
                 <p class="p-inline"> Floor: <select name="in-floor" id="in_floor_select">
@@ -99,7 +99,7 @@
             }
         ?>
         <div id="multi-select"></div>
-        <button id="submit-surveys">Submit Surveys</button>
+        <button class="nav_button" id="submit-surveys">Submit Surveys</button>
         <div id="map_container" style='width: 100%; height: 100%;'>
             <div id="mapid"></div>
         </div>
@@ -109,8 +109,7 @@
     ?>
     </main>
     <footer>
-        <p>Designed by Web App team</p>
-        <p> &copy; Humboldt State University</p>
+        <p>Designed by HSU Library Web App team. &copy; Humboldt State University</p>
     </footer>
 </body>
 </html>

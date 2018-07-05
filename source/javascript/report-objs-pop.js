@@ -1,4 +1,6 @@
 //Gets record information and sends queries for furniture and area which call populates to their maps.
+var report_added = false;
+
 function populateObjs(survey_id){
 	$.ajax({
 		url: 'phpcalls/record-from-survey.php',
@@ -104,36 +106,40 @@ function popFurnMap(jsonFurniture){
 		div.appendChild(header);
 
 		//This is used for the printabe iFrame
-		var report = document.getElementById("print_frame");
-		var report_header = document.createElement("H2");
-		var overview_header = document.createElement("H3");
-		var report_text = document.createElement("P");
-		var area_header = document.createElement("H3");
-		var area_data = document.createElement("P");
+		if(!report_added){
+			var report = document.getElementById("print_frame");
+			var report_header = document.createElement("H2");
+			var overview_header = document.createElement("H3");
+			var report_text = document.createElement("P");
+			var area_header = document.createElement("H3");
+			var area_data = document.createElement("P");
 
-		report_header.style.textAlign = "center";
-		overview_header.style.textDecoration = "underline";
-		area_header.style.textDecoration = "underline";
+			report_header.style.textAlign = "center";
+			overview_header.style.textDecoration = "underline";
+			area_header.style.textDecoration = "underline";
 
-		report.contentDocument.body.appendChild(report_header);
-		report.contentDocument.body.appendChild(overview_header);
-		report.contentDocument.body.appendChild(report_text);
-		report.contentDocument.body.appendChild(area_header);
-		report.contentDocument.body.appendChild(area_data);
+			report.contentDocument.body.appendChild(report_header);
+			report.contentDocument.body.appendChild(overview_header);
+			report.contentDocument.body.appendChild(report_text);
+			report.contentDocument.body.appendChild(area_header);
+			report.contentDocument.body.appendChild(area_data);
 
-		report_header.innerHTML = print_header;
-		overview_header.innerHTML = "Floor Overview:";
-		report_text.innerHTML ="Seats in use: " + seatsUsed +
-					"</br>Possible seats: " + totalSeats +
-					"</br> Floor % Use: " + floor_percent + "%";
-		area_header.innerHTML = "Area Overview:";
-		area_data.innerHTML = area_string;
+			report_header.innerHTML = print_header;
+			overview_header.innerHTML = "Floor Overview:";
+			report_text.innerHTML ="Seats in use: " + seatsUsed +
+						"</br>Possible seats: " + totalSeats +
+						"</br> Floor % Use: " + floor_percent + "%";
+			area_header.innerHTML = "Area Overview:";
+			area_data.innerHTML = area_string;
 
-		if(modified_furn > 0){
-			var mod_furn_header = document.createElement("H3");
-			report.contentDocument.body.appendChild(mod_furn_header);
-			mod_furn_header.style.textDecoration = "underline";
-			mod_furn_header.innerHTML = "Modified Furniture: " + modified_furn; 
+			if(modified_furn > 0){
+				var mod_furn_header = document.createElement("H3");
+				report.contentDocument.body.appendChild(mod_furn_header);
+				mod_furn_header.style.textDecoration = "underline";
+				mod_furn_header.innerHTML = "Modified Furniture: " + modified_furn;
+			}
+
+			report_added = true;
 		}
 
 		return div;
@@ -143,7 +149,7 @@ function popFurnMap(jsonFurniture){
 	L.control.browserPrint({
 		title: 'Library Query Report',
 		documentTitle: 'Library Query Report',
-		printLayer: L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.{ext}', {
+		printLayer: L.tileLayer('http://tile.stamen.com/toner/{z}/{x}/{y}.png', {
 			attribution: 'HSU Library App Team',
 			minZoom: 1,
 			maxZoom: 16,
