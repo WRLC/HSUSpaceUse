@@ -13,13 +13,13 @@
         <?php
 	}
 
-	//selects the dates of survey records
-	function get_dates_options(){
+	//selects the years of survey records
+	function get_year_options(){
 		require_once('config.php');
 		//get activities and populate activityMap
 		$dbh = new PDO($dbhost, $dbh_select_user, $dbh_select_pw);
 
-		$getDates = $dbh->prepare('SELECT DISTINCT CONVERT(survey_date, DATE) as date_surveyed FROM survey_record');
+		$getDates = $dbh->prepare('SELECT DISTINCT YEAR(survey_date) as date_surveyed FROM survey_record');
 
 		if($getDates->execute()){
 			while($row = $getDates->fetch(PDO::FETCH_ASSOC)){
