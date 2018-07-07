@@ -36,23 +36,158 @@
 </head>
 <script type="text/javascript">
     var cur_selected_date;
+		var cur_year;
+		var cur_month;
+		var cur_day;
 		var json_object;
 		var survey_info_legend = L.control();
 
     $(function(){
-        $('#date-select').on("change", function(){
-            var form_info = document.getElementById("choose_survey_form");
-            cur_selected_date = form_info.elements["date-select"].value;
+			$('#year-select').on("change", function(){
+					var form_info = document.getElementById("choose_survey_form");
+					var month_select = document.getElementById("month-select");
+					month_select.style.display = "inline";
+					cur_year = form_info.elements["year-select"].value;
 
-            //Get rid previous select options before repopulating
-            var select = document.getElementById('survey_id_select');
-            var length = select.options.length;
-            if(length > 1){
-                for(i = 0; i < length; i++){
-                    select.remove(1);
-                }
-            }
-			$.ajax({
+					//Get rid previous select options before repopulating
+					var length = month_select.options.length;
+					if(length > 1){
+							for(i = 0; i < length; i++){
+									month_select.remove(1);
+							}
+					}
+
+					$.ajax({
+		                url: 'phpcalls/get-survey-months.php',
+		                type: 'get',
+		                data:{ 'selected_year': cur_year },
+		                success: function(data){
+
+		                    //console.log("got dates");
+		                    json_object = JSON.parse(data);
+		                    var month_select = document.getElementById('month-select');
+												var month_name;
+
+		                    for(var i = 0; i < json_object.length; i++){
+		                        var obj = json_object[i];
+														var month = obj[0];
+
+														switch(month){
+															case "1":
+																month_name = "January";
+																break;
+
+															case "2":
+																month_name = "February";
+																break;
+
+															case "3":
+																month_name = "March";
+																break;
+
+															case "4":
+																month_name = "April";
+																break;
+
+															case "5":
+																month_name = "May";
+																break;
+
+															case "6":
+																month_name = "June";
+																break;
+
+															case "7":
+																month_name = "July";
+																break;
+
+															case "8":
+																month_name = "August";
+																break;
+
+															case "9":
+																month_name = "September";
+																break;
+
+															case "10":
+																month_name = "October";
+																break;
+
+															case "11":
+																month_name = "November";
+																break;
+
+															defualt:
+																month_name = "December";
+																break;
+														}
+
+		                        var option = document.createElement('option');
+		                        option.value = obj[0];
+		                        option.innerHTML = month_name;
+		                        month_select.appendChild(option);
+		                    }
+		                }
+		           });
+						});
+
+				$('#month-select').on("change", function(){
+						var form_info = document.getElementById("choose_survey_form");
+						var day_select = document.getElementById("day-select");
+						day_select.style.display = "inline";
+						cur_month = form_info.elements["month-select"].value;
+
+						//Get rid previous select options before repopulating
+						var length = day_select.options.length;
+						if(length > 1){
+								for(i = 0; i < length; i++){
+										day_select.remove(1);
+								}
+						}
+
+						$.ajax({
+			                url: 'phpcalls/get-survey-days.php',
+			                type: 'get',
+			                data:{ 'selected_year': cur_year,
+										 				 'selected_month': cur_month},
+			                success: function(data){
+
+			                    //console.log("got dates");
+			                    json_object = JSON.parse(data);
+			                    var day_select = document.getElementById('day-select');
+
+			                    for(var i = 0; i < json_object.length; i++){
+			                        var obj = json_object[i];
+
+			                        var option = document.createElement('option');
+			                        option.value = obj[0];
+			                        option.innerHTML = obj[0];
+			                        day_select.appendChild(option);
+			                    }
+			                }
+			            });
+							});
+
+				$('#day-select').on("change", function(){
+						var form_info = document.getElementById("choose_survey_form");
+						var id_select = document.getElementById("survey_id_select");
+						var survey_submit = document.getElementById("query_submit_button");
+						id_select.style.display = "inline";
+						survey_submit.style.display = "inline";
+						cur_day = form_info.elements["day-select"].value;
+
+						cur_selected_date = cur_year + '-' + cur_month + '-' + cur_day;
+
+						//Get rid previous select options before repopulating
+						var select = document.getElementById('survey_id_select');
+						var length = select.options.length;
+						if(length > 1){
+								for(i = 0; i < length; i++){
+										select.remove(1);
+								}
+						}
+
+						$.ajax({
                 url: 'phpcalls/get-survey-ids.php',
                 type: 'get',
                 data:{ 'selected_date': cur_selected_date },
@@ -75,12 +210,11 @@
                         option.value = surv_id;
                         option.innerHTML = "Survey: " + surv_id + " for Layout " + lay_id + " on floor " + floor_num + " at " + surv_time;
                         survey_select.appendChild(option);
-                    }
-                }
-            });
-
+                    	}
+                		}
+            	});
+						});
         });
-    });
 
 		/*
 		delete line: 149, 170
@@ -122,18 +256,24 @@
 								<h2 id="query_header"><?= $_SESSION["username"]?> what shall we query today? </h2>
 							</div>
                 <!--THIS IS A PLACEHOLDER! SELECT WILL BE POPULATED BY DATES FROM DB-->
-                <select name="date" id="date-select">
-                    <option value="0">Choose a Date</option>
+                <select name="year" id="year-select">
+                    <option value="0">Choose a Year</option>
                     <?php
-                    get_dates_options();
+                    	get_year_options();
                     ?>
                 </select>
+								<select name="month" id="month-select" style="display:none">
+                    <option value="0">Choose a Month</option>
+                </select>
+								<select name="day" id="day-select" style="display:none">
+                    <option value="0">Choose a Day</option>
+                </select>
                 <!--THIS IS A PLACEHOLDER! SELECT WILL BE POPULATED BY TIMES FROM DB-->
-                <select name="survey_id" id="survey_id_select">
+                <select name="survey_id" id="survey_id_select" style="display:none">
                     <option id="chosen_survey" value="">Choose a Survey</option>
                 </select>
 
-                <input type="submit" name="submit-query" id="query_submit_button"/>
+                <input type="submit" name="submit-query" style="display:none" id="query_submit_button"/>
 								<input type="button" id="query_print_button" value="Print Report" style="display:none" onclick="printReport()"/>
             </fieldset>
         </form>
