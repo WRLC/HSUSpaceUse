@@ -166,7 +166,6 @@ input[type=text]{
 
 select{
 	height: 25px;
-	vertical-align: super;
 }
 
 .load-submit{
@@ -281,7 +280,6 @@ footer > p{
 {
 	margin-left: 1em;
 	height:  40px;
-	vertical-align: super;
 	display: inline;
 }
 
@@ -298,9 +296,8 @@ footer > p{
 }
 
 #query_print_button{
-	position:  absolute;
-	right: 10px;
-	top: 20px;
+	position: sticky;
+	left: 100%;
 }
 
 .report_legend {
@@ -319,6 +316,7 @@ footer > p{
 
 .p-inline{
 	display: inline-block;
+	padding-right: 5px;
 }
 
 #submit-surveys{
