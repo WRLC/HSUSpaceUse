@@ -25,14 +25,19 @@ function Verts(x, y, order){
 	this.order = order;
 }
 
-function Furniture(fid, numSeats, inArea, avgUseRatio, avgOccupancy, sumOccupants, modified_count, activities){
+function Furniture(fid, numSeats, x, y, degree_offset, ftype, inArea, avgUseRatio, avgOccupancy, sumOccupants, modified_count, mod_array, activities){
 	this.fid = fid;
 	this.numSeats = numSeats;
+	this.x = x;
+	this.y = y;
+	this.degree_offset = degree_offset;
+	this.ftype = ftype;
 	this.inArea = inArea;
 	this.avgUseRatio = avgUseRatio;
 	this.avgOccupancy = avgOccupancy;
 	this.sumOccupants = sumOccupants;
 	this.modified_count = modified_count;
+	this.mod_array = mod_array;
 	this.activities = activities;
 }
 
@@ -129,8 +134,10 @@ function queryFurnitureInfo(survey_id_json, layout_id){
 			jsondata = JSON.parse(data);
 			console.log(jsondata);
 			popFurnMap(jsondata);
+			addFurniture();
 			calculateAreaData();
 			addSurveyedAreas();
+			
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown) { 
 			console.log("Status: " + textStatus);
@@ -163,10 +170,10 @@ function popFurnMap(jsonFurn){
 	for(key in jsonFurn){
 		cur_furn = jsonFurn[key];
 		if(cur_furn.in_area != null){
-			newFurniture = new Furniture(cur_furn.furniture_id, cur_furn.num_seats, cur_furn.in_area, cur_furn.avg_use_ratio, cur_furn.avg_occupancy, cur_furn.sum_occupants, cur_furn.modified_count, cur_furn.activities);
+			newFurniture = new Furniture(cur_furn.furniture_id, cur_furn.num_seats, cur_furn.x, cur_furn.y, cur_furn.degree_offset, cur_furn.furn_type, cur_furn.in_area, cur_furn.avg_use_ratio, cur_furn.avg_occupancy, cur_furn.sum_occupants, cur_furn.modified_count, cur_furn.mod_array, cur_furn.activities);
 		}
 		else{
-			newFurniture = new Furniture(cur_furn.furniture_id, cur_furn.num_seats, null, cur_furn.avg_use_ratio, cur_furn.avg_occupancy, cur_furn.sum_occupants, cur_furn.modified_count, cur_furn.activities);
+			newFurniture = new Furniture(cur_furn.furniture_id, cur_furn.num_seats, cur_furn.x, cur_furn.y, cur_furn.degree_offset, cur_furn.furn_type, null, cur_furn.avg_use_ratio, cur_furn.avg_occupancy, cur_furn.sum_occupants, cur_furn.modified_count, cur_furn.mod_array, cur_furn.activities);
 		}
 		furnMap.set(cur_furn.furniture_id, newFurniture);
 	}
@@ -176,6 +183,75 @@ function popFurnMap(jsonFurn){
 function addSurveyedAreas(){
 	areaMap.forEach(function(key, value, map){
 		drawArea(key).addTo(mymap);
+	});
+}
+
+function addFurniture(){
+	furnMap.forEach(function(key, value, map){
+
+		latlng = [key.y, key.x];
+		ftype = parseInt(key.ftype)
+		selectedIcon = getIconObj(ftype);
+		degreeOffset = parseInt(key.degreeOffset);
+		numSeats = key.numSeats;
+		avgOccupied = key.avgOccupancy;
+		sumOccupant = key.sumOccupants;
+		avgUse = key.avgUseRatio;
+		fid = key.fid;
+		areaId = key.inArea;
+		mod_array = key.mod_array;
+		activities = key.activities;
+
+		//if this furniture is modified, draw a line from its original latlng
+
+		//get array of modified coordinates
+
+		for(j in mod_array){
+			coor_element = mod_array[j];
+			new_latlng = [coor_element[1], coor_element[0]];
+			pointList = [latlng, new_latlng];
+
+			polyline = new L.polyline(pointList, {
+				color: 'red',
+				weigth: 3,
+				opacity: 0.5,
+				smoothFactor: 1
+			});
+
+			polyline.addTo(mymap);
+		}
+		
+		marker = L.marker(latlng, {
+			icon: selectedIcon,
+			rotationAngle: degreeOffset,
+						rotationOrigin: "center",
+			draggable: false,
+			ftype: ftype,
+			numSeats: numSeats,
+			fid: fid.toString()
+		}).addTo(furnitureLayer);
+		//initialize the popupString for a regular piece of furniture
+		popupString = "<strong>Average Occupancy: </strong>" + avgOccupied + " of " + numSeats + "</br><strong>Total Occupants: </strong>" + sumOccupant + "</br><strong>Average Use: </strong>" + avgUse;
+
+		//set oppacity to a ratio of the seat use, minimum of 0.3 for visibility
+		oppacity = 0.3 + avgOccupied;
+		//default oppacity for rooms is 0.5 or 1 for rooms that are occupied
+		if(numSeats === "0"){
+			popupString = "Room Average Occupancy: " + avgOccupied;
+			if(avgOccupied > 0){
+				oppacity = 1;
+			} else {
+				oppacity = 0.5
+			}
+		}
+		//add activities and their count to the popupString
+		for(i in activities){
+			popupString += "</br>"+activities[i].count +"X: " + activities[i].name;
+		}
+
+		marker.bindPopup(popupString);
+		marker.setOpacity(oppacity);
+		marker.addTo(mymap);
 	});
 }
 
@@ -219,7 +295,7 @@ function drawArea(area){
 		curVerts.push([area_verts.x,area_verts.y]);
 	}
 	var poly = L.polygon(curVerts);
-	popupString = "<strong>"+area.area_name +"</strong></br>Number of Seats: " + area.numSeats +"</br>Average Area Population: " + area.avgPopArea +"</br>Percentage Use: " + Math.round(((area.avgPopArea/area.numSeats) * 100) * 100)/100 + "%</br>Ratio of use over Period " + Math.round((area.avgRatio * 100) * 100)/100 + "%";
+	popupString = "<strong>"+area.area_name +"</strong></br>Number of Seats: " + area.numSeats +"</br>Average Area Population: " + Math.round(area.avgPopArea) +"</br>Percentage Use: " + Math.round(((area.avgPopArea/area.numSeats) * 100) * 100)/100 + "%</br>Ratio of use over Period " + Math.round((area.avgRatio * 100) * 100)/100 + "%";
 	poly.bindPopup(popupString);
 
 	if(area.avgPopArea/area.numSeats < .1){
@@ -228,7 +304,5 @@ function drawArea(area){
 	else{
 		poly.setStyle({fillColor:"green"});
 	}
-	
-	
 	return poly;
 }

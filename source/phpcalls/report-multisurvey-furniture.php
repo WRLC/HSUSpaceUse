@@ -28,9 +28,14 @@
 		$fid = $row['furniture_id'];
 		$numSeats = $row['number_of_seats'];
 		$inArea = $row['in_area'];
+		$x_location = $row['x_location'];
+		$y_location = $row['y_location'];
+		$degree_offset = $row['degree_offset'];
+		$furn_type = $row['furniture_type'];
 		$ratio = 0;
 		$sum_occupants = 0;
 		$mod_count = 0;
+		$mod_array = array();
 		$activities = array();
 		$num_surveys = count($survey_ids);
 
@@ -51,7 +56,6 @@
 				$tempOcc = (int)$roomOccupantStmt->fetchColumn();
 				
 				if($tempOcc > 0){
-					$ratio += $tempOcc;
 					$sum_occupants += $tempOcc;
 				}
 			} else {
@@ -114,8 +118,14 @@
 			
 			$mod_furn = $mod_furn_stmt->fetch(PDO::FETCH_BOTH);
 			
+			//save original x&y to show where mod furned moved from
+
+
 			if($mod_furn_stmt->rowCount() > 0){
 				$mod_count++;
+				$new_x = $mod_furn['new_x'];
+				$new_y = $mod_furn['new_y'];
+				array_push($mod_array, array($new_x, $new_y));
 			}
 		}
 
@@ -125,11 +135,16 @@
 		$array_item = array( 
 			'furniture_id' => $fid,
 			'num_seats' => $numSeats,
+			'x' => $x_location,
+			'y' => $y_location,
+			'degree_offset' => $degree_offset,
+			'furn_type' => $furn_type,
 			'in_area' => $inArea,
 			'avg_use_ratio' => $average_use_ratio,
 			'sum_occupants' => $sum_occupants,
 			'avg_occupancy' => $average_occupancy,
 			'modified_count' => $mod_count,
+			'mod_array' => $mod_array,
 			'activities' => $activities
 		);
 		array_push($data, $array_item);
