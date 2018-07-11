@@ -70,20 +70,23 @@ $(function(){
 
 		mymap.on('zoomend', function() {
             var markerSize;
+            var markerAnchor;
             //resize the markers depending on zoomlevel so they appear to scale
             //zoom is limited to 0-4
             switch(mymap.getZoom()){
-                case 0: markerSize= 5; break;
-                case 1: markerSize= 10; break;
-                case 2: markerSize= 20; break;
-                case 3: markerSize= 40; break;
-                case 4: markerSize= 80; break;
+                case 0: markerSize= 5; markerAnchor= -2.5; break;
+                case 1: markerSize= 10; markerAnchor = -5; break;
+                case 2: markerSize= 20; markerAnchor = -10; break;
+                case 3: markerSize= 40; markerAnchor = -20; break;
+                case 4: markerSize= 80; markerAnchor = -40; break;
             }
             //alert(mymap.getZoom)());
             var newzoom = '' + (markerSize) +'px';
+            var newanchor = '' + (markerAnchor) +'px';
             var newLargeZoom = '' + (markerSize*2) +'px';
-            $('#mapid .furnitureIcon').css({'width':newzoom,'height':newzoom});
-            $('#mapid .furnitureLargeIcon').css({'width':newLargeZoom,'height':newLargeZoom});
+            var newLargeAnchor = '' + (markerAnchor*2) +'px';
+            $('#mapid .furnitureIcon').css({'width':newzoom,'height':newzoom, 'margin-left':newanchor, 'margin-top':newanchor});
+            $('#mapid .furnitureLargeIcon').css({'width':newLargeZoom,'height':newLargeZoom, 'margin-left':newLargeAnchor, 'margin-top':newLargeAnchor});
         });
 
 		survey_id_array = [];
@@ -202,8 +205,7 @@ function addFurniture(){
 		mod_array = key.mod_array;
 		activities = key.activities;
 
-		//if this furniture is modified, draw a line from its original latlng
-
+		//if this furniture is modified, add modified data to the furniture and then, draw a line from its original latlng
 		//get array of modified coordinates
 
 		for(j in mod_array){
@@ -219,6 +221,21 @@ function addFurniture(){
 			});
 
 			polyline.addTo(mymap);
+
+			mod_marker = L.marker(new_latlng, {
+				icon: selectedIcon,
+				rotationAngle: degreeOffset,
+							rotationOrigin: "center",
+				draggable: false,
+				ftype: ftype,
+				numSeats: numSeats,
+				fid: fid.toString()
+			}).addTo(furnitureLayer);
+
+			mod_popString = "<strong>Modified Furniture: </br>Occupied Seats: </strong>" + coor_element[3] + "/" + coor_element[4];
+			mod_marker.bindPopup(mod_popString);
+			mod_marker.setOpacity(.5);
+			mod_marker.addTo(mymap);
 		}
 		
 		marker = L.marker(latlng, {
@@ -231,13 +248,13 @@ function addFurniture(){
 			fid: fid.toString()
 		}).addTo(furnitureLayer);
 		//initialize the popupString for a regular piece of furniture
-		popupString = "<strong>Average Occupancy: </strong>" + avgOccupied + " of " + numSeats + "</br><strong>Total Occupants: </strong>" + sumOccupant + "</br><strong>Average Use: </strong>" + avgUse;
+		popupString = "<strong>Average Occupancy:</strong>" + avgOccupied + " of " + numSeats + "</br><strong>Total Occupants: </strong>" + sumOccupant + "</br><strong>Average Use: </strong>" + Math.round((avgUse * 100) * 100)/100 +"%";
 
 		//set oppacity to a ratio of the seat use, minimum of 0.3 for visibility
 		oppacity = 0.3 + avgOccupied;
 		//default oppacity for rooms is 0.5 or 1 for rooms that are occupied
 		if(numSeats === "0"){
-			popupString = "Room Average Occupancy: " + avgOccupied;
+			popupString = "<strong>Room Average Occupancy: </strong>" + avgOccupied + "</br><strong>Total Occupants: </strong>" + sumOccupant;
 			if(avgOccupied > 0){
 				oppacity = 1;
 			} else {
@@ -262,7 +279,6 @@ function calculateAreaData(){
 		var num_surveys = survey_id_array.length;
 		var cur_area = iterateAreaMap.next().value;
 		var area_furn_count = 0; 
-		var area_avgoccu_sum = 0;
 		var area_ratio_sum = 0;
 		var max_seats = 0;
 		var total_seats_used = 0;
@@ -273,15 +289,22 @@ function calculateAreaData(){
 				if(cur_furn.inArea == cur_area.area_id){
 					area_furn_count++;
 					max_seats += parseInt(cur_furn.numSeats);
-					area_avgoccu_sum += parseInt(cur_furn.avgOccupancy);
 					area_ratio_sum += parseFloat(cur_furn.avgUseRatio);
 					total_seats_used += parseInt(cur_furn.sumOccupants);
+				}
+				for(var k = 0; k < cur_furn.mod_array.length; k++){
+					var mod_furn = cur_furn.mod_array[k];
+					if(mod_furn[2] == cur_area.area_id){
+						var mod_occ = mod_furn[3];
+						var mod_seats = mod_furn[4];
+						total_seats_used += parseInt(mod_occ);
+						area_ratio_sum += parseFloat(mod_occ/mod_seats);
+					}
 				}
 			}
 		}
 		cur_area.numSeats = max_seats;
 		cur_area.avgPopArea = total_seats_used/num_surveys;
-		cur_area.avgOccupancy = area_avgoccu_sum/area_furn_count;
 		cur_area.avgRatio = area_ratio_sum/area_furn_count;
 	}
 	console.log(areaMap);

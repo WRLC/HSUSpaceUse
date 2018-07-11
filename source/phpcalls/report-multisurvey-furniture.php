@@ -42,6 +42,8 @@
 		foreach($survey_ids as $key => $value){
 		//now look at this one piece of furniture for each survey selected
 			$survey_id = $value["id"];
+			$tempOcc = 0;
+			$tempRatio = 0;
 			if($numSeats === "0"){
 				//get room occupants
 				$roomOccupantStmt = $dbh->prepare("SELECT total_occupants 
@@ -55,9 +57,6 @@
 				//place the total occupants in the room in the variable for the furniture
 				$tempOcc = (int)$roomOccupantStmt->fetchColumn();
 				
-				if($tempOcc > 0){
-					$sum_occupants += $tempOcc;
-				}
 			} else {
 				//Since it's numSeats isn't 0, it isn't a room. Get seat information.
 				//get count of occupied seats in furniture
@@ -78,10 +77,7 @@
 				$tempRatio = $tempOcc/$numSeats;
 				
 				//if the column returns a number, and it is greater than 0, overwrite occupants.
-				if($tempOcc > 0){
-					$ratio += $tempRatio;
-					$sum_occupants += $tempOcc;
-				}
+
 			}
 
 			$activity_stmt = $dbh->prepare(
@@ -118,14 +114,19 @@
 			
 			$mod_furn = $mod_furn_stmt->fetch(PDO::FETCH_BOTH);
 			
-			//save original x&y to show where mod furned moved from
-
-
 			if($mod_furn_stmt->rowCount() > 0){
 				$mod_count++;
+				$mod_occupancy = $tempOcc;
+				$mod_seats = $numSeats;
 				$new_x = $mod_furn['new_x'];
 				$new_y = $mod_furn['new_y'];
-				array_push($mod_array, array($new_x, $new_y));
+				$new_area = $mod_furn['in_area'];
+				array_push($mod_array, array($new_x, $new_y, $new_area, $mod_occupancy, $mod_seats));
+			} else {
+				if($tempOcc > 0){
+					$ratio += $tempRatio;
+					$sum_occupants += $tempOcc;
+				}
 			}
 		}
 
