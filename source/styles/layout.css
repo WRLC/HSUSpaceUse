@@ -80,6 +80,12 @@ p{
 	z-index: 100;
 }
 
+#hide_nav_plus{
+	position: absolute;
+	top: -1px;
+	right: 10px;
+}
+
 #sub_layout{
 	height: 25px;
 	margin-left: .25em;

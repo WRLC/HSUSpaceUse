@@ -37,7 +37,7 @@
     </script>
 </head>
 <body>
-    <button class="hide_nav" id="nav_toggle">&plus;</button>
+    <button class="hide_nav" id="nav_toggle"><p id="hide_nav_plus">&plus;</p></button>
     <header class="hidden">
         <img class="logo" src="images/hsu-wm.svg">
         <h1>Library Data Collector</h1>
