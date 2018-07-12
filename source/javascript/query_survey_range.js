@@ -241,10 +241,6 @@ function calculateAreaData(){
 					area_avgoccu_sum += parseInt(cur_furn.avgOccupancy);
 					area_ratio_sum += parseFloat(cur_furn.avgUseRatio);
 					total_seats_used += parseInt(cur_furn.sumOccupants);
-
-					if(cur_furn.sumOccupants > cur_area.peak){
-						cur_area.peak = cur_furn.sumOccupants;
-					}
 				}
 			}
 		}
@@ -263,17 +259,14 @@ function drawArea(area){
 		area_verts = area.verts[i];
 		curVerts.push([area_verts.x,area_verts.y]);
 	}
-	var peakPercent = area.peak/area.numSeats;
-	peakPercent *= 100;
-	peakPercent = peakPercent.toFixed(2);
+
 	var poly = L.polygon(curVerts);
 	popupString = "<strong>"+area.area_name +"</strong></br>Number of Seats: "
 								+ area.numSeats +"</br>Average Area Population: " + area.avgPopArea
 								+"</br>Percentage Use: "
 								+ Math.round(((area.avgPopArea/area.numSeats) * 100) * 100)/100
 								+ "%</br>Ratio of use over Period: "
-								+ Math.round((area.avgRatio * 100) * 100)/100 + "%"
-								+ "</br>Peak use: " + area.peak + " or " + peakPercent + "%";
+								+ Math.round((area.avgRatio * 100) * 100)/100 + "%";
 	poly.bindPopup(popupString);
 
 	if(area.numSeats != 0){
