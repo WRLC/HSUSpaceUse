@@ -171,11 +171,7 @@ function queryFurnitureInfo(survey_id_json, layout_id){
 			calculateAreaData();
 			
 
-			if(!report_added){
-				createPrintReport();
-			}
-
-
+			
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown) {
 			console.log("Status: " + textStatus);
@@ -374,6 +370,10 @@ function calculateAreaPeaks(survey_id_json, layout_id){
 				}
 			}
 			addSurveyedAreas();
+			if(!report_added){
+				createPrintReport();
+			}
+
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown) {
 			console.log("Status: " + textStatus);
