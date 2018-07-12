@@ -7,6 +7,8 @@ var areaLayer;
 var furnitureLayer;
 var bounds;
 var survey_id_array;
+var survey_id_string = "";
+var report_added = false;
 
 //define objects
 function Area(area_id, verts, area_name){
@@ -17,6 +19,7 @@ function Area(area_id, verts, area_name){
 	this.avgOccupancy = 0;
 	this.avgRatio = 0;
 	this.totalSeatsUsed = 0;
+	this.peak = 0;
 }
 
 function Verts(x, y, order){
@@ -55,7 +58,7 @@ $(function(){
 			areaLayer = null;
 			furnitureLayer = null;
 		}
-		
+
 		document.getElementById("mapid").style.display = "block";
 		document.getElementById("multi-select").style.display = "none";
 		document.getElementById("submit-surveys").style.display = "none";
@@ -100,6 +103,41 @@ $(function(){
 			i++;
 		});
 
+		for(var i = 0; i < survey_id_array.length; i++)
+		{
+			if (i == (survey_id_array.length - 1))
+			{
+				survey_id_string += survey_id_array[i].id;
+			}
+
+			else {
+				{
+					survey_id_string += survey_id_array[i].id + ", ";
+				}
+			}
+		}
+
+		var survey_info_legend = L.control();
+		survey_info_legend.onAdd = function (mymap){
+			var div = L.DomUtil.create('div', 'report_legend');
+			var header = document.createElement('p');
+			var date1 = document.getElementById('date-select-1');
+			var date2 = document.getElementById('date-select-2');
+
+			header.innerHTML = "Survey Range: " + date1.value + " - " + date2.value
+						+ "</br>Survey IDs: " + survey_id_string + "</br>Layout: "
+						+ cur_layout.value + "</br>Floor: " + cur_floor.value;
+			print_header = "Survey range report for Layout "
+						+ cur_layout.value + " on Floor " + cur_floor.value
+						+ "</br>" + date1.value + " - " + date2.value;
+
+			div.appendChild(header);
+
+			return div;
+		}
+
+		survey_info_legend.addTo(mymap);
+
 		var json_string = JSON.stringify(survey_id_array);
 		loadMap(parseInt(cur_floor.value));
 		queryAreas(cur_layout.value);
@@ -119,10 +157,10 @@ function queryAreas(layout_id){
 			jsondata = JSON.parse(data);
 			popAreaMap(jsondata);
 		},
-		error: function(XMLHttpRequest, textStatus, errorThrown) { 
+		error: function(XMLHttpRequest, textStatus, errorThrown) {
 			console.log("Status: " + textStatus);
-			console.log("Error: " + errorThrown); 
-		}     
+			console.log("Error: " + errorThrown);
+		}
 	});
 }
 
@@ -140,12 +178,15 @@ function queryFurnitureInfo(survey_id_json, layout_id){
 			addFurniture();
 			calculateAreaData();
 			addSurveyedAreas();
-			
+
+			if(!report_added){
+				createPrintReport();
+			}
 		},
-		error: function(XMLHttpRequest, textStatus, errorThrown) { 
+		error: function(XMLHttpRequest, textStatus, errorThrown) {
 			console.log("Status: " + textStatus);
-			console.log("Error: " + errorThrown); 
-		}     
+			console.log("Error: " + errorThrown);
+		}
 	});
 }
 
@@ -156,15 +197,15 @@ function popAreaMap(jsonAreas){
 		verts = [];
 		for(i in cur_area.area_vertices){
 			cur_verts = cur_area.area_vertices[i];
-			
+
 			newVert = new Verts(cur_verts.v_x , cur_verts.v_y, cur_verts.load_order);
 			verts.push(newVert);
 		}
-		
+
 		newArea = new Area(cur_area.area_id, verts, cur_area.area_name);
-		areaMap.set(cur_area.area_id, newArea);		
+		areaMap.set(cur_area.area_id, newArea);
 	}
-	
+
 }
 
 function popFurnMap(jsonFurn){
@@ -274,7 +315,7 @@ function addFurniture(){
 
 function calculateAreaData(){
 	var iterateAreaMap = areaMap.values();
-	
+
 	for(var i of areaMap){
 		var num_surveys = survey_id_array.length;
 		var cur_area = iterateAreaMap.next().value;
@@ -317,9 +358,25 @@ function drawArea(area){
 		area_verts = area.verts[i];
 		curVerts.push([area_verts.x,area_verts.y]);
 	}
+
 	var poly = L.polygon(curVerts);
-	popupString = "<strong>"+area.area_name +"</strong></br>Number of Seats: " + area.numSeats +"</br>Average Area Population: " + Math.round(area.avgPopArea) +"</br>Percentage Use: " + Math.round(((area.avgPopArea/area.numSeats) * 100) * 100)/100 + "%</br>Ratio of use over Period " + Math.round((area.avgRatio * 100) * 100)/100 + "%";
+	popupString = "<strong>"+area.area_name +"</strong></br>Number of Seats: "
+								+ area.numSeats +"</br>Average Area Population: " + area.avgPopArea
+								+"</br>Percentage Use: "
+								+ Math.round(((area.avgPopArea/area.numSeats) * 100) * 100)/100
+								+ "%</br>Ratio of use over Period: "
+								+ Math.round((area.avgRatio * 100) * 100)/100 + "%";
+
 	poly.bindPopup(popupString);
+
+	if(area.numSeats != 0){
+		area_string += popupString + "</br></br>";
+	}
+
+	else{
+		area_string += "<strong>"+area.area_name +"</strong></br>Average Room Population: " + area.avgPopArea
+									+ "</br>Peak use: " + area.peak + "</br></br>";
+	}
 
 	if(area.avgPopArea/area.numSeats < .1){
 		poly.setStyle({fillColor:"red"});
@@ -327,5 +384,47 @@ function drawArea(area){
 	else{
 		poly.setStyle({fillColor:"green"});
 	}
+
 	return poly;
+}
+
+function createPrintReport(){
+	//This is used for the printabe iFrame
+		var report = document.getElementById("print_frame");
+		var report_header = document.createElement("H2");
+		var overview_header = document.createElement("H3");
+		var report_text = document.createElement("P");
+		var area_header = document.createElement("H3");
+		var area_data = document.createElement("P");
+
+		report_header.style.textAlign = "center";
+		overview_header.style.textDecoration = "underline";
+		area_header.style.textDecoration = "underline";
+
+		report.contentDocument.body.appendChild(report_header);
+		report.contentDocument.body.appendChild(overview_header);
+		report.contentDocument.body.appendChild(report_text);
+		report.contentDocument.body.appendChild(area_header);
+		report.contentDocument.body.appendChild(area_data);
+
+		report_header.innerHTML = print_header;
+		overview_header.innerHTML = "Survey Range Overview:";
+		report_text.innerHTML ="Surveys inlcude: " + survey_id_string;
+		area_header.innerHTML = "Area Overview:";
+		area_data.innerHTML = area_string;
+
+		report_added = true;
+
+		var queried_info_legend = L.control({position: 'bottomright'});
+
+		queried_info_legend.onAdd = function (mymap){
+			var div = L.DomUtil.create('div', 'report_legend');
+			var header = document.createElement('p');
+
+			header.innerHTML ="Seats in use: " + seatsUsed +
+						"</br>Possible seats: " + totalSeats +
+						"</br> Floor % Use: " + floor_percent + "%";
+
+			div.appendChild(header);
+		}
 }

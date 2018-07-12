@@ -33,7 +33,7 @@
     <!--scripts here are for the transfer select plugin-->
 
     <script src="./javascript/transfer-select-js/bootstrap-transfer.js"></script>
-	<script src="./javascript/icons.js"></script>
+		<script src="./javascript/icons.js"></script>
     <script src="./javascript/populate_multibox.js"></script>
     <script src="./javascript/query_survey_range.js"></script>
     <link href="styles/bootstrap-transfer.css" rel="stylesheet">
@@ -43,10 +43,19 @@
 
     <!--script for enabling the bootstrapTransfer plugin-->
     <script type="text/javascript">
+				//Needed for printing text report feature
+				var area_string = "";
+				var print_header;
+
         $(function() {
             $("#date-select-1").datepicker();
             $("#date-select-2").datepicker();
         });
+
+				function printReport(){
+					var rFrame = document.getElementById('print_frame');
+					rFrame.contentWindow.print();
+				}
     </script>
 </head>
 
@@ -91,7 +100,9 @@
                 <p class="p-inline"> Layout: <select name="in-layout" id="in_layout_select">
                     <option value="">Choose a Corresponding Layout</option>
                 </select></p>
-            </fieldset>
+								<input type="button" id="query_print_button" value="Print Report" style="display:inline" onclick="printReport()"/>
+					  </fieldset>
+
         </form>
 
 
@@ -104,6 +115,12 @@
             <div id="mapid"></div>
         </div>
         <div id="reportDiv"></div>
+				<iframe id="print_frame">
+					<html>
+						<body>
+						</body>
+					</html>
+				</iframe>
 		<?php
 
     ?>
