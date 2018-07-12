@@ -404,22 +404,24 @@
 
 			//On zoomend, resize the marker icons
         mymap.on('zoomend', function() {
-        	console.log(mymap.getZoom());
             var markerSize;
+            var markerAnchor;
             //resize the markers depending on zoomlevel so they appear to scale
             //zoom is limited to 0-4
             switch(mymap.getZoom()){
-                case 0: markerSize= 5; break;
-                case 1: markerSize= 10; break;
-                case 2: markerSize= 20; break;
-                case 3: markerSize= 40; break;
-                case 4: markerSize= 80; break;
+                case 0: markerSize= 5; markerAnchor= -2.5; break;
+                case 1: markerSize= 10; markerAnchor = -5; break;
+                case 2: markerSize= 20; markerAnchor = -10; break;
+                case 3: markerSize= 40; markerAnchor = -20; break;
+                case 4: markerSize= 80; markerAnchor = -40; break;
             }
             //alert(mymap.getZoom)());
             var newzoom = '' + (markerSize) +'px';
+            var newanchor = '' + (markerAnchor) +'px';
             var newLargeZoom = '' + (markerSize*2) +'px';
-            $('#mapid .furnitureIcon').css({'width':newzoom,'height':newzoom});
-            $('#mapid .furnitureLargeIcon').css({'width':newLargeZoom,'height':newLargeZoom});
+            var newLargeAnchor = '' + (markerAnchor*2) +'px';
+            $('#mapid .furnitureIcon').css({'width':newzoom,'height':newzoom, 'margin-left':newanchor, 'margin-top':newanchor});
+            $('#mapid .furnitureLargeIcon').css({'width':newLargeZoom,'height':newLargeZoom, 'margin-left':newLargeAnchor, 'margin-top':newLargeAnchor});
         });
 
 				mymap.on("browser-print-start", function(e){

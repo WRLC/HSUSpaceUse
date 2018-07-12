@@ -28,14 +28,19 @@ function Verts(x, y, order){
 	this.order = order;
 }
 
-function Furniture(fid, numSeats, inArea, avgUseRatio, avgOccupancy, sumOccupants, modified_count, activities){
+function Furniture(fid, numSeats, x, y, degree_offset, ftype, inArea, avgUseRatio, avgOccupancy, sumOccupants, modified_count, mod_array, activities){
 	this.fid = fid;
 	this.numSeats = numSeats;
+	this.x = x;
+	this.y = y;
+	this.degree_offset = degree_offset;
+	this.ftype = ftype;
 	this.inArea = inArea;
 	this.avgUseRatio = avgUseRatio;
 	this.avgOccupancy = avgOccupancy;
 	this.sumOccupants = sumOccupants;
 	this.modified_count = modified_count;
+	this.mod_array = mod_array;
 	this.activities = activities;
 }
 
@@ -68,20 +73,23 @@ $(function(){
 
 		mymap.on('zoomend', function() {
             var markerSize;
+            var markerAnchor;
             //resize the markers depending on zoomlevel so they appear to scale
             //zoom is limited to 0-4
             switch(mymap.getZoom()){
-                case 0: markerSize= 5; break;
-                case 1: markerSize= 10; break;
-                case 2: markerSize= 20; break;
-                case 3: markerSize= 40; break;
-                case 4: markerSize= 80; break;
+                case 0: markerSize= 5; markerAnchor= -2.5; break;
+                case 1: markerSize= 10; markerAnchor = -5; break;
+                case 2: markerSize= 20; markerAnchor = -10; break;
+                case 3: markerSize= 40; markerAnchor = -20; break;
+                case 4: markerSize= 80; markerAnchor = -40; break;
             }
             //alert(mymap.getZoom)());
             var newzoom = '' + (markerSize) +'px';
+            var newanchor = '' + (markerAnchor) +'px';
             var newLargeZoom = '' + (markerSize*2) +'px';
-            $('#mapid .furnitureIcon').css({'width':newzoom,'height':newzoom});
-            $('#mapid .furnitureLargeIcon').css({'width':newLargeZoom,'height':newLargeZoom});
+            var newLargeAnchor = '' + (markerAnchor*2) +'px';
+            $('#mapid .furnitureIcon').css({'width':newzoom,'height':newzoom, 'margin-left':newanchor, 'margin-top':newanchor});
+            $('#mapid .furnitureLargeIcon').css({'width':newLargeZoom,'height':newLargeZoom, 'margin-left':newLargeAnchor, 'margin-top':newLargeAnchor});
         });
 
 		survey_id_array = [];
@@ -167,8 +175,10 @@ function queryFurnitureInfo(survey_id_json, layout_id){
 			jsondata = JSON.parse(data);
 			console.log(jsondata);
 			popFurnMap(jsondata);
+			addFurniture();
 			calculateAreaData();
 			addSurveyedAreas();
+
 			if(!report_added){
 				createPrintReport();
 			}
@@ -204,10 +214,10 @@ function popFurnMap(jsonFurn){
 	for(key in jsonFurn){
 		cur_furn = jsonFurn[key];
 		if(cur_furn.in_area != null){
-			newFurniture = new Furniture(cur_furn.furniture_id, cur_furn.num_seats, cur_furn.in_area, cur_furn.avg_use_ratio, cur_furn.avg_occupancy, cur_furn.sum_occupants, cur_furn.modified_count, cur_furn.activities);
+			newFurniture = new Furniture(cur_furn.furniture_id, cur_furn.num_seats, cur_furn.x, cur_furn.y, cur_furn.degree_offset, cur_furn.furn_type, cur_furn.in_area, cur_furn.avg_use_ratio, cur_furn.avg_occupancy, cur_furn.sum_occupants, cur_furn.modified_count, cur_furn.mod_array, cur_furn.activities);
 		}
 		else{
-			newFurniture = new Furniture(cur_furn.furniture_id, cur_furn.num_seats, null, cur_furn.avg_use_ratio, cur_furn.avg_occupancy, cur_furn.sum_occupants, cur_furn.modified_count, cur_furn.activities);
+			newFurniture = new Furniture(cur_furn.furniture_id, cur_furn.num_seats, cur_furn.x, cur_furn.y, cur_furn.degree_offset, cur_furn.furn_type, null, cur_furn.avg_use_ratio, cur_furn.avg_occupancy, cur_furn.sum_occupants, cur_furn.modified_count, cur_furn.mod_array, cur_furn.activities);
 		}
 		furnMap.set(cur_furn.furniture_id, newFurniture);
 	}
@@ -220,14 +230,96 @@ function addSurveyedAreas(){
 	});
 }
 
+function addFurniture(){
+	furnMap.forEach(function(key, value, map){
+
+		latlng = [key.y, key.x];
+		ftype = parseInt(key.ftype)
+		selectedIcon = getIconObj(ftype);
+		degreeOffset = parseInt(key.degreeOffset);
+		numSeats = key.numSeats;
+		avgOccupied = key.avgOccupancy;
+		sumOccupant = key.sumOccupants;
+		avgUse = key.avgUseRatio;
+		fid = key.fid;
+		areaId = key.inArea;
+		mod_array = key.mod_array;
+		activities = key.activities;
+
+		//if this furniture is modified, add modified data to the furniture and then, draw a line from its original latlng
+		//get array of modified coordinates
+
+		for(j in mod_array){
+			coor_element = mod_array[j];
+			new_latlng = [coor_element[1], coor_element[0]];
+			pointList = [latlng, new_latlng];
+
+			polyline = new L.polyline(pointList, {
+				color: 'red',
+				weigth: 3,
+				opacity: 0.5,
+				smoothFactor: 1
+			});
+
+			polyline.addTo(mymap);
+
+			mod_marker = L.marker(new_latlng, {
+				icon: selectedIcon,
+				rotationAngle: degreeOffset,
+							rotationOrigin: "center",
+				draggable: false,
+				ftype: ftype,
+				numSeats: numSeats,
+				fid: fid.toString()
+			}).addTo(furnitureLayer);
+
+			mod_popString = "<strong>Modified Furniture: </br>Occupied Seats: </strong>" + coor_element[3] + "/" + coor_element[4];
+			mod_marker.bindPopup(mod_popString);
+			mod_marker.setOpacity(.5);
+			mod_marker.addTo(mymap);
+		}
+		
+		marker = L.marker(latlng, {
+			icon: selectedIcon,
+			rotationAngle: degreeOffset,
+						rotationOrigin: "center",
+			draggable: false,
+			ftype: ftype,
+			numSeats: numSeats,
+			fid: fid.toString()
+		}).addTo(furnitureLayer);
+		//initialize the popupString for a regular piece of furniture
+		popupString = "<strong>Average Occupancy:</strong>" + avgOccupied + " of " + numSeats + "</br><strong>Total Occupants: </strong>" + sumOccupant + "</br><strong>Average Use: </strong>" + Math.round((avgUse * 100) * 100)/100 +"%";
+
+		//set oppacity to a ratio of the seat use, minimum of 0.3 for visibility
+		oppacity = 0.3 + avgOccupied;
+		//default oppacity for rooms is 0.5 or 1 for rooms that are occupied
+		if(numSeats === "0"){
+			popupString = "<strong>Room Average Occupancy: </strong>" + avgOccupied + "</br><strong>Total Occupants: </strong>" + sumOccupant;
+			if(avgOccupied > 0){
+				oppacity = 1;
+			} else {
+				oppacity = 0.5
+			}
+		}
+		//add activities and their count to the popupString
+		for(i in activities){
+			popupString += "</br>"+activities[i].count +"X: " + activities[i].name;
+		}
+
+		marker.bindPopup(popupString);
+		marker.setOpacity(oppacity);
+		marker.addTo(mymap);
+	});
+}
+
 function calculateAreaData(){
 	var iterateAreaMap = areaMap.values();
 
 	for(var i of areaMap){
 		var num_surveys = survey_id_array.length;
 		var cur_area = iterateAreaMap.next().value;
-		var area_furn_count = 0;
-		var area_avgoccu_sum = 0;
+		var area_furn_count = 0; 
 		var area_ratio_sum = 0;
 		var max_seats = 0;
 		var total_seats_used = 0;
@@ -238,15 +330,22 @@ function calculateAreaData(){
 				if(cur_furn.inArea == cur_area.area_id){
 					area_furn_count++;
 					max_seats += parseInt(cur_furn.numSeats);
-					area_avgoccu_sum += parseInt(cur_furn.avgOccupancy);
 					area_ratio_sum += parseFloat(cur_furn.avgUseRatio);
 					total_seats_used += parseInt(cur_furn.sumOccupants);
+				}
+				for(var k = 0; k < cur_furn.mod_array.length; k++){
+					var mod_furn = cur_furn.mod_array[k];
+					if(mod_furn[2] == cur_area.area_id){
+						var mod_occ = mod_furn[3];
+						var mod_seats = mod_furn[4];
+						total_seats_used += parseInt(mod_occ);
+						area_ratio_sum += parseFloat(mod_occ/mod_seats);
+					}
 				}
 			}
 		}
 		cur_area.numSeats = max_seats;
 		cur_area.avgPopArea = total_seats_used/num_surveys;
-		cur_area.avgOccupancy = area_avgoccu_sum/area_furn_count;
 		cur_area.avgRatio = area_ratio_sum/area_furn_count;
 	}
 	console.log(areaMap);
@@ -267,6 +366,7 @@ function drawArea(area){
 								+ Math.round(((area.avgPopArea/area.numSeats) * 100) * 100)/100
 								+ "%</br>Ratio of use over Period: "
 								+ Math.round((area.avgRatio * 100) * 100)/100 + "%";
+
 	poly.bindPopup(popupString);
 
 	if(area.numSeats != 0){
@@ -284,7 +384,6 @@ function drawArea(area){
 	else{
 		poly.setStyle({fillColor:"green"});
 	}
-
 
 	return poly;
 }
