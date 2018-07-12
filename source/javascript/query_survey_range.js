@@ -24,6 +24,8 @@ function Area(area_id, verts, area_name){
 	this.avgRatio = 0;
 	this.totalSeatsUsed = 0;
 	this.peak = 0;
+	this.peakSurvey = 0;
+	this.peakDate = 0;
 }
 
 function Verts(x, y, order){
@@ -133,8 +135,6 @@ $(function(){
 		loadMap(parseInt(cur_floor.value));
 		queryAreas(cur_layout.value);
 		queryFurnitureInfo(json_string, cur_layout.value);
-
-
 	});
 });
 
@@ -167,14 +167,11 @@ function queryFurnitureInfo(survey_id_json, layout_id){
 			console.log(jsondata);
 			popFurnMap(jsondata);
 			addFurniture();
+			calculateAreaPeaks(survey_id_json, layout_id);
 			calculateAreaData();
-			addSurveyedAreas();
+			
 
-			if(!report_added){
-				createPrintReport();
-			}
-
-
+			
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown) {
 			console.log("Status: " + textStatus);
@@ -198,7 +195,6 @@ function popAreaMap(jsonAreas){
 		newArea = new Area(cur_area.area_id, verts, cur_area.area_name);
 		areaMap.set(cur_area.area_id, newArea);
 	}
-
 }
 
 function popFurnMap(jsonFurn){
@@ -282,7 +278,7 @@ function addFurniture(){
 			fid: fid.toString()
 		}).addTo(furnitureLayer);
 		//initialize the popupString for a regular piece of furniture
-		popupString = "<strong>Average Occupancy:</strong>" + avgOccupied + " of " + numSeats + "</br><strong>Total Occupants: </strong>" + sumOccupant + "</br><strong>Average Use: </strong>" + Math.round((avgUse * 100) * 100)/100 +"%";
+		popupString = "<strong>Average Occupancy: </strong>" + avgOccupied + " of " + numSeats + "</br><strong>Total Occupants: </strong>" + sumOccupant + "</br><strong>Average Use: </strong>" + Math.round((avgUse * 100) * 100)/100 +"%";
 
 		//set oppacity to a ratio of the seat use, minimum of 0.3 for visibility
 		oppacity = 0.3 + avgOccupied;
@@ -347,6 +343,43 @@ function calculateAreaData(){
 	}
 	console.log(areaMap);
 
+
+
+}
+
+function calculateAreaPeaks(survey_id_json, layout_id){
+	$.ajax({
+		url: 'phpcalls/get-area-peaks.php',
+		type: 'get',
+		data:{ 'survey_ids': survey_id_json,
+				'layout_id': layout_id},
+		success: function(data){
+			console.log("Retrieved Peak Area Data");
+			jsonpeakdata = JSON.parse(data);
+
+			var iterateAreaMap = areaMap.values();
+			for(var i of areaMap){
+				var cur_area = iterateAreaMap.next().value;
+				for(key in jsonpeakdata){
+					var cur_peak_data = jsonpeakdata[key];
+					if(cur_area.area_id == cur_peak_data['area_id']){
+						cur_area.peak = cur_peak_data['peak'];
+						cur_area.peakSurvey = cur_peak_data['peak_survey'];
+						cur_area.peakDate = cur_peak_data['peak_date'];
+					}
+				}
+			}
+			addSurveyedAreas();
+			if(!report_added){
+				createPrintReport();
+			}
+
+		},
+		error: function(XMLHttpRequest, textStatus, errorThrown) {
+			console.log("Status: " + textStatus);
+			console.log("Error: " + errorThrown);
+		}
+	});
 }
 
 function drawArea(area){
@@ -362,7 +395,13 @@ function drawArea(area){
 								+"</br>Percentage Use: "
 								+ Math.round(((area.avgPopArea/area.numSeats) * 100) * 100)/100
 								+ "%</br>Ratio of use over Period: "
-								+ Math.round((area.avgRatio * 100) * 100)/100 + "%";
+								+ Math.round((area.avgRatio * 100) * 100)/100 
+								+ "%</br>Peak Population: "
+								+ area.peak
+								+ "</br>Peak Date: "
+								+ area.peakDate
+								+ "</br>Peak Survey ID: "
+								+ area.peakSurvey;
 
 	poly.bindPopup(popupString);
 

@@ -12,10 +12,11 @@
 	$dbh = new PDO($dbhost, $dbh_select_user, $dbh_select_pw);
 
 	//get all furntiture for the layout
-	$all_furn_stmt = $dbh->prepare('SELECT furniture_id, x_location, y_location, degree_offset, furniture_type, number_of_seats, in_area
-									FROM furniture, furniture_type
-									WHERE furniture_type = furniture_type_id
-									AND layout_id = :layout_id');
+	$all_furn_stmt = $dbh->prepare('
+		SELECT furniture_id, x_location, y_location, degree_offset, furniture_type, number_of_seats, in_area
+		FROM furniture, furniture_type
+		WHERE furniture_type = furniture_type_id
+		AND layout_id = :layout_id');
 										
 	$all_furn_stmt->bindParam(':layout_id', $layout_id, PDO::PARAM_INT);
 
@@ -46,10 +47,11 @@
 			$tempRatio = 0;
 			if($numSeats === "0"){
 				//get room occupants
-				$roomOccupantStmt = $dbh->prepare("SELECT total_occupants 
-													FROM surveyed_room
-													WHERE furniture_id = :furniture_id
-														AND survey_id = :survey_id");
+				$roomOccupantStmt = $dbh->prepare("
+					SELECT total_occupants 
+					FROM surveyed_room
+					WHERE furniture_id = :furniture_id
+					AND survey_id = :survey_id");
 				$roomOccupantStmt->bindParam(':furniture_id', $fid, PDO::PARAM_INT);										
 				$roomOccupantStmt->bindParam(':survey_id', $survey_id, PDO::PARAM_INT);
 				
