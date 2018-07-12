@@ -91,7 +91,7 @@ form.layout-selector{
 fieldset{
 	border: none;
 	background-color: #87A625;
-	padding: 15px;
+	padding-right: 15px;
 }
 
 form.layout-selector > fieldset{

@@ -46,7 +46,13 @@
 			$('#year-select').on("change", function(){
 					var form_info = document.getElementById("choose_survey_form");
 					var month_select = document.getElementById("month-select");
+					var day_select = document.getElementById("day-select");
+					var id_select = document.getElementById("survey_id_select");
+					var survey_submit = document.getElementById("query_submit_button");
 					month_select.style.display = "inline";
+					day_select.style.display = "none";
+					id_select.style.display = "none";
+					survey_submit.style.display = "none";
 					cur_year = form_info.elements["year-select"].value;
 
 					//Get rid previous select options before repopulating
@@ -134,7 +140,12 @@
 				$('#month-select').on("change", function(){
 						var form_info = document.getElementById("choose_survey_form");
 						var day_select = document.getElementById("day-select");
+						var id_select = document.getElementById("survey_id_select");
+						var survey_submit = document.getElementById("query_submit_button");
 						day_select.style.display = "inline";
+						id_select.style.display = "none";
+						survey_submit.style.display = "none";
+
 						cur_month = form_info.elements["month-select"].value;
 
 						//Get rid previous select options before repopulating
@@ -220,7 +231,6 @@
 		delete line: 149, 170
 		*/
 		function printReport(){
-			var map = document.getElementById('mapid').innerHTML;
 			var rFrame = document.getElementById('print_frame');
 			rFrame.contentWindow.print();
 		}
@@ -304,7 +314,7 @@
 				var area_string;
 				var modified_furn = 0;
 
-				document.getElementById("query_print_button").style.display = "block";
+				document.getElementById("query_print_button").style.display = "inline";
 
 				$.ajax({
 	                url: 'phpcalls/get-survey-info.php',
