@@ -7,8 +7,12 @@ var areaLayer;
 var furnitureLayer;
 var bounds;
 var survey_id_array;
-var survey_id_string = "";
 var report_added = false;
+var avgFloorPop = 0;
+var floorMaxSeats = 0;
+var total_floor_vistors = 0;
+var queried_info_legend;
+var survey_info_legend;
 
 //define objects
 function Area(area_id, verts, area_name){
@@ -62,6 +66,7 @@ $(function(){
 		}
 
 		document.getElementById("mapid").style.display = "block";
+		document.getElementById("query_print_button").style.display = "inline";
 		document.getElementById("multi-select").style.display = "none";
 		document.getElementById("submit-surveys").style.display = "none";
 		document.getElementById("map_container").innerHTML = "<div id='mapid'></div>";
@@ -105,29 +110,15 @@ $(function(){
 			i++;
 		});
 
-		for(var i = 0; i < survey_id_array.length; i++)
-		{
-			if (i == (survey_id_array.length - 1))
-			{
-				survey_id_string += survey_id_array[i].id;
-			}
-
-			else {
-				{
-					survey_id_string += survey_id_array[i].id + ", ";
-				}
-			}
-		}
-
-		var survey_info_legend = L.control();
+		survey_info_legend = L.control();
 		survey_info_legend.onAdd = function (mymap){
 			var div = L.DomUtil.create('div', 'report_legend');
 			var header = document.createElement('p');
 			var date1 = document.getElementById('date-select-1');
 			var date2 = document.getElementById('date-select-2');
 
-			header.innerHTML = "Survey Range: " + date1.value + " - " + date2.value
-						+ "</br>Survey IDs: " + survey_id_string + "</br>Layout: "
+			header.innerHTML = "Survey Range: " + date1.value + " through " + date2.value
+						+ "</br>Number of Surveys: " + survey_id_array.length + "</br>Layout: "
 						+ cur_layout.value + "</br>Floor: " + cur_floor.value;
 			print_header = "Survey range report for Layout "
 						+ cur_layout.value + " on Floor " + cur_floor.value
@@ -183,6 +174,8 @@ function queryFurnitureInfo(survey_id_json, layout_id){
 			if(!report_added){
 				createPrintReport();
 			}
+
+
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown) {
 			console.log("Status: " + textStatus);
@@ -278,7 +271,7 @@ function addFurniture(){
 			mod_marker.setOpacity(.5);
 			mod_marker.addTo(mymap);
 		}
-		
+
 		marker = L.marker(latlng, {
 			icon: selectedIcon,
 			rotationAngle: degreeOffset,
@@ -319,7 +312,7 @@ function calculateAreaData(){
 	for(var i of areaMap){
 		var num_surveys = survey_id_array.length;
 		var cur_area = iterateAreaMap.next().value;
-		var area_furn_count = 0; 
+		var area_furn_count = 0;
 		var area_ratio_sum = 0;
 		var max_seats = 0;
 		var total_seats_used = 0;
@@ -345,8 +338,12 @@ function calculateAreaData(){
 			}
 		}
 		cur_area.numSeats = max_seats;
+		floorMaxSeats += cur_area.numSeats;
 		cur_area.avgPopArea = total_seats_used/num_surveys;
+		avgFloorPop += cur_area.avgPopArea;
 		cur_area.avgRatio = area_ratio_sum/area_furn_count;
+		cur_area.totalSeatsUsed = total_seats_used;
+		total_floor_vistors += cur_area.totalSeatsUsed;
 	}
 	console.log(areaMap);
 
@@ -394,7 +391,7 @@ function drawArea(area){
 
 	var poly = L.polygon(curVerts);
 	popupString = "<strong>"+area.area_name +"</strong></br>Number of Seats: "
-								+ area.numSeats +"</br>Average Area Population: " + area.avgPopArea
+								+ area.numSeats +"</br>Average Area Population: " + Math.round((area.avgPopArea) * 100)/100
 								+"</br>Percentage Use: "
 								+ Math.round(((area.avgPopArea/area.numSeats) * 100) * 100)/100
 								+ "%</br>Ratio of use over Period: "
@@ -448,22 +445,60 @@ function createPrintReport(){
 
 		report_header.innerHTML = print_header;
 		overview_header.innerHTML = "Survey Range Overview:";
-		report_text.innerHTML ="Surveys inlcude: " + survey_id_string;
+		report_text.innerHTML = "Number of Surveys: " + survey_id_array.length
+														+ "</br>Possible seats: " + floorMaxSeats
+														+ "</br>Total floor vistors: " + total_floor_vistors
+														+ "</br>Average floor population: " + Math.round(avgFloorPop);
 		area_header.innerHTML = "Area Overview:";
 		area_data.innerHTML = area_string;
 
 		report_added = true;
-
-		var queried_info_legend = L.control({position: 'bottomright'});
+		queried_info_legend = L.control({position: 'bottomright'});
 
 		queried_info_legend.onAdd = function (mymap){
 			var div = L.DomUtil.create('div', 'report_legend');
 			var header = document.createElement('p');
 
-			header.innerHTML ="Seats in use: " + seatsUsed +
-						"</br>Possible seats: " + totalSeats +
-						"</br> Floor % Use: " + floor_percent + "%";
+			header.innerHTML ="Possible seats: " + floorMaxSeats +
+						"</br> Total floor vistors: " + total_floor_vistors +
+						"</br> Average floor population: " + Math.round(avgFloorPop);
 
 			div.appendChild(header);
+
+			return div;
 		}
+
+		queried_info_legend.addTo(mymap);
+
+		addPrintMap();
+
+}
+
+function addPrintMap(){
+	L.control.browserPrint({
+		title: 'Library Query Report',
+		documentTitle: 'Library Query Report',
+		printLayer: L.tileLayer('http://tile.stamen.com/toner/{z}/{x}/{y}.png', {
+			attribution: 'HSU Library App Team',
+			minZoom: 1,
+			maxZoom: 16,
+			ext: 'png'
+		}),
+		closePopupsOnPrint: false,
+		printModes: [
+			L.control.browserPrint.mode.landscape()
+		],
+		manualMode: false
+	}).addTo(mymap);
+
+	mymap.on("browser-print-start", function(e){
+		/*on print start we already have a print map and we can create new control and add it to the print map to be able to print custom information */
+		queried_info_legend.addTo(e.printMap);
+		survey_info_legend.addTo(e.printMap);
+	});
+
+	mymap.on("browser-print-end", function(e){
+		queried_info_legend.addTo(mymap);
+		survey_info_legend.addTo(mymap);
+	});
 }

@@ -21,14 +21,15 @@
 
     <!-- scripts here are for jquery ui-->
     <script src="./javascript/transfer-select-js/jquery.js"></script>
-    <script src="./javascript/jquery-ui-js/jquery-ui.min.js"></script>"></script>
+    <script src="./javascript/jquery-ui-js/jquery-ui.min.js"></script>
     <link rel="stylesheet" href="styles/jquery-ui.min.css" type="text/css">
 
     <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"
     integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw=="
     crossorigin=""></script>
-	<script src="./javascript/report-objs-pop.js"></script>
-	<script src="./javascript/leaflet.rotatedMarker.js"></script>
+		<script src="./javascript/report-objs-pop.js"></script>
+		<script src="./javascript/leaflet.rotatedMarker.js"></script>
+		<script src="./javascript/leaflet.browser.print.min.js"></script>
 
     <!--scripts here are for the transfer select plugin-->
 
@@ -100,7 +101,7 @@
                 <p class="p-inline"> Layout: <select name="in-layout" id="in_layout_select">
                     <option value="">Choose a Corresponding Layout</option>
                 </select></p>
-								<input type="button" id="query_print_button" value="Print Report" style="display:inline" onclick="printReport()"/>
+								<input type="button" id="query_print_button" value="Print Report" style="display:none" onclick="printReport()"/>
 					  </fieldset>
 
         </form>
@@ -111,10 +112,10 @@
         ?>
         <div id="multi-select"></div>
         <button class="nav_button" id="submit-surveys">Submit Surveys</button>
-        <div id="map_container" style='width: 100%; height: 100%;'>
-            <div id="mapid"></div>
+        <div id="map_container" style='width: 100%; height: 92.5%;'>
+            <div id="mapid" ></div>
         </div>
-        <div id="reportDiv"></div>
+
 				<iframe id="print_frame">
 					<html>
 						<body>

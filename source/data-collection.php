@@ -37,14 +37,14 @@
     <script src="./javascript/build_markers.js"></script>
     <script type="text/javascript" async>
     //define our object here
-        
+
     </script>
     <?php
         require_once('form_functions.php');
     ?>
 </head>
 <body>
-    <button class="hide_nav" id="nav_toggle">&plus;</button>
+    <button class="hide_nav" id="nav_toggle"><p id="hide_nav_plus">&plus;</p></button>
     <button class="submit_survey hidden" id="submit_survey" onclick="if(confirm('Are you sure you want to submit this survey?')) submitSurveyHelper();">Submit Survey</button>
     <header class="hidden">
         <img class="logo" src="images/hsu-wm.svg">
@@ -74,7 +74,7 @@
         /*Checks to see if you have selected a form, in order to build the proper layout select, if you have selected a floor, this if statement fires*/
         /*********To Be Replaced with form function*********/
         $_SESSION['cur_floor'] = $_POST['floor-select'];
-        
+
         ?>
         <main class="to-top">
             <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" class="layout-selector" id="lay-select">
@@ -91,7 +91,7 @@
                     <input type="submit" id="sub_layout" value="Load Layout"/>
                 </fieldset>
             </form>
-       
+
             <div id="mapid"></div>
             <div id="popupTest">
                 <div id="seat_div"></div>
@@ -111,7 +111,7 @@
                 <p>Designed by HSU Library Web App team. &copy; Humboldt State University</p>
             </footer>
         </main>
-        <?php 
+        <?php
         }
         ?>
     </body>
@@ -126,10 +126,10 @@
         var selected_furn;
 		var selected_marker;
         var seat_num;
-		
+
 		//to store the seat_places array to be saved
 	    var temp_seat_places = [];
-	    
+
 	    //I don't think we need this
 	    var whiteboard_activity = "0";
 
@@ -149,8 +149,8 @@
 
 		//set username variable to insert
 		var username = "<?php echo $_SESSION['username']?>";
-		
-        var popupDim = 
+
+        var popupDim =
         {
             'maxWidth': '5000',
             'maxHeight': '5000'
@@ -201,12 +201,12 @@
                 case FLOOR2:
                     image = L.imageOverlay('images/floor2.svg', bounds).addTo(mymap);
                     break;
-                case FLOOR3: 
+                case FLOOR3:
                     image = L.imageOverlay('images/floor3.svg', bounds).addTo(mymap);
                     break;
             }
-            
-           
+
+
             $(".submit_survey").removeClass("hidden");
             /* MUST DEFINE A PIECE OF FURNITURE BEFORE CONSTRUCTING A SEAT */
             //Lets make our map
@@ -242,7 +242,7 @@
             var newzoom = '' + (markerSize) +'px';
             var newLargeZoom = '' + (markerSize*2) +'px';
             $('#mapid .furnitureIcon').css({'width':newzoom,'height':newzoom});
-            $('#mapid .furnitureLargeIcon').css({'width':newLargeZoom,'height':newLargeZoom});          
+            $('#mapid .furnitureLargeIcon').css({'width':newLargeZoom,'height':newLargeZoom});
         });
 
     </script>
