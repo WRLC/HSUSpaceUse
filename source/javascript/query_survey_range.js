@@ -220,6 +220,8 @@ function addSurveyedAreas(){
 }
 
 function addFurniture(){
+	//peform a query that looks at furniture with 0 seats (the rooms) and return the largest recorded value for that peak
+	var survey_id_json = JSON.stringify(survey_id_array);
 	furnMap.forEach(function(key, value, map){
 
 		latlng = [key.y, key.x];
@@ -237,7 +239,6 @@ function addFurniture(){
 
 		//if this furniture is modified, add modified data to the furniture and then, draw a line from its original latlng
 		//get array of modified coordinates
-
 		for(j in mod_array){
 			coor_element = mod_array[j];
 			new_latlng = [coor_element[1], coor_element[0]];
@@ -277,28 +278,69 @@ function addFurniture(){
 			numSeats: numSeats,
 			fid: fid.toString()
 		}).addTo(furnitureLayer);
-		//initialize the popupString for a regular piece of furniture
-		popupString = "<strong>Average Occupancy: </strong>" + avgOccupied + " of " + numSeats + "</br><strong>Total Occupants: </strong>" + sumOccupant + "</br><strong>Average Use: </strong>" + Math.round((avgUse * 100) * 100)/100 +"%";
 
-		//set oppacity to a ratio of the seat use, minimum of 0.3 for visibility
-		oppacity = 0.3 + avgOccupied;
 		//default oppacity for rooms is 0.5 or 1 for rooms that are occupied
 		if(numSeats === "0"){
-			popupString = "<strong>Room Average Occupancy: </strong>" + avgOccupied + "</br><strong>Total Occupants: </strong>" + sumOccupant;
-			if(avgOccupied > 0){
-				oppacity = 1;
-			} else {
-				oppacity = 0.5
-			}
-		}
-		//add activities and their count to the popupString
-		for(i in activities){
-			popupString += "</br>"+activities[i].count +"X: " + activities[i].name;
-		}
+			room_occ = avgOccupied;
+			room_sum = sumOccupant;
 
-		marker.bindPopup(popupString);
-		marker.setOpacity(oppacity);
-		marker.addTo(mymap);
+			$.ajax({
+				url: 'phpcalls/get-room-peaks.php',
+				type: 'get',
+				async: false,
+				data:{ 'survey_ids': survey_id_json,
+						'furniture_id': fid},
+				success: function(data){
+
+					jsondata = JSON.parse(data);
+
+					popupString = "<strong>Room Average Occupancy: </strong>" 
+						+ avgOccupied 
+						+ "</br><strong>Total Occupants over time: </strong>" 
+						+ sumOccupant
+						+ "</br><strong>Peak Pop: </strong>"
+						+ jsondata['room_peak']
+						+ "</br><strong>Peak Date: </strong>"
+						+ jsondata['room_peak_date']
+						+ "</br><strong>Peak Survey ID: </strong>"
+						+ jsondata['room_peak_survey'];
+					
+					if(room_occ > 0){
+						oppacity = 1;
+					} else {
+						oppacity = 0.5
+					}
+					for(i in activities){
+						popupString += "</br>"+activities[i].count +"X: " + activities[i].name;
+					}
+
+					marker.bindPopup(popupString);
+					marker.setOpacity(oppacity);
+					marker.addTo(mymap);
+				},
+				error: function(XMLHttpRequest, textStatus, errorThrown) {
+					console.log("Status: " + textStatus);
+					console.log("Error: " + errorThrown);
+				}
+			});
+		}
+		else{
+			
+			//initialize the popupString for a regular piece of furniture
+			popupString = "<strong>Average Occupancy: </strong>" + avgOccupied + " of " + numSeats + "</br><strong>Total Occupants: </strong>" + sumOccupant + "</br><strong>Average Use: </strong>" + Math.round((avgUse * 100) * 100)/100 +"%";
+
+			//set oppacity to a ratio of the seat use, minimum of 0.3 for visibility
+			oppacity = 0.3 + avgOccupied;
+
+			//add activities and their count to the popupString
+			for(i in activities){
+				popupString += "</br>"+activities[i].count +"X: " + activities[i].name;
+			}
+
+			marker.bindPopup(popupString);
+			marker.setOpacity(oppacity);
+			marker.addTo(mymap);
+		}
 	});
 }
 
@@ -329,6 +371,7 @@ function calculateAreaData(){
 						var mod_seats = mod_furn[4];
 						total_seats_used += parseInt(mod_occ);
 						area_ratio_sum += parseFloat(mod_occ/mod_seats);
+						area_furn_count++;
 					}
 				}
 			}
@@ -391,27 +434,31 @@ function drawArea(area){
 
 	var poly = L.polygon(curVerts);
 	popupString = "<strong>"+area.area_name +"</strong></br>Number of Seats: "
-								+ area.numSeats +"</br>Average Area Population: " + Math.round((area.avgPopArea) * 100)/100
-								+"</br>Percentage Use: "
-								+ Math.round(((area.avgPopArea/area.numSeats) * 100) * 100)/100
-								+ "%</br>Ratio of use over Period: "
-								+ Math.round((area.avgRatio * 100) * 100)/100 
-								+ "%</br>Peak Population: "
-								+ area.peak
-								+ "</br>Peak Date: "
-								+ area.peakDate
-								+ "</br>Peak Survey ID: "
-								+ area.peakSurvey;
+		+ area.numSeats +"</br>Average Area Population: " + Math.round((area.avgPopArea) * 100)/100
+		+"</br>Percentage Use: "
+		+ Math.round(((area.avgPopArea/area.numSeats) * 100) * 100)/100
+		+ "%</br>Ratio of use over Period: "
+		+ Math.round((area.avgRatio * 100) * 100)/100 
+		+ "%</br>Peak Population: "
+		+ area.peak
+		+ "</br>Peak Date: "
+		+ area.peakDate
+		+ "</br>Peak Survey ID: "
+		+ area.peakSurvey;
 
 	poly.bindPopup(popupString);
 
 	if(area.numSeats != 0){
 		area_string += popupString + "</br></br>";
 	}
-
 	else{
-		area_string += "<strong>"+area.area_name +"</strong></br>Average Room Population: " + area.avgPopArea
-									+ "</br>Peak use: " + area.peak + "</br></br>";
+		area_string += "<strong>" + area.area_name 
+					+"</strong></br>Average Room Population: " 
+					+ area.avgPopArea
+					+ "</br>Peak Room Occupants: " + area.peak 
+					+ "</br>Peak Date: " + area.peakDate 
+					+ "</br>Peak Survey ID: " + area.peakSurvey
+					+ "</br></br>";
 	}
 
 	if(area.avgPopArea/area.numSeats < .1){
