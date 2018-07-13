@@ -37,7 +37,7 @@
 
 			//get all furntiture for the layout and area
 			$area_furn_stmt = $dbh->prepare('
-				SELECT furniture_id
+				SELECT furniture_id, number_of_seats
 				FROM furniture, furniture_type
 				WHERE furniture_type = furniture_type_id
 				AND layout_id = :layout_id
@@ -52,40 +52,56 @@
 
 			//iterate through all furniture in an area and calculate unmodified furnitue in that area for that survey
 			foreach($area_furn as $row){
-
 				$fid = $row['furniture_id'];
+				$number_of_seats = $row['number_of_seats'];
+				//check if the furniture you are looking at is a room
+				if($number_of_seats == 0){
+					$room_info_stmt = $dbh->prepare('
+						SELECT total_occupants
+						FROM surveyed_room
+						WHERE survey_id = :survey_id
+						AND furniture_id = :furniture_id');
 
-				//query to check if a furniture in a survey is modified
-				$modified_furn_check_stmt = $dbh->prepare('
-					SELECT in_area
-					FROM modified_furniture
-					WHERE furniture_id = :furniture_id
-					AND survey_id = :survey_id');
+					$room_info_stmt->bindParam(':furniture_id', $fid, PDO::PARAM_INT);
+					$room_info_stmt->bindParam(':survey_id', $survey_id, PDO::PARAM_INT);
 
-				$modified_furn_check_stmt->bindParam(':furniture_id', $fid, PDO::PARAM_INT);
-				$modified_furn_check_stmt->bindParam(':survey_id', $survey_id, PDO::PARAM_INT);
+					$room_info_stmt->execute();
 
-				$modified_furn_check_stmt->execute();
+					$survey_sum = (int)$room_info_stmt->fetchColumn();
 
-				$mod_area = $modified_furn_check_stmt->fetchColumn();
-
-				//if modified furniture rests in the same area, or the furniture isn't modified, continue to compute the total peak sum of the area.
-				if($mod_area == $area_id || $mod_area == FALSE){
-					$occupied_furn_stmt = $dbh->prepare(
-						'SELECT count(*) occupied_seats
-						FROM seat
+				} else {
+					//query to check if a furniture in a survey is modified
+					$modified_furn_check_stmt = $dbh->prepare('
+						SELECT in_area
+						FROM modified_furniture
 						WHERE furniture_id = :furniture_id
-						AND occupied = 1
-						AND survey_id = :survey_id
-						GROUP BY seat.furniture_id');
+						AND survey_id = :survey_id');
 
-					$occupied_furn_stmt->bindParam(':furniture_id', $fid, PDO::PARAM_INT);
-					$occupied_furn_stmt->bindParam(':survey_id', $survey_id, PDO::PARAM_INT);
+					$modified_furn_check_stmt->bindParam(':furniture_id', $fid, PDO::PARAM_INT);
+					$modified_furn_check_stmt->bindParam(':survey_id', $survey_id, PDO::PARAM_INT);
 
-					$occupied_furn_stmt->execute();
+					$modified_furn_check_stmt->execute();
 
-					$tempsum = (int)$occupied_furn_stmt->fetchColumn();
-					$survey_sum += $tempsum;
+					$mod_area = $modified_furn_check_stmt->fetchColumn();
+
+					//if modified furniture rests in the same area, or the furniture isn't modified, continue to compute the total peak sum of the area.
+					if($mod_area == $area_id || $mod_area == FALSE){
+						$occupied_furn_stmt = $dbh->prepare(
+							'SELECT count(*) occupied_seats
+							FROM seat
+							WHERE furniture_id = :furniture_id
+							AND occupied = 1
+							AND survey_id = :survey_id
+							GROUP BY seat.furniture_id');
+
+						$occupied_furn_stmt->bindParam(':furniture_id', $fid, PDO::PARAM_INT);
+						$occupied_furn_stmt->bindParam(':survey_id', $survey_id, PDO::PARAM_INT);
+
+						$occupied_furn_stmt->execute();
+
+						$tempsum = (int)$occupied_furn_stmt->fetchColumn();
+						$survey_sum += $tempsum;
+					}
 				}
 			}
 

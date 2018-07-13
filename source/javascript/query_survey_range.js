@@ -371,6 +371,7 @@ function calculateAreaData(){
 						var mod_seats = mod_furn[4];
 						total_seats_used += parseInt(mod_occ);
 						area_ratio_sum += parseFloat(mod_occ/mod_seats);
+						area_furn_count++;
 					}
 				}
 			}
@@ -450,12 +451,14 @@ function drawArea(area){
 	if(area.numSeats != 0){
 		area_string += popupString + "</br></br>";
 	}
-
 	else{
 		area_string += "<strong>" + area.area_name 
 					+"</strong></br>Average Room Population: " 
 					+ area.avgPopArea
-					+ "</br>Peak use: " + area.peak + "</br></br>";
+					+ "</br>Peak Room Occupants: " + area.peak 
+					+ "</br>Peak Date: " + area.peakDate 
+					+ "</br>Peak Survey ID: " + area.peakSurvey
+					+ "</br></br>";
 	}
 
 	if(area.avgPopArea/area.numSeats < .1){
