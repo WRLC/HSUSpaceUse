@@ -1,7 +1,6 @@
 /*This function is called when the layout is submitted and it populates the database with the appropriate furniture objects*/
 function submitLayout(username, floor, furnMap, areaMap){
     
-    console.log("You are submitting the layout");
     $(".loading").addClass("loadingapply");
     $("#load-image").addClass("imagerotate");
     $.ajax({
@@ -12,7 +11,6 @@ function submitLayout(username, floor, furnMap, areaMap){
             'floor': floor
         },
         success: function(data){
-            console.log(data);
             /*Get that new layout ID for insertion statements*/
             var json_object = JSON.parse(data);
             layout_id = json_object.layout_id;
@@ -21,7 +19,6 @@ function submitLayout(username, floor, furnMap, areaMap){
             var objmap = mapToObj(furnMap);
             var json_string = JSON.stringify(objmap);
 			
-            console.log(json_string);
             $.ajax({
 				url: 'phpcalls/insert-furniture.php',
 				type: 'post',
@@ -50,7 +47,6 @@ function submitLayout(username, floor, furnMap, areaMap){
 							success: function(data){
 								var used_json = data;
 								if(data > 0){
-									alert("Success!");
 									window.location.href = 'layout-success.php';
 								} else {
 									alert("Something went wrong.");

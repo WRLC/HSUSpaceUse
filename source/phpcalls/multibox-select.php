@@ -1,4 +1,6 @@
 <?php
+//This file queries all survey's related to startdate, enddate, and layout id 
+//Returns an array of id's and dates for the user to select
 	require_once('./../config.php');
 
 	$start_date = $_REQUEST['start_date'];

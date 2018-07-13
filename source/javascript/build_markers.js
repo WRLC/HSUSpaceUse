@@ -5,12 +5,7 @@ function build_markers(layout_id){
         type: 'post',
         data:{ 'layout_id': layout_id },
         success: function(data){
-            /*need to replace with ajax call getting actual layout id's*/
-
-            console.log("got all furniture inside json array");
             var json_object = JSON.parse(data);
-
-           
             for(var i in json_object){
             	var keystring = json_object[i];
 				var furn_id;
@@ -18,23 +13,17 @@ function build_markers(layout_id){
             	for(var i in keystring){
 					furn_id = i;
 				}
+
+                //intilize variables from furniture id
             	var num_seats = parseInt(keystring[furn_id].num_seats);
-				if(num_seats === 0){
-					console.log(1);
-				}
                 var newFurniture = new Furniture( furn_id, num_seats);
-         
             	var x = keystring[furn_id].x;
             	var y = keystring[furn_id].y;
             	var degree_offset = keystring[furn_id].degree_offset;
             	var furniture_type = keystring[furn_id].furn_type;
             	var default_seat_type = keystring[furn_id].default_seat_type;
-            	
             	var latlng = [y,x];
-               
-
-                newFurniture.degreeOffset = degree_offset;					
-
+                newFurniture.degreeOffset = degree_offset;
 				area_id="TBD";
 				newFurniture.y = y;
 				newFurniture.x = x;
@@ -54,10 +43,11 @@ function build_markers(layout_id){
                     fid: furn_id.toString()
                 }).addTo(furnitureLayer).bindPopup(popup, popupDim);
 
+                //make marker clickable
                 marker.on('click', markerClick);
 				marker.setOpacity(.3);
 					
-				//update marker coords in marker map on dragend, set to modified
+				//update marker coords when a user stops dragging the marker, set to furniture object to indicate modified
 				marker.on("dragend", function(e){
 					selected_furn.modified = true;
 					latlng =  e.target.getLatLng();
@@ -77,9 +67,6 @@ function build_markers(layout_id){
                     if(area_id !== "TBD"){
                         selected_furn.in_area = area_id;
                     }
-                    console.log("area_id: "+area_id);
-                    console.log("x: "+x+"\ny: "+y);
-
 				});
 				furnMap.set(furn_id.toString(), newFurniture);
             }

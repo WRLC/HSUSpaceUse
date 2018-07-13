@@ -238,7 +238,6 @@
                 case 3: markerSize= 40; break;
                 case 4: markerSize= 80; break;
             }
-            //alert(mymap.getZoom)());
             var newzoom = '' + (markerSize) +'px';
             var newLargeZoom = '' + (markerSize*2) +'px';
             $('#mapid .furnitureIcon').css({'width':newzoom,'height':newzoom});

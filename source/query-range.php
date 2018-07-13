@@ -1,7 +1,6 @@
 <?php
 	//The main page for any queries that the user will grab from the DB.
 	//Needs more queries such as activities, whiteboard use.
-	//TODO: give a calendar view to choose the date of a survey record,
 	//  Load the state of the library during that survey to give us not only area_use, but furniture location
 	session_start();
     require_once('form_functions.php');
@@ -44,19 +43,19 @@
 
     <!--script for enabling the bootstrapTransfer plugin-->
     <script type="text/javascript">
-				//Needed for printing text report feature
-				var area_string = "";
-				var print_header;
+		//Needed for printing text report feature
+		var area_string = "";
+		var print_header;
 
         $(function() {
             $("#date-select-1").datepicker();
             $("#date-select-2").datepicker();
         });
 
-				function printReport(){
-					var rFrame = document.getElementById('print_frame');
-					rFrame.contentWindow.print();
-				}
+		function printReport(){
+			var rFrame = document.getElementById('print_frame');
+			rFrame.contentWindow.print();
+		}
     </script>
 </head>
 
@@ -116,14 +115,13 @@
             <div id="mapid" ></div>
         </div>
 
-				<iframe id="print_frame">
-					<html>
-						<body>
-						</body>
-					</html>
-				</iframe>
+		<iframe id="print_frame">
+			<html>
+				<body>
+				</body>
+			</html>
+		</iframe>
 		<?php
-
     ?>
     </main>
     <footer>

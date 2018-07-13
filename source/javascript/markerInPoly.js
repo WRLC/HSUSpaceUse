@@ -2,7 +2,6 @@
 //returns true if inside, else false
 function isMarkerInsidePolygon(x,y, poly) {
 	var inside = false;
-	//var x = marker.getLatLng().lat, y = marker.getLatLng().lng;
 	for (var ii=0;ii<poly.getLatLngs().length;ii++){
 		var polyPoints = poly.getLatLngs()[ii];
 		for (var i = 0, j = polyPoints.length - 1; i < polyPoints.length; j = i++) {

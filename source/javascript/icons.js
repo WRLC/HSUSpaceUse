@@ -1,8 +1,7 @@
 //This file extends Marker to contain furniture information
 //and extend Icon class to create new icons for each piece of furniture
-
 //contains function to return selected icon type based on furniture type
-
+//This file also holds the size of the markers and initial anchorpoints before resizing.
 var height;
 var width;
 var selectedIcon;

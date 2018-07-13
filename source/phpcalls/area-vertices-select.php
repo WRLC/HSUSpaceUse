@@ -1,4 +1,5 @@
 <?php
+//selects all the verticies in a specific area
 session_start();
 require_once('./../config.php');
 $area_ID =  $_REQUEST['area_ID'];

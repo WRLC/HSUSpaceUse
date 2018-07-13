@@ -1,4 +1,5 @@
 <?php
+//inserts a new layout into the layout record
 require_once('./../config.php');
 $username = $_REQUEST['username'];
 $floor = $_REQUEST['floor'];

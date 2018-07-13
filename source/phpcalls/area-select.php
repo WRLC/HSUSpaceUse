@@ -1,5 +1,6 @@
 
 <?php
+//Select all areas in a specific layou
 session_start();
 require_once('./../config.php');
 

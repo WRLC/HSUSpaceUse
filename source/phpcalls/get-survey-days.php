@@ -1,4 +1,5 @@
 <?php
+//Gets the days of the survey for a single survey report based on the year and month already chosen
 session_start();
 require_once('./../config.php');
 

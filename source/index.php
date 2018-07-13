@@ -4,14 +4,10 @@
 
 	//initilize an admin account for only those who know it to access it
 	//request user login information
-	//TODO: Remove current sign on and replace with calls to DB
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
-<!--
-	Reach Text Page with Oracle:
-	http://nrs-projects.humboldt.edu/~bam22/LibraryAppTest/index.php
--->
+
 <head>
     <title> Library Login </title>
     <meta charset="utf-8" />

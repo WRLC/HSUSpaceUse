@@ -50,7 +50,7 @@
 
 			$area_furn = $area_furn_stmt->fetchAll();
 
-			//iterate through all furniture in an area and calculate unmodified furnitue in that area for that survey
+			//iterate through all furniture in an area and calculate unmodified furniture in that area for that survey
 			foreach($area_furn as $row){
 				$fid = $row['furniture_id'];
 				$number_of_seats = $row['number_of_seats'];
@@ -84,7 +84,7 @@
 
 					$mod_area = $modified_furn_check_stmt->fetchColumn();
 
-					//if modified furniture rests in the same area, or the furniture isn't modified, continue to compute the total peak sum of the area.
+					//if modified furniture rests in the same area, or the furniture isn't modified, continue to compute the total peak sum of that area.
 					if($mod_area == $area_id || $mod_area == FALSE){
 						$occupied_furn_stmt = $dbh->prepare(
 							'SELECT count(*) occupied_seats
@@ -148,6 +148,7 @@
 
 		$peak_date = 'Null';
 
+		//get date information for the peak data
 		if($highest_survey_id > 0){
 
 			$peak_date_stmt = $dbh->prepare('
@@ -161,6 +162,7 @@
 			$peak_date = date('l jS \of F Y h:i:s A', strtotime($peak_date));
 		}
 
+		//store peak area data
 		$area_peak_item = array(
 			'area_id' => $area_id,
 			'peak' => $highest_pop,
@@ -170,4 +172,5 @@
 		array_push($peakdata, $area_peak_item);
 	}
 
+	//return data as an encoded json string
 	print json_encode($peakdata);

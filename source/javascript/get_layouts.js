@@ -17,9 +17,6 @@ $(function(){
             type: 'get',
             data:{ 'floor_ID': floor_ID },
             success: function(data){
-                /*need to replace with ajax call getting actual layout id's*/
-
-                console.log("got number of layouts");
                 var json_object = JSON.parse(data);
                 var lay_select = document.getElementById('current_layouts');
 
@@ -36,6 +33,7 @@ $(function(){
     });
 });
 
+//When the layout chanes, grab the form elements and determine the new layout.
 $(function(){
     $('#current_layouts').on("change", function(){
         var form_info = document.getElementById("lay-select");
@@ -43,6 +41,7 @@ $(function(){
     });
 });
 
+//Helper function, assists in hiding the navigation.
 $(function() {
     $("#nav_toggle").click(function(){
         $("nav").toggleClass("hidden");

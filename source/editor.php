@@ -20,7 +20,6 @@
    crossorigin=""></script>
    <script src="./javascript/icons.js"></script>
    <script src="./javascript/submit_layout.js"></script>
-   <script src="./javascript/layoutFunction.js"></script>
    <script src="./javascript/helpers.js"></script>
    <script src="./javascript/add-areas.js"></script>
    <script src="./javascript/leaflet.rotatedMarker.js"></script>
@@ -301,11 +300,6 @@
 					selected_furn = furnMap.get(selected_marker.options.fid);
 					selected_furn.x = lng;
 					selected_furn.y = lat;
-
-					//generate sql insert string for furniture
-					//var insertString = getFurnitureString(lng,lat,degreeOffset, furniture+"_"+numSeats, "chair");
-					//change popup to insertString
-					//this.bindPopup(insertString);
 
 					//output to console to check values
 					console.log('marker dragend event');

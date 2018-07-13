@@ -1,63 +1,19 @@
 //TODO's!
 
-
-survey-success.php
-==================
-TODO: add a button to make another survey, perhaps let us choose the floor and layout and send us
-	//to data-collection with that in GET array to immediately load a new floor to survey.
-	
-	
-query-report.php
-================
-TODO: give a calendar view to choose the date of a survey record,
-	//  Load the state of the library during that survey to give us not only area_use, but furniture location
-	
-
 index.php
 =========
 TODO: Remove current sign on and replace with calls to DB
+FUTURE FEATURE
 
-
-home.php
-========
-TODO: Add large buttons to data-collection, query-report and create-layout for ease of use and to fill-in space
-	//Also add instructions for new users.
-	
 
 editor.php
 ==========
 TODO: add editor from alpha directory to editor
 
-
-data-collection.php
-===================
-TODO: move functions out of data-collection to separate files.
-
-
-pop-activities.js
-=================
-TODO: add field for wb_activity column
-
-
 //add a time-out for submitting
-//get rid of 0 in room occupants
 //be able to reorient the map
 
-//Known bug: WB only saves activities checked right before hitting save.
-
 Cheryl's notes on a survey:
-//push eric change to spell partition correctly
-//take away from seat activity
 //add laptop activity
-//survey not pulled up on query-report.php
 //add teaching activity for rooms
-//cb for whiteboard, multiple activities
 //indicate what furniture has been unlocked
-
-Ben is on:
-//Cleanup data-collection.php (break apart)
-
-Eric is on:
-//home.php large navigation buttons
-//survey-success.php another layout
-//add an undo for furniture move

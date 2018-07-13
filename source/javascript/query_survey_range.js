@@ -55,6 +55,7 @@ function Activity(count, name){
 	this.name = name;
 }
 
+//Call this function to build the map when the user clicks "submit survey" button
 $(function(){
 	$('#submit-surveys').click(function(){
 
@@ -90,7 +91,6 @@ $(function(){
                 case 3: markerSize= 40; markerAnchor = -20; break;
                 case 4: markerSize= 80; markerAnchor = -40; break;
             }
-            //alert(mymap.getZoom)());
             var newzoom = '' + (markerSize) +'px';
             var newanchor = '' + (markerAnchor) +'px';
             var newLargeZoom = '' + (markerSize*2) +'px';
@@ -103,6 +103,8 @@ $(function(){
 		var i = 0;
 		var cur_layout = document.getElementById("in_layout_select");
 		var cur_floor = document.getElementById("in_floor_select");
+
+		//this code snippet grabs elements selected in the multibox and puts survey id's into an array for later use
 		$('#multi-select-input').children('option').each(function(){
 			var survey_obj = new Object();
 			survey_obj.id = this.value;
@@ -130,7 +132,6 @@ $(function(){
 		}
 
 		survey_info_legend.addTo(mymap);
-
 		var json_string = JSON.stringify(survey_id_array);
 		loadMap(parseInt(cur_floor.value));
 		queryAreas(cur_layout.value);
@@ -138,13 +139,13 @@ $(function(){
 	});
 });
 
+//Queries all of the area's associate with the Layout to populate the Area Map with.
 function queryAreas(layout_id){
 	$.ajax({
 		url: 'phpcalls/area-from-survey.php',
 		type: 'get',
 		data:{ 'layout_id': layout_id },
 		success: function(data){
-			console.log("Retrieved areas.");
 			jsondata = JSON.parse(data);
 			popAreaMap(jsondata);
 		},
@@ -155,6 +156,8 @@ function queryAreas(layout_id){
 	});
 }
 
+//Queries all the furniture data based on the survey id's and the layout.
+//It consolidates furniture data for all survey's for each object and returns that data within a JSON string.
 function queryFurnitureInfo(survey_id_json, layout_id){
 	$.ajax({
 		url: 'phpcalls/report-multisurvey-furniture.php',
@@ -162,16 +165,11 @@ function queryFurnitureInfo(survey_id_json, layout_id){
 		data:{ 'survey_ids': survey_id_json,
 				'layout_id': layout_id},
 		success: function(data){
-			console.log("Retrieved Furn Data.");
 			jsondata = JSON.parse(data);
-			console.log(jsondata);
 			popFurnMap(jsondata);
 			addFurniture();
 			calculateAreaPeaks(survey_id_json, layout_id);
 			calculateAreaData();
-			
-
-			
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown) {
 			console.log("Status: " + textStatus);
@@ -180,6 +178,7 @@ function queryFurnitureInfo(survey_id_json, layout_id){
 	});
 }
 
+//accepts the area data from a json string and builds the areas on the map with the proper data
 function popAreaMap(jsonAreas){
 	areaMap = new Map();
 	for(key in jsonAreas){
@@ -197,9 +196,9 @@ function popAreaMap(jsonAreas){
 	}
 }
 
+//Popualtes the Furniture map with appropriately consolidated furniture data.
 function popFurnMap(jsonFurn){
 	furnMap = new Map();
-	console.log(jsonFurn)
 	for(key in jsonFurn){
 		cur_furn = jsonFurn[key];
 		if(cur_furn.in_area != null){
@@ -210,20 +209,20 @@ function popFurnMap(jsonFurn){
 		}
 		furnMap.set(cur_furn.furniture_id, newFurniture);
 	}
-	console.log("furnMap is now Populated");
 }
 
+//Helper calls the draw function for each area.
 function addSurveyedAreas(){
 	areaMap.forEach(function(key, value, map){
 		drawArea(key).addTo(mymap);
 	});
 }
 
+//this function add's the furniture markers to the map and builds the marker popups associated with each piece of furniture
 function addFurniture(){
-	//peform a query that looks at furniture with 0 seats (the rooms) and return the largest recorded value for that peak
 	var survey_id_json = JSON.stringify(survey_id_array);
 	furnMap.forEach(function(key, value, map){
-
+		//establish values for each piece of furniture
 		latlng = [key.y, key.x];
 		ftype = parseInt(key.ftype)
 		selectedIcon = getIconObj(ftype);
@@ -269,6 +268,7 @@ function addFurniture(){
 			mod_marker.addTo(mymap);
 		}
 
+		//initilize furniture marker
 		marker = L.marker(latlng, {
 			icon: selectedIcon,
 			rotationAngle: degreeOffset,
@@ -279,7 +279,8 @@ function addFurniture(){
 			fid: fid.toString()
 		}).addTo(furnitureLayer);
 
-		//default oppacity for rooms is 0.5 or 1 for rooms that are occupied
+		//if numSeats is 0 we know that the furniture marker is a room marker
+		//therefor we must query the peak data for that room to properly populate the popup string
 		if(numSeats === "0"){
 			room_occ = avgOccupied;
 			room_sum = sumOccupant;
@@ -291,9 +292,7 @@ function addFurniture(){
 				data:{ 'survey_ids': survey_id_json,
 						'furniture_id': fid},
 				success: function(data){
-
 					jsondata = JSON.parse(data);
-
 					popupString = "<strong>Room Average Occupancy: </strong>" 
 						+ avgOccupied 
 						+ "</br><strong>Total Occupants over time: </strong>" 
@@ -305,6 +304,7 @@ function addFurniture(){
 						+ "</br><strong>Peak Survey ID: </strong>"
 						+ jsondata['room_peak_survey'];
 					
+					//default oppacity for rooms is 0.5 or 1 for rooms that are occupied
 					if(room_occ > 0){
 						oppacity = 1;
 					} else {
@@ -344,6 +344,8 @@ function addFurniture(){
 	});
 }
 
+//This function calculates the data for the area based on the furniture map
+//it consolidates the furniture data based upon which area the furniture is located within
 function calculateAreaData(){
 	var iterateAreaMap = areaMap.values();
 
@@ -358,12 +360,14 @@ function calculateAreaData(){
 		for(var j of furnMap){
 			var cur_furn = iterateFurnMap.next().value;
 			if(cur_furn != undefined){
+				//check if the furniture is in the current area we are collecting data on
 				if(cur_furn.inArea == cur_area.area_id){
 					area_furn_count++;
 					max_seats += parseInt(cur_furn.numSeats);
 					area_ratio_sum += parseFloat(cur_furn.avgUseRatio);
 					total_seats_used += parseInt(cur_furn.sumOccupants);
 				}
+				//check if a modified furniture exists for that furniture that is also within the current area
 				for(var k = 0; k < cur_furn.mod_array.length; k++){
 					var mod_furn = cur_furn.mod_array[k];
 					if(mod_furn[2] == cur_area.area_id){
@@ -376,6 +380,7 @@ function calculateAreaData(){
 				}
 			}
 		}
+		//calculate area data based on now consolidated furniture data
 		cur_area.numSeats = max_seats;
 		floorMaxSeats += cur_area.numSeats;
 		cur_area.avgPopArea = total_seats_used/num_surveys;
@@ -384,12 +389,9 @@ function calculateAreaData(){
 		cur_area.totalSeatsUsed = total_seats_used;
 		total_floor_vistors += cur_area.totalSeatsUsed;
 	}
-	console.log(areaMap);
-
-
-
 }
 
+//This function calculate the peak use data for each area
 function calculateAreaPeaks(survey_id_json, layout_id){
 	$.ajax({
 		url: 'phpcalls/get-area-peaks.php',
@@ -397,9 +399,7 @@ function calculateAreaPeaks(survey_id_json, layout_id){
 		data:{ 'survey_ids': survey_id_json,
 				'layout_id': layout_id},
 		success: function(data){
-			console.log("Retrieved Peak Area Data");
 			jsonpeakdata = JSON.parse(data);
-
 			var iterateAreaMap = areaMap.values();
 			for(var i of areaMap){
 				var cur_area = iterateAreaMap.next().value;
@@ -412,11 +412,13 @@ function calculateAreaPeaks(survey_id_json, layout_id){
 					}
 				}
 			}
+			//call addsurveyed areas to draw the areas onto the map now that all data for area's has been collected.
 			addSurveyedAreas();
+			//check to see if a report exists for text report printout
+			//if not create one!
 			if(!report_added){
 				createPrintReport();
 			}
-
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown) {
 			console.log("Status: " + textStatus);
@@ -425,6 +427,8 @@ function calculateAreaPeaks(survey_id_json, layout_id){
 	});
 }
 
+//this function draws the areas and their popups onto the map
+//it also builds the area string for the text print out report
 function drawArea(area){
 	var curVerts = [];
 	for(var i=0; i < area.verts.length; i++){
@@ -471,6 +475,7 @@ function drawArea(area){
 	return poly;
 }
 
+//this function builds the text print out report
 function createPrintReport(){
 	//This is used for the printabe iFrame
 		var report = document.getElementById("print_frame");
@@ -521,6 +526,7 @@ function createPrintReport(){
 
 }
 
+//Adds the print map button to the map
 function addPrintMap(){
 	L.control.browserPrint({
 		title: 'Library Query Report',
@@ -538,12 +544,13 @@ function addPrintMap(){
 		manualMode: false
 	}).addTo(mymap);
 
+	//This adds the legends to the printable map
 	mymap.on("browser-print-start", function(e){
-		/*on print start we already have a print map and we can create new control and add it to the print map to be able to print custom information */
 		queried_info_legend.addTo(e.printMap);
 		survey_info_legend.addTo(e.printMap);
 	});
 
+	//Readds the legends to the regular map after printing
 	mymap.on("browser-print-end", function(e){
 		queried_info_legend.addTo(mymap);
 		survey_info_legend.addTo(mymap);
