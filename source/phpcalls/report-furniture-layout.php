@@ -11,11 +11,11 @@
 	
 
 	//get all furniture
-	$all_furn_stmt = $dbh->prepare('SELECT furniture_id, x_location, y_location, degree_offset,
-										furniture_type, number_of_seats, in_area
-									FROM furniture, furniture_type
-									WHERE furniture_type = furniture_type_id
-										AND layout_id = :layout_id');
+	$all_furn_stmt = $dbh->prepare('
+		SELECT furniture_id, x_location, y_location, degree_offset, furniture_type, number_of_seats, in_area
+		FROM furniture, furniture_type
+		WHERE furniture_type = furniture_type_id
+		AND layout_id = :layout_id');
 									
 	$all_furn_stmt->bindParam(':layout_id', $layout_id, PDO::PARAM_INT);
 	
@@ -42,10 +42,12 @@
 		//might have to do a string compare
 		if($numSeats === "0"){
 			//get room occupants
-			$roomOccupantStmt = $dbh->prepare("SELECT total_occupants 
-												FROM surveyed_room
-												WHERE furniture_id = :furniture_id
-													AND survey_id = :survey_id");
+			$roomOccupantStmt = $dbh->prepare("
+				SELECT total_occupants 
+				FROM surveyed_room
+				WHERE furniture_id = :furniture_id
+				AND survey_id = :survey_id");
+
 			$roomOccupantStmt->bindParam(':furniture_id', $fid, PDO::PARAM_INT);										
 			$roomOccupantStmt->bindParam(':survey_id', $survey_id, PDO::PARAM_INT);
 			
@@ -60,12 +62,13 @@
 		} else {
 			//Since it's numSeats isn't 0, it isn't a room. Get seat information.
 			//get count of occupied seats in furniture
-			$occupied_furn_stmt = $dbh->prepare('SELECT count(*) occupied_seats
-												FROM seat
-												WHERE furniture_id = :furniture_id
-													AND occupied = 1
-													AND survey_id = :survey_id
-													GROUP BY seat.furniture_id');
+			$occupied_furn_stmt = $dbh->prepare('
+				SELECT count(*) occupied_seats
+				FROM seat
+				WHERE furniture_id = :furniture_id
+				AND occupied = 1
+				AND survey_id = :survey_id
+				GROUP BY seat.furniture_id');
 											
 			$occupied_furn_stmt->bindParam(':furniture_id', $fid, PDO::PARAM_INT);
 			$occupied_furn_stmt->bindParam(':survey_id', $survey_id, PDO::PARAM_INT);
@@ -81,13 +84,14 @@
 		}
 		
 		//get activities for the furniture
-		$activity_stmt = $dbh->prepare('SELECT COUNT(activity_description), activity_description 
-										FROM activity, seat_has_activity, seat
-										WHERE furniture_id = :furniture_id
-											AND seat.seat_id = seat_has_activity.seat_id
-											AND seat_has_activity.activity_id = activity.activity_id
-											AND survey_id = :survey_id
-											GROUP BY activity_description');
+		$activity_stmt = $dbh->prepare('
+			SELECT COUNT(activity_description), activity_description 
+			FROM activity, seat_has_activity, seat
+			WHERE furniture_id = :furniture_id
+			AND seat.seat_id = seat_has_activity.seat_id
+			AND seat_has_activity.activity_id = activity.activity_id
+			AND survey_id = :survey_id
+			GROUP BY activity_description');
 											
 		$activity_stmt->bindParam(':furniture_id', $fid, PDO::PARAM_INT);
 		$activity_stmt->bindParam(':survey_id', $survey_id, PDO::PARAM_INT);
@@ -104,10 +108,11 @@
 		
 		
 		//get modified furniture where it exists
-		$mod_furn_stmt = $dbh->prepare('SELECT *
-										FROM modified_furniture
-										WHERE furniture_id = :furniture_id
-											AND survey_id = :survey_id');
+		$mod_furn_stmt = $dbh->prepare('
+			SELECT *
+			FROM modified_furniture
+			WHERE furniture_id = :furniture_id
+			AND survey_id = :survey_id');
 											
 		$mod_furn_stmt->bindParam(':furniture_id', $fid, PDO::PARAM_INT);
 		$mod_furn_stmt->bindParam(':survey_id', $survey_id, PDO::PARAM_INT);
@@ -127,17 +132,18 @@
 		}
 		
 		//bind furniture elements to array
-		$array_item = array( 'furniture_id' => $fid,
-							  'num_seats' => $numSeats,
-							  'x' => $x,
-							  'y' => $y,
-							  'degree_offset' => $degreeOffset,
-							  'furn_type' => $ftype,
-							  'in_area' => $inArea,
-							  'occupants' => $occupants,
-							  'activities' => $activities,
-							  'original_x' => $original_x,
-							  'original_y' => $original_y);
+		$array_item = array( 
+			'furniture_id' => $fid,
+		    'num_seats' => $numSeats,
+		    'x' => $x,
+		    'y' => $y,
+		    'degree_offset' => $degreeOffset,
+		    'furn_type' => $ftype,
+		    'in_area' => $inArea,
+		    'occupants' => $occupants,
+		    'activities' => $activities,
+		    'original_x' => $original_x,
+		    'original_y' => $original_y);
 		array_push($data, $array_item);
 	}
 

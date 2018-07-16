@@ -1,6 +1,5 @@
 <?php
 	//query multiple survey id's and return the information
-
 	require_once('./../config.php');
 
 	//get array of survey's
@@ -24,6 +23,7 @@
 
 	$all_furn = $all_furn_stmt->fetchAll();
 
+	//iterate all the furniture
 	foreach($all_furn as $row){
 		//establish current furniture we are examining
 		$fid = $row['furniture_id'];

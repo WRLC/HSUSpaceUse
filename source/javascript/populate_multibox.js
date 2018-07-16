@@ -1,3 +1,6 @@
+
+//This file checks the inputs on query-range.php and when all inputs have a value populates 
+//the multibox select with the proper survey data depending on inputs
 $(function(){
     $('#date-select-1, #date-select-2, #in_floor_select, #in_layout_select').on("change", function(){
         document.getElementById("mapid").style.display = "none";
@@ -18,8 +21,7 @@ $(function(){
                     'layout_id' : query_layout
                 },
                 success: function(data){
-                    /*need to replace with ajax call getting actual layout id's*/
-                    console.log("query successful");
+                    //This code requires the transfer-select plugin
                     var json_object = JSON.parse(data);
                     $('#multi-select').empty();
                     var t = $('#multi-select').bootstrapTransfer(
@@ -41,11 +43,10 @@ $(function(){
         }
     });
 
+    //this populates the dropdown for layouts after a floor is selected from the form.
     $('#in_floor_select').on("change", function(){
         var form_info = document.getElementById("choose_period_form");
         cur_selected_floor = form_info.elements["in_floor_select"].value;
-
-        //Get rid previous select options before repopulating
         var select = document.getElementById('in_layout_select');
         var length = select.options.length;
         if(length > 1){
@@ -59,7 +60,6 @@ $(function(){
             data:{ 'floor': cur_selected_floor },
             success: function(data){
 
-                //console.log("got dates");
                 json_object = JSON.parse(data);
                 var layout_select = document.getElementById('in_layout_select');
 

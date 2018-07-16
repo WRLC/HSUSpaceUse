@@ -1,13 +1,13 @@
 //Gets record information and sends queries for furniture and area which call populates to their maps.
 var report_added = false;
 
+//Populates Objects on the map
 function populateObjs(survey_id){
 	$.ajax({
 		url: 'phpcalls/record-from-survey.php',
 		type: 'get',
 		data:{ 'survey_id': survey_id },
 		success: function(data){
-			console.log("Retrieved survey record.");
 			jsondata = JSON.parse(data);
 			queryArea(jsondata.layout);
 			queryFurniture(survey_id,jsondata.layout);
@@ -29,7 +29,6 @@ function queryFurniture(survey_id, layout_id){
 				'layout_id': layout_id},
 		success: function(data){
 			jsondata = JSON.parse(data);
-			//console.log(jsondata);
 			popFurnMap(jsondata);
 
 		},
@@ -48,7 +47,6 @@ function queryArea(layout_id){
 		type: 'get',
 		data:{ 'layout_id': layout_id },
 		success: function(data){
-			console.log("Retrieved areas.");
 			jsondata = JSON.parse(data);
 			popAreaMap(jsondata);
 
@@ -163,31 +161,15 @@ function popFurnMap(jsonFurniture){
 		manualMode: false
 	}).addTo(mymap);
 
+	//This adds the legends to the printable map
 	mymap.on("browser-print-start", function(e){
-		/*on print start we already have a print map and we can create new control and add it to the print map to be able to print custom information */
 		queried_info_legend.addTo(e.printMap);
 	});
 
+	//Readds the legends to the regular map after printing
 	mymap.on("browser-print-end", function(e){
 		queried_info_legend.addTo(mymap);
 	});
-
-	/*var report = document.getElementById("print_frame");
-	var report_text = document.createElement("P");
-
-	report.contentDocument.body.appendChild(report_text);
-
-	var title = document.createElement("TR");
-	header.setAttribute("id", "title");
-	document.getElementById("print_table").appendChild(title);
-
-	var title_data = document.createElement("TD");
-	var title_text = document.createTextNode()
-
-	report_text.innerHTML = "Seats in use: " + seatsUsed +
-				"</br>Possible seats: " + totalSeats +
-				"</br> Floor % Use: " + floor_percent + "%";
-	//report_data.appendChild(report_text);*/
 }
 
 //populate the areaMap

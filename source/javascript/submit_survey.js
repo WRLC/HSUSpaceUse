@@ -15,7 +15,6 @@ function submitSurvey(username, layout, furnMap){
             'layout': layout
         },
         success: function(data){
-            console.log(data);
             /*Get that new Survey ID for insertion statements*/
             var json_object = JSON.parse(data);
             cur_survey_id = json_object.survey_id;
@@ -24,7 +23,6 @@ function submitSurvey(username, layout, furnMap){
             	var cur_furn = iterateMap.next().value;
 
             	if(cur_furn.modified===true){
-					//submitModified(cur_furn, cur_survey_id);
 					cur_furn.furn_id;
 				}
 
@@ -35,10 +33,8 @@ function submitSurvey(username, layout, furnMap){
 					}
 				}
             }
-
             var objmap = mapToObj(furnMap);
             var json_string = JSON.stringify(objmap);
-            console.log(json_string);
             $.ajax({
 				url: 'phpcalls/insert-survey-data.php',
 				type: 'post',
@@ -47,8 +43,6 @@ function submitSurvey(username, layout, furnMap){
 					'to_json': json_string
 				},
 				success: function(data){
-					
-					console.log(data);
 					if(data>0){
 						window.location.href = 'survey-success.php';
 					} else {

@@ -1,4 +1,5 @@
 <?php
+//gets the layout ids based on floor
 session_start();
 require_once('./../config.php');
 

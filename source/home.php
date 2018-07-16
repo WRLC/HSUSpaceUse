@@ -1,7 +1,6 @@
 <?php
     session_start();
 	//Get's username from the login and greets the user to the homepage
-	//TODO: Add large buttons to data-collection, query-report and create-layout for ease of use and to fill-in space
 	//Also add instructions for new users to help navigate the page.
 ?>
 <!DOCTYPE html>

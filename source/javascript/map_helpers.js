@@ -1,4 +1,5 @@
 
+/*Basic Helper Functions for interacting with Maps*/
 function getFurnMap(){
     return furnMap;
 }

@@ -144,4 +144,3 @@ foreach($jsondata as $key => $value){
 }
 
 print json_encode($insert_seat_stmt->rowCount());
-//print $retString;

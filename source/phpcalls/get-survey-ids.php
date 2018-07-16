@@ -1,4 +1,5 @@
 <?php
+//This file gets the survey id's based on the selected day
 session_start();
 require_once('./../config.php');
 

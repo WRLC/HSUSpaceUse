@@ -1,17 +1,19 @@
+//Various Helper functions that assist in data collection popup user interface
+
+//calls when minus button is clicked
 function minusHelper(){
     minus(selected_furn);
 }
 
+//calls when plus button is clicked
 function plusHelper(){
-	//selected_furn.seat_places.push(new Seat(selected_furn.seat_places.length));
 	var newSeat = new Seat(temp_seat_places.length);
     temp_seat_places.push(newSeat);
-	//plus(selected_furn, selected_furn.seat_places.length);
-	//pass true for occupied because we are adding another seat to the default
 	plus(newSeat, temp_seat_places.length, true);
 	checkAll(selected_furn);
 }
 
+//called when save button is clicked on popup.
 function saveHelper(){
 	var occupants = document.getElementById("occupantInput");
 	if(occupants)
@@ -29,6 +31,7 @@ function saveHelper(){
   	mymap.closePopup();
 }
 
+//helps lock or unlock furniture item on movement
 function lockHelper(){
 	var lockButton = document.getElementById("lock");
 	
@@ -45,12 +48,12 @@ function lockHelper(){
 	mymap.closePopup();
 }
 
+//called when checkall button is clicked.
 function checkAllHelper(){
 	checkAll(selected_furn);
 }
 
-//rotate selected furniture
-//pass the div to append to
+//This function helps rotate the furniture and appends the div after the furniture has been rotated.
 function rotateHelper(parentDiv)
 {
 	if(document.getElementById("rotateSlider") == null)
@@ -111,7 +114,6 @@ function updateHelper(){
         outString+= updateFurn(item);
 		outString+="\n";
 	});
-	console.log(outString);
 }
 
 //On click of submission, Create's a Survey Record and Inserts each seat object into the database with that ID
@@ -119,11 +121,9 @@ function submitSurveyHelper(){
     submitSurvey(username, layout, furnMap);
 }
 
-//deletes the selected marker
+//Deletes the selected marker
 function deleteHelper()
 {
-	//remove marker
 	mymap.removeLayer(selected_marker);
-	//remove furniture from furnMap
 	furnMap.delete(selected_furn.id);
 }

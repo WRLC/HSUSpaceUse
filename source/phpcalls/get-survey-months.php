@@ -1,4 +1,5 @@
 <?php
+//get's the months of potential survey's based on year selected
 session_start();
 require_once('./../config.php');
 

@@ -7,10 +7,11 @@
 	
 	$dbh = new PDO($dbhost, $dbh_select_user, $dbh_select_pw);
 	
-	$record_stmt = $dbh->prepare("SELECT layout.layout_id cur_layout, floor 
-								FROM survey_record, layout 
-								WHERE survey_id = :survey_id
-									AND survey_record.layout_id = layout.layout_id");
+	$record_stmt = $dbh->prepare("
+		SELECT layout.layout_id cur_layout, floor 
+		FROM survey_record, layout 
+		WHERE survey_id = :survey_id
+		AND survey_record.layout_id = layout.layout_id");
 	$record_stmt->bindParam(':survey_id', $survey_id, PDO::PARAM_INT);
 	//execute and retrieve
 	$record_stmt->execute();

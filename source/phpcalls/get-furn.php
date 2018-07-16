@@ -1,5 +1,5 @@
 <?php
-//This file is called when the layout is built with build_markets.js to get data for the furniture in layout
+//This file is called when the layout is built with build_markers.js to get data for the furniture in layout
 session_start();
 require_once('./../config.php');
 
@@ -17,8 +17,6 @@ $getfurn->execute();
 
 foreach ($getfurn as $row) {
     //seperate query to get num seats based on furniture
-    /*To be replaced with ajax call*/
-
     $numSeatsQuery = $dbh->prepare('SELECT number_of_seats
                                     FROM furniture_type
                                     WHERE furniture_type_id = :infurnid');
@@ -36,13 +34,14 @@ foreach ($getfurn as $row) {
     $furniture_type = $row['furniture_type'];
     $default_seat_type = $row['default_seat_type'];
 
-    $array_item = array( $keystring => array( 'furniture_id' => $keystring,
-											  'num_seats' => $num_seats,
-											  'x' => $x,
-											  'y' => $y,
-											  'degree_offset' => $degree_offset,
-											  'furn_type' => $furniture_type,
-											  'default_seat_type' => $default_seat_type));
+    $array_item = array( $keystring => array( 
+      'furniture_id' => $keystring,
+	  'num_seats' => $num_seats,
+	  'x' => $x,
+	  'y' => $y,
+	  'degree_offset' => $degree_offset,
+	  'furn_type' => $furniture_type,
+	  'default_seat_type' => $default_seat_type));
     array_push($data, $array_item);
 }
 

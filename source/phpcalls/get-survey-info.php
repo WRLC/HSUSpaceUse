@@ -1,4 +1,5 @@
 <?php
+//This get's gets survey data based on sent survey ID
 session_start();
 require_once('./../config.php');
 
