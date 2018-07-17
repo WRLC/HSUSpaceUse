@@ -17,7 +17,6 @@
     integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw=="
     crossorigin=""></script>
 		<script src="./javascript/report-objs-pop.js"></script>
-		<script src="./javascript/report-functions.js"></script>
 		<script src="./javascript/leaflet.rotatedMarker.js"></script>
 		<script src="./javascript/icons.js"></script>
 		<script src="./javascript/leaflet.browser.print.min.js"></script>

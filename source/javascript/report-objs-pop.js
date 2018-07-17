@@ -1,5 +1,5 @@
 //Populates the dropdown menus for selecting a survey
-//Creates the map objects 
+//Creates the map objects
 //Gets record information and sends queries for furniture and area which call populates to their maps.
 var report_added = false;
 var cur_selected_date;
@@ -313,8 +313,8 @@ function populateObjs(survey_id){
 		success: function(data){
 			jsondata = JSON.parse(data);
 			queryArea(jsondata.layout);
-			queryFurniture(survey_id,jsondata.layout);
 			loadMap(parseInt(jsondata.floor));
+			queryFurniture(survey_id,jsondata.layout);
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown) {
 			console.log("Status: " + textStatus);
