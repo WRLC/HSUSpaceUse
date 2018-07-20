@@ -334,7 +334,8 @@ function addFurniture(){
 
 			//add activities and their count to the popupString
 			for(i in activities){
-				popupString += "</br>"+activities[i].count +"X: " + activities[i].name;
+				var cur_act = activities[i];
+				popupString += "</br>"+ cur_act[0] +"X: " + cur_act[1];
 			}
 
 			marker.bindPopup(popupString);
