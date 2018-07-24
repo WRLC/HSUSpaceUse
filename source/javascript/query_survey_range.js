@@ -218,6 +218,15 @@ function addSurveyedAreas(){
 	});
 }
 
+function activityExists(act_obj, array){
+	for(i in array){
+		if(act_obj.name === array[i].name){
+			return true;
+		}
+	}
+	return false;
+}
+
 //this function add's the furniture markers to the map and builds the marker popups associated with each piece of furniture
 function addFurniture(){
 	var survey_id_json = JSON.stringify(survey_id_array);
@@ -310,8 +319,32 @@ function addFurniture(){
 					} else {
 						oppacity = 0.5
 					}
+					
+					var act_array = [];
+
 					for(i in activities){
-						popupString += "</br>"+activities[i].count +"X: " + activities[i].name;
+						var cur_act = activities[i];
+						var act_object = new Activity(parseInt(cur_act[0]), cur_act[1]);
+						if(act_array.length == 0){
+							act_array.push(act_object);
+						}
+						else{
+							if(activityExists(act_object, act_array) == false){
+								act_array.push(act_object);
+							}
+							else{
+								for(j in act_array){
+									if(act_object.name == act_array[j].name){
+										act_array[j].count = parseInt(act_object.count) + parseInt(act_array[j].count);
+									}
+								}
+							}
+						}
+					}
+
+					for(k in act_array){
+						var cur_object = act_array[k];
+						popupString += "</br>"+ cur_object.count +"X: " + cur_object.name;
 					}
 
 					marker.bindPopup(popupString);
@@ -333,9 +366,34 @@ function addFurniture(){
 			oppacity = 0.3 + avgOccupied;
 
 			//add activities and their count to the popupString
+
+			var act_array = [];
+
 			for(i in activities){
-				popupString += "</br>"+activities[i].count +"X: " + activities[i].name;
+				var cur_act = activities[i];
+				var act_object = new Activity(parseInt(cur_act[0]), cur_act[1]);
+				if(act_array.length == 0){
+					act_array.push(act_object);
+				}
+				else{
+					if(activityExists(act_object, act_array) == false){
+						act_array.push(act_object);
+					}
+					else{
+						for(j in act_array){
+							if(act_object.name == act_array[j].name){
+								act_array[j].count = parseInt(act_object.count) + parseInt(act_array[j].count);
+							}
+						}
+					}
+				}
 			}
+
+			for(k in act_array){
+				var cur_object = act_array[k];
+				popupString += "</br>"+ cur_object.count +"X: " + cur_object.name;
+			}
+			
 
 			marker.bindPopup(popupString);
 			marker.setOpacity(oppacity);
