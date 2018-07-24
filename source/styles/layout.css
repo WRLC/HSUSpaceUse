@@ -340,3 +340,36 @@ footer > p{
 	margin: auto;
 	margin-top: 2em;
 }
+
+.furn_editor_select{
+display: block;
+position:  absolute;
+padding-right: 20px;
+padding-top: 11px;
+}
+
+#editor_buttons{
+	display:  inline;
+	position:  absolute;
+	right: 10%;
+	top: 1.8%;
+}
+
+#getAreas{
+height: 25px;
+width: 100px;
+}
+
+#insertLayout{
+	display: block;
+	text-align:  center;
+	width: 100px;
+	height: 25px;
+	margin-top: 7px;
+}
+
+#submit_floor{
+	height: 25px;
+	width: 65px;
+	margin-left: 10px;
+}

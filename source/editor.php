@@ -68,38 +68,44 @@
             <main class="to-top">
                 <form class="layout-selector" id="lay-select">
                     <fieldset>
+                        <label style="padding-right: 97px; color: white; text-decoration:bold;">
+                          Select a floor:</label>
                         <!-- Choose the floor to work from-->
-                        <select name="floor-select">
+                        <select name="floor-select" id="floor_dropdown">
                             <option value="default">Choose a Floor</option>
                             <option value=1>Floor 1</option>
                             <option value=2>Floor 2</option>
                             <option value=3>Floor 3</option>
                         </select>
-						<button type="button" id="submit_floor">Select</button>
-						</br></br>
+						<button type="button" id="submit_floor" style="display: none;">Select</button>
+
 						<!--select a piece of furniture to place -->
-						<label>Select a piece of furniture:</label>
-						</br>
-						<select name="furniture-select" >
-							<?php
-								//get furniture types to populate dropdown for placing on map
-								$dbh = new PDO($dbhost, $dbh_select_user, $dbh_select_pw);
+            <div class="furn_editor_select">
+						     <label style="padding-right: 10px; color: white; text-decoration:bold;">
+                   Select a piece of furniture:</label>
 
-								$fTypeSelectStmt = $dbh->prepare("SELECT * FROM furniture_type");
-								$fTypeSelectStmt->execute();
-								$furnitureTypes = $fTypeSelectStmt->fetchAll();
+						     <select name="furniture-select" >
+    							<?php
+    								//get furniture types to populate dropdown for placing on map
+    								$dbh = new PDO($dbhost, $dbh_select_user, $dbh_select_pw);
 
-								foreach($furnitureTypes as $row) {
-							?>
-							<option value=<?= $row['furniture_type_id'] ?>> <?= $row['furniture_name'] ?> </option>
-							<?php
-								}
-							?>
-						</select>
-						</br></br>
+    								$fTypeSelectStmt = $dbh->prepare("SELECT * FROM furniture_type");
+    								$fTypeSelectStmt->execute();
+    								$furnitureTypes = $fTypeSelectStmt->fetchAll();
 
-						<button type="button" id="getAreas" >Generate Areas</button>
-						<button type="button" id="insertLayout" disabled="true">Insert Layout</button>
+    								foreach($furnitureTypes as $row) {
+    							?>
+    							<option value=<?= $row['furniture_type_id'] ?>> <?= $row['furniture_name'] ?> </option>
+    							<?php
+    								}
+    							?>
+    						</select>
+            </div>
+
+            <div id="editor_buttons">
+  						<button type="button" id="getAreas" style="display: none;">Generate Areas</button>
+  						<button type="button" id="insertLayout" style="display: none;">Submit Layout</button>
+            </div>
 						<div class="loading">
 							<img src="images/loadwheel.svg" id="load-image">
 						</div>
@@ -117,20 +123,30 @@
             </main>
     <script>
 		//create map
-        var mymap = L.map('mapid', {crs: L.CRS.Simple, minZoom: 0, maxZoom: 4});
-		var furnitureLayer = L.layerGroup().addTo(mymap);
+    var mymap = L.map('mapid', {crs: L.CRS.Simple, minZoom: 0, maxZoom: 4});
+    var furnitureLayer = L.layerGroup().addTo(mymap);
 		var areaLayer = L.layerGroup().addTo(mymap);
 		var drawnItems = new L.FeatureGroup();
-        var bounds = [[0,0], [360,550]];
+    var bounds = [[0,0], [360,550]];
 		mymap.fitBounds(bounds);
 
 		//setup global variables
 		var selected_marker;
 		var selected_furn;
+    var mapPopulated = false;
+    var floor_selection = -1;
+    var form_info = document.getElementById("floor_dropdown");
 		var floor_image = "local";
+    var polyArea;
+
+    //Create the boundries for placing furniture
+    var latMax = 359.75;
+    var latMin = -0.5;
+    var longMax = 508.18;
+    var longMin = 42.18;
 
 		//container for furniture objects
-        var furnMap = new Map();
+    var furnMap = new Map();
 		var mapKey = 0;
 
 		//create a container for areas
@@ -150,26 +166,58 @@
 			this.ftype = ftype;
 		}
 
-		var selectFloor = document.getElementById("submit_floor");
-        selectFloor.onclick = function(){
-            //remove old floor image and place newly selected floor image
-            if( mymap.hasLayer(image)){
-                mymap.removeLayer(image);
-            }
-            var form_info = document.getElementById("lay-select");
-            floor_selection = form_info.elements.namedItem("floor-select").value;
-			var floorIMGstr;
+    var selectFloor = document.getElementById("submit_floor");
+    var floor_dropdown = document.getElementById("floor_dropdown");
+    floor_dropdown.onchange = function(){
+      selectFloor.style.display = "inline";
+    }
 
-			switch(floor_selection){
-				case "1": floorIMGstr = "floor1.svg";break
-				case "2": floorIMGstr = "floor2.svg";break;
-				case "3": floorIMGstr = "floor3.svg";break;
-				default: floorIMGstr = "floor1.svg";break;
-			}
-
-
-            image = L.imageOverlay('./images/' + floorIMGstr, bounds).addTo(mymap);
+    selectFloor.onclick = function(){
+        document.getElementById("getAreas").style.display = "block";
+        document.getElementById("insertLayout").style.display = "block";
+        if(floor_selection > 0 && form_info.value != floor_selection){
+          if (confirm("You are about to change the floor image and delete all of the furniture added to the map, are you sure you want to continue?")) {
+            //Remove the current markers and areas
+            mymap.removeLayer(furnitureLayer);
+            mymap.removeLayer(areaLayer);
+            furnitureLayer = L.layerGroup().addTo(mymap);
+            areaLayer = L.layerGroup().addTo(mymap);
+            //Clear furnmap and areamap, so user can start new
+            furnMap = new Map();
+            areaMap = new Map();
+            mapPopulated = false;
+            addMapPic();
+            getAreas.innerHTML = "Generate Areas";
+            //insertLayout.style.display = "none";
+          }
+          else {
+            form_info.options[floor_selection].selected = true;
+          }
         }
+
+        else if(floor_selection == -1){
+          addMapPic();
+        }
+    }
+
+    function addMapPic(){
+      //remove old floor image and place newly selected floor image
+      if( mymap.hasLayer(image)){
+          mymap.removeLayer(image);
+      }
+
+      floor_selection = form_info.value;
+      var floorIMGstr;
+
+      switch(floor_selection){
+        case "1": floorIMGstr = "floor1.svg";break
+        case "2": floorIMGstr = "floor2.svg";break;
+        case "3": floorIMGstr = "floor3.svg";break;
+        default: floorIMGstr = "floor1.svg";break;
+      }
+
+      image = L.imageOverlay('./images/' + floorIMGstr, bounds).addTo(mymap);
+    }
 
 		//get areas and place over map
 		var getAreas = document.getElementById("getAreas");
@@ -178,16 +226,22 @@
 			//TODO: create new areas or select different areas/
 			//currently, it associates floor number with layout to get areas from L1 for floor 1, 2 for floor 2, etc.
 
-			//check if the areaMap has been populated already
-			var mapPopulated = false;
-			areaMap.forEach(function(value, key, map){
-				mapPopulated = true;
-			});
-			//create areas if the map is empty
+      //check if the areaMap has been populated already
+      //create areas if the map is empty
 			if(!mapPopulated){
 				createAreas(floor_selection);
+        getAreas.innerHTML = "Remove Areas";
+  			mapPopulated = true;
+        //insertLayout.style.display = "inline";
 			}
-			insertLayout.disabled = false;
+
+      else{
+        mymap.removeLayer(areaLayer);
+        areaLayer = L.layerGroup().addTo(mymap);
+        mapPopulated = false;
+        getAreas.innerHTML = "Generate Areas";
+        //insertLayout.style.display = "none";
+      }
 		}
 
 		//Make sure all pieces of furniture are in areas before inserting a new layout.
@@ -208,9 +262,11 @@
 						area_id = jtem.area_id;
 					}
 				});
+
 				if(area_id !== "TBD"){
 					value.inArea = area_id;
-				} else {
+				}
+        else {
 					layoutReady = false;
 					outOfBoundsLatLng = [y,x];
 				}
@@ -219,96 +275,111 @@
 
 			//check if the layout is ready to insert
 			if(layoutReady){
-				//var layoutName = prompt("Name this layout:");
-				//alert(layoutName);
-				var author = "<?= $_SESSION["username"]?>";
-				submitLayout(author, floor_selection, furnMap, areaMap);
-			}else{
-				//layout not ready, alert the user and pan to last marker out of bounds.
-				alert("Not all of your furniture is in an area, fix this before re-submitting!");
-				mymap.panTo(outOfBoundsLatLng);
-			}
+          var author = "<?= $_SESSION["username"]?>";
+          var name;
+          var person = prompt("Please enter a name for the layout:", author);
+          if (person == null || person == "") {
+              alert("User has canceled the layout submit.");
+          }
+  				submitLayout(person, floor_selection, furnMap, areaMap);
+			  }
+        else{
+  				//layout not ready, alert the user and pan to last marker out of bounds.
+  				alert("Not all of your furniture is in an area, fix this before re-submitting!");
+  				mymap.panTo(outOfBoundsLatLng);
+			  }
 		}
 
 		//place a draggable marker onClick!
 		function onMapClick(e) {
-			//get the furniture select element
-			var furn = document.getElementById("lay-select").elements.namedItem("furniture-select");
-			//get the type id from the value
-			var ftype = furn.value;
-			//convert the string furniture type into an int to send to getIconObj(int ftype)
-			ftype = parseInt(ftype);
+      var coord = e.latlng;
+      var lat = coord.lat;
+      var lng = coord.lng;
 
-			//do not allow user to place chairs or rooms yet.
-			//Chairs are objects to attach to furniture.
-			//Rooms require validating a room# and area before placing.
-			if(ftype == 20 || ftype == 32){
-				alert("Sorry, you can't place chairs or rooms yet. Contact your admin.");
-			}else{
-				//get the index of the selected item
-				var findex = furn.selectedIndex;
-				//get the options
-				var furnOption = furn.options;
-				//get the inner text of the selected furniture item to save the name.
-				var fname = furnOption[findex].text;
+      if(lat > latMax || lat < latMin || lng > longMax || lng < longMin){
+        alert("Please place the furniture inside the map");
+      }
+
+      else{
+  			//get the furniture select element
+  			var furn = document.getElementById("lay-select").elements.namedItem("furniture-select");
+  			//get the type id from the value
+  			var ftype = furn.value;
+  			//convert the string furniture type into an int to send to getIconObj(int ftype)
+  			ftype = parseInt(ftype);
+
+  			//do not allow user to place chairs or rooms yet.
+  			//Chairs are objects to attach to furniture.
+  			//Rooms require validating a room# and area before placing.
+  			if(ftype == 20 || ftype == 32){
+  				alert("Sorry, you can't place chairs or rooms yet. Contact your admin.");
+  			}
+        else{
+  				//get the index of the selected item
+  				var findex = furn.selectedIndex;
+  				//get the options
+  				var furnOption = furn.options;
+  				//get the inner text of the selected furniture item to save the name.
+  				var fname = furnOption[findex].text;
 
 
-				var selectedIcon = getIconObj(ftype);
+  				var selectedIcon = getIconObj(ftype);
 
-				var latlng = e.latlng;
+  				var latlng = e.latlng;
 
-				//create the furniture object and store in map
-				var newFurn = new Furniture(mapKey, ftype, latlng, fname);
-				furnMap.set(mapKey, newFurn);
-				if(document.getElementById("popup") == null){
-						popupDiv = document.createElement("DIV");
-						popupDiv.id = "popup";
-						document.getElementById("popupHolder").appendChild(popupDiv);
-				}
+  				//create the furniture object and store in map
+  				var newFurn = new Furniture(mapKey, ftype, latlng, fname);
+  				furnMap.set(mapKey, newFurn);
+  				if(document.getElementById("popup") == null){
+  						popupDiv = document.createElement("DIV");
+  						popupDiv.id = "popup";
+  						document.getElementById("popupHolder").appendChild(popupDiv);
+  				}
 
-				var popup = document.getElementById("popup");
-				var popupDim =
-				{
-					'minWidth': '200',
-					'minHeight': '2000px',
-				};//This is the dimensions for the popup
+  				var popup = document.getElementById("popup");
+  				var popupDim =
+  				{
+  					'minWidth': '200',
+  					'minHeight': '2000px',
+  				};//This is the dimensions for the popup
 
-				marker = L.marker(e.latlng, {
-						fid: mapKey++,
-						icon: selectedIcon,
-						rotationAngle: 0,
-						draggable: true
-				}).addTo(furnitureLayer).bindPopup(popup,popupDim);
-				//give it an onclick function
-				 marker.on('click', markerClick);
+  				marker = L.marker(e.latlng, {
+  						fid: mapKey++,
+  						icon: selectedIcon,
+  						rotationAngle: 0,
+  						draggable: true
+  				}).addTo(furnitureLayer).bindPopup(popup,popupDim);
+  				//give it an onclick function
+  				 marker.on('click', markerClick);
 
-				//define drag events
-				marker.on('drag', function(e) {
-					console.log('marker drag event');
-				});
-				marker.on('dragstart', function(e) {
-					console.log('marker dragstart event');
-					mymap.off('click', onMapClick);
-				});
-				marker.on('dragend', function(e) {
-					//update latlng for insert string
-					var changedPos = e.target.getLatLng();
-					var lat=changedPos.lat;
-					var lng=changedPos.lng;
+  				//define drag events
+  				marker.on('drag', function(e) {
+  					console.log('marker drag event');
+  				});
+  				marker.on('dragstart', function(e) {
+  					console.log('marker dragstart event');
+  					mymap.off('click', onMapClick);
+  				});
+  				marker.on('dragend', function(e) {
+  					//update latlng for insert string
+  					var changedPos = e.target.getLatLng();
+  					var lat=changedPos.lat;
+  					var lng=changedPos.lng;
 
-					selected_marker = this;
-					selected_furn = furnMap.get(selected_marker.options.fid);
-					selected_furn.x = lng;
-					selected_furn.y = lat;
+  					selected_marker = this;
+  					selected_furn = furnMap.get(selected_marker.options.fid);
+  					selected_furn.x = lng;
+  					selected_furn.y = lat;
 
-					//output to console to check values
-					console.log('marker dragend event');
+  					//output to console to check values
+  					console.log('marker dragend event');
 
-					setTimeout(function() {
-						mymap.on('click', onMapClick);
-					}, 10);
-				});
-			}
+  					setTimeout(function() {
+  						mymap.on('click', onMapClick);
+  					}, 10);
+  				});
+  			}
+      }
 		}
 
 			//bind onMapClick function
@@ -374,7 +445,6 @@
 				rotateHelper("rotateDiv");
 			}
 		}
-
     </script>
 </body>
 </html>
