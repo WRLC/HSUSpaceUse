@@ -9,18 +9,18 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-    <title> Library Login </title>
+    <title> SpaceUse Login </title>
     <meta charset="utf-8" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link rel="stylesheet" href="normalize.css" type="text/css" >
     <link rel="stylesheet" href="styles/layout.css" type="text/css" >
     <link rel="stylesheet" href="styles/format.css" type="text/css" >
-    
+
 </head>
 <body>
     <header>
     	<img class="logo" src="images/hsu-wm.svg">
-    	<h1>Library Data Collector</h1>
+    	<h1>SpaceUse</h1>
     </header>
     <main class="login_main">
     	<?php
@@ -40,13 +40,13 @@
 			}
 			else
 			{
-			    
+
 			    $username = strip_tags($_POST['username_in']);
 			    $password = $_POST['password_in'];
 			    $author = "has no value";
 
 			    if($username == "admin" && $password == "gdc4562" ){
-			
+
 				//if I reach here, I have connected to my username and password, and can now travel to the next page and store session variables
 				$_SESSION["username"] = $username;
 				$_SESSION["password"] = $password;

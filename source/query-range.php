@@ -9,7 +9,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-    <title> Library Query Report </title>
+    <title> SpaceUse Query Report </title>
     <meta charset="utf-8" />
 
     <!-- jquery CDN-->
@@ -62,7 +62,7 @@
 <body>
     <header>
         <img class="logo" src="images/hsu-wm.svg">
-        <h1>Library Data Collector</h1>
+        <h1>SpaceUse</h1>
         <?php
             if (!array_key_exists("username", $_SESSION)){
                 ?>

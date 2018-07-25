@@ -8,7 +8,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-    <title> Library Collect Data </title>
+    <title> SpaceUse Collect Data </title>
     <meta charset="utf-8" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="./javascript/get_layouts.js"></script>
@@ -19,7 +19,7 @@
 <body>
     <header>
         <img class="logo" src="images/hsu-wm.svg">
-        <h1>Library Data Collector</h1>
+        <h1>SpaceUse</h1>
 
     <?php
         if (array_key_exists("username", $_SESSION)){

@@ -7,7 +7,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-    <title> Library Query Report </title>
+    <title> SpaceUse Query Report </title>
     <meta charset="utf-8" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css"
@@ -26,7 +26,7 @@
 <body>
     <header>
         <img class="logo" src="images/hsu-wm.svg">
-        <h1>Library Data Collector</h1>
+        <h1>SpaceUse</h1>
 
 
         <?php

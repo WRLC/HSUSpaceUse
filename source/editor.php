@@ -39,7 +39,7 @@
     <button class="hide_nav" id="nav_toggle"><p id="hide_nav_plus">&plus;</p></button>
     <header class="hidden">
         <img class="logo" src="images/hsu-wm.svg">
-        <h1>Library Data Collector</h1>
+        <h1>SpaceUse</h1>
 
 
     <?php
@@ -281,7 +281,9 @@
           if (person == null || person == "") {
               alert("User has canceled the layout submit.");
           }
-  				submitLayout(person, floor_selection, furnMap, areaMap);
+          else{
+  				      submitLayout(person, floor_selection, furnMap, areaMap);
+          }
 			  }
         else{
   				//layout not ready, alert the user and pan to last marker out of bounds.

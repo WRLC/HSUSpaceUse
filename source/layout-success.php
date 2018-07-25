@@ -18,7 +18,7 @@
 <body>
     <header>
         <img class="logo" src="images/hsu-wm.svg">
-        <h1>Library Data Collector</h1>
+        <h1>SpaceUse</h1>
 
     <?php
         if (array_key_exists("username", $_SESSION)){
