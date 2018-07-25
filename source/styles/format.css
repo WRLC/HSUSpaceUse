@@ -96,6 +96,7 @@ fieldset{
 
 form.layout-selector > fieldset{
 	background-color: transparent;
+	padding-bottom: 51px;
 }
 
 legend{

@@ -1,7 +1,7 @@
 //This file defines all classes and functions to pull areas from DB, store in objects, and draw polygons of areas.
 
 //Call to createAreas takes a layout, looksup all areas in that layout.
-//Calls area-select.php to get areas from DB. 
+//Calls area-select.php to get areas from DB.
 //	Create area object, then set to areaMap.
 //Calls area-vertices-select.php to get vertices of each area from DB.
 //	Creates areaVertices and pushes to current area object.
@@ -34,7 +34,7 @@ function createAreas(layout){
 	                data:{ 'area_ID': item.area_id },
 	                success: function(data){
 	                    var vert_json_object = JSON.parse(data);
-	                    
+
 	                    for(var j = 0; j < vert_json_object.length; j++){
 	                        var v_obj = vert_json_object[j];
 	                        v_x = v_obj['v_x'];
@@ -45,12 +45,12 @@ function createAreas(layout){
 
 	                    //draw area polys and add to areaLayer
 	                    var polyItem = item;
-	                    var polyArea = drawArea(polyItem);
+	                    polyArea = drawArea(polyItem);
 	                    item.polyArea = polyArea;
 	                    polyArea.addTo(areaLayer);
 	                }
-	            }); 
-	        });                     
+	            });
+	        });
 	    }
 	});
 }
@@ -77,7 +77,7 @@ function AreaVertices(x,y){
 function addAreas(){
     //draws the areas
     areaMap.forEach(function(item, key, mapObj){
-        var polyArea = drawArea(item);
+        polyArea = drawArea(item);
         polyArea.addTo(areaLayer);
     })
 }
@@ -86,14 +86,14 @@ function addAreas(){
 //takes an Area object, returns a polygon of that area.
 function drawArea(area){
 	var verts = [];
-	
+
 	for(var i=0; i < area.area_vertices.length; i++){
 		area_verts = area.area_vertices[i];
 		verts.push([area_verts.x,area_verts.y]);
 	}
 	var poly = L.polygon(verts);
 	poly.bindPopup(area.area_name);
-	
+
 	return poly;
 }
 
@@ -115,4 +115,3 @@ function isMarkerInsidePolygon(x,y, poly) {
 
 	return inside;
 }
-
