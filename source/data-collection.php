@@ -9,7 +9,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-    <title> Library Collect Data </title>
+    <title> SpaceUse Data Collection</title>
     <meta charset="utf-8" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link rel="stylesheet" href="styles/layout.css" type="text/css" >
@@ -22,7 +22,6 @@
     integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw=="
     crossorigin=""></script>
     <script src="./javascript/icons.js"></script>
-    <script src="./javascript/layoutFunction.js"></script>
     <script src="./javascript/leaflet.rotatedMarker.js"></script>
     <script src="./javascript/submit_survey.js"></script>
     <script src="./javascript/make_popup.js"></script>
@@ -48,7 +47,7 @@
     <button class="submit_survey hidden" id="submit_survey" onclick="if(confirm('Are you sure you want to submit this survey?')) submitSurveyHelper();">Submit Survey</button>
     <header class="hidden">
         <img class="logo" src="images/hsu-wm.svg">
-        <h1>Library Data Collector</h1>
+        <h1>SpaceUse</h1>
     <?php
         if (array_key_exists("username", $_SESSION)){
             ?>
