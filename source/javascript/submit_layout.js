@@ -1,5 +1,5 @@
 /*This function is called when the layout is submitted and it populates the database with the appropriate furniture objects*/
-function submitLayout(username, floor, furnMap, areaMap){
+function submitLayout(username, layout_name, floor, furnMap, areaMap){
     
     $(".loading").addClass("loadingapply");
     $("#load-image").addClass("imagerotate");
@@ -8,6 +8,7 @@ function submitLayout(username, floor, furnMap, areaMap){
         type: 'get',
         data:{
             'username': username,
+            'layout_name': layout_name,
             'floor': floor
         },
         success: function(data){

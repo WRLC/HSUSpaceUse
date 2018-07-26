@@ -46,6 +46,7 @@
 		//Needed for printing text report feature
 		var area_string = "";
 		var print_header;
+        var report_added = false;
 
         $(function() {
             $("#date-select-1").datepicker();
@@ -100,7 +101,7 @@
                 <p class="p-inline"> Layout: <select name="in-layout" id="in_layout_select">
                     <option value="">Choose a Corresponding Layout</option>
                 </select></p>
-								<input type="button" id="query_print_button" value="Print Report" style="display:none" onclick="printReport()"/>
+				<input type="button" id="query_print_button" value="Print Report" style="display:none" onclick="printReport()"/>
 					  </fieldset>
 
         </form>

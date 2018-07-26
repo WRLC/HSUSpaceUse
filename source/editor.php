@@ -282,7 +282,8 @@
               alert("User has canceled the layout submit.");
           }
           else{
-  				      submitLayout(person, floor_selection, furnMap, areaMap);
+            var layout_name = person;
+  				  submitLayout(author, layout_name, floor_selection, furnMap, areaMap);
           }
 			  }
         else{
