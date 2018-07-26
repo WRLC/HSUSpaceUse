@@ -19,6 +19,7 @@ COMMENT = 'Rooms are identified by a facilities id which is unique to the campus
 
 CREATE TABLE `hsu_library`.`layout` (
   `layout_id` INT NOT NULL AUTO_INCREMENT,
+  `layout_name` VARCHAR(45) NOT NULL,
   `author` VARCHAR(45) NOT NULL,
   `floor` INT NOT NULL,
   `date_created` DATETIME NULL,
