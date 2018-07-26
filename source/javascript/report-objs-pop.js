@@ -71,61 +71,61 @@ $('#year-select').on("change", function(){
             success: function(data){
                 json_object = JSON.parse(data);
                 var month_select = document.getElementById('month-select');
-      var month_name;
+      			var month_name;
 
                 for(var i = 0; i < json_object.length; i++){
                     var obj = json_object[i];
-        var month = obj[0];
+        			var month = obj[0];
 
-        switch(month){
-          case "1":
-            month_name = "January";
-            break;
+				    switch(month){
+				      case "1":
+				        month_name = "January";
+				        break;
 
-          case "2":
-            month_name = "February";
-            break;
+				      case "2":
+				        month_name = "February";
+				        break;
 
-          case "3":
-            month_name = "March";
-            break;
+				      case "3":
+				        month_name = "March";
+				        break;
 
-          case "4":
-            month_name = "April";
-            break;
+				      case "4":
+				        month_name = "April";
+				        break;
 
-          case "5":
-            month_name = "May";
-            break;
+				      case "5":
+				        month_name = "May";
+				        break;
 
-          case "6":
-            month_name = "June";
-            break;
+				      case "6":
+				        month_name = "June";
+				        break;
 
-          case "7":
-            month_name = "July";
-            break;
+				      case "7":
+				        month_name = "July";
+				        break;
 
-          case "8":
-            month_name = "August";
-            break;
+				      case "8":
+				        month_name = "August";
+				        break;
 
-          case "9":
-            month_name = "September";
-            break;
+				      case "9":
+				        month_name = "September";
+				        break;
 
-          case "10":
-            month_name = "October";
-            break;
+				      case "10":
+				        month_name = "October";
+				        break;
 
-          case "11":
-            month_name = "November";
-            break;
+				      case "11":
+				        month_name = "November";
+				        break;
 
-          defualt:
-            month_name = "December";
-            break;
-        }
+				      defualt:
+				        month_name = "December";
+				        break;
+				    }
 
                     var option = document.createElement('option');
                     option.value = obj[0];
@@ -209,13 +209,14 @@ $('#day-select').on("change", function(){
                     var obj = json_object[i];
                     surv_id = obj['survey_id'];
                     lay_id = obj['layout_id'];
-        floor_num = obj['floor'];
-        surv_date_time = obj['survey_date'];
-        surv_date_time_arr = surv_date_time.split(" ");
-        surv_time = surv_date_time_arr[1];
+                    lay_name = obj['layout_name'];
+					floor_num = obj['floor'];
+					surv_date_time = obj['survey_date'];
+					surv_date_time_arr = surv_date_time.split(" ");
+					surv_time = surv_date_time_arr[1];
                     var option = document.createElement('option');
                     option.value = surv_id;
-                    option.innerHTML = "Survey: " + surv_id + " for Layout " + lay_id + " on floor " + floor_num + " at " + surv_time;
+                    option.innerHTML = "Survey: " + surv_id + " for Layout: " + lay_name + " on floor " + floor_num + " at " + surv_time;
                     survey_select.appendChild(option);
                 }
             }
@@ -231,36 +232,37 @@ rFrame.contentWindow.print();
 function make_map(survey_id){
   document.getElementById("query_print_button").style.display = "inline";
 
-  $.ajax({
-            url: 'phpcalls/get-survey-info.php',
-            type: 'get',
-            data:{ 'survey_id': survey_id},
-            success: function(data){
-                json_id = JSON.parse(data);
-                lay_id = json_id[0].layout_id;
-						    floor_num = json_id[0].floor;
-						    surv_date_time = json_id[0].survey_date;
-						    surv_date_time_arr = surv_date_time.split(" ");
-						    surv_time = surv_date_time_arr[1];
-						    surv_date = surv_date_time_arr[0];
-                var query_header = document.getElementById('query_header');
-              	query_header.style.display = "none";
+  	$.ajax({
+	    url: 'phpcalls/get-survey-info.php',
+	    type: 'get',
+	    data:{ 'survey_id': survey_id},
+	    success: function(data){
+	        json_id = JSON.parse(data);
+	        lay_id = json_id[0].layout_id;
+	        lay_name = json_id[0].layout_name;
+		    floor_num = json_id[0].floor;
+		    surv_date_time = json_id[0].survey_date;
+		    surv_date_time_arr = surv_date_time.split(" ");
+		    surv_time = surv_date_time_arr[1];
+		    surv_date = surv_date_time_arr[0];
+	        var query_header = document.getElementById('query_header');
+	      	query_header.style.display = "none";
 
-					      survey_info_legend.onAdd = function (mymap){
-						        var div = L.DomUtil.create('div', 'report_legend');
-						        var header = document.createElement('p');
-						        header.innerHTML = "Survey: " + survey_id + "</br>Layout: "
-						          + lay_id + "</br>Floor: " + floor_num
-						          + "</br> Time: " + surv_time + "</br> Date: " + surv_date;
-						        print_header = "Survey " + survey_id + " for Layout "
-						          + lay_id + " on Floor " + floor_num
-						          + " at " + surv_time + " on " + surv_date;
-						        div.appendChild(header);
-						        return div;
-      					}
-      					survey_info_legend.addTo(mymap);
-          }
-  });
+	        survey_info_legend.onAdd = function (mymap){
+		        var div = L.DomUtil.create('div', 'report_legend');
+		        var header = document.createElement('p');
+		        header.innerHTML = "Survey: " + survey_id + "</br>Layout: "
+		          + lay_name + "</br>Floor: " + floor_num
+		          + "</br> Time: " + surv_time + "</br> Date: " + surv_date;
+		        print_header = "Survey " + survey_id + " for Layout "
+		          + lay_name + " on Floor " + floor_num
+		          + " at " + surv_time + " on " + surv_date;
+		        div.appendChild(header);
+		        return div;
+			}
+			survey_info_legend.addTo(mymap);
+	    }
+  	});
   areaMap = new Map();
   furnMap = new Map();
 

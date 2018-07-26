@@ -23,9 +23,10 @@ $(function(){
                 for(var i = 0; i < json_object.length; i++){
                     var obj = json_object[i];
                     lay_id = obj['layout_id'];
+                    lay_name = obj['layout_name'];
                     var option = document.createElement('option');
                     option.value = lay_id;
-                    option.innerHTML = "Layout " + lay_id +" for Floor";
+                    option.innerHTML = "Layout: " + lay_name;
                     lay_select.appendChild(option);
                 }
             }
@@ -50,7 +51,6 @@ $(function() {
         $("footer").toggleClass("foot_hide");
         $(".hide_nav").toggleClass("nav_open");
         $(".submit_survey").toggleClass("nav_open");
-
     })
 });
 

@@ -7,7 +7,6 @@ var areaLayer;
 var furnitureLayer;
 var bounds;
 var survey_id_array;
-var report_added = false;
 var avgFloorPop = 0;
 var floorMaxSeats = 0;
 var total_floor_vistors = 0;
@@ -103,6 +102,9 @@ $(function(){
 		var i = 0;
 		var cur_layout = document.getElementById("in_layout_select");
 		var cur_floor = document.getElementById("in_floor_select");
+		var layout_name = cur_layout.options[cur_layout.selectedIndex].text;
+		var snip = /(.*Layout:\s+)(.*)(\s+created.*)/;
+		var snip_name = layout_name.replace(snip, "$2");
 
 		//this code snippet grabs elements selected in the multibox and puts survey id's into an array for later use
 		$('#multi-select-input').children('option').each(function(){
@@ -121,7 +123,7 @@ $(function(){
 
 			header.innerHTML = "Survey Range: " + date1.value + " through " + date2.value
 						+ "</br>Number of Surveys: " + survey_id_array.length + "</br>Layout: "
-						+ cur_layout.value + "</br>Floor: " + cur_floor.value;
+						+ snip_name + "</br>Floor: " + cur_floor.value;
 			print_header = "Survey range report for Layout "
 						+ cur_layout.value + " on Floor " + cur_floor.value
 						+ "</br>" + date1.value + " - " + date2.value;
@@ -134,13 +136,13 @@ $(function(){
 		survey_info_legend.addTo(mymap);
 		var json_string = JSON.stringify(survey_id_array);
 		loadMap(parseInt(cur_floor.value));
-		queryAreas(cur_layout.value);
-		queryFurnitureInfo(json_string, cur_layout.value);
+		queryAreas(cur_layout.value, json_string);
+		
 	});
 });
 
 //Queries all of the area's associate with the Layout to populate the Area Map with.
-function queryAreas(layout_id){
+function queryAreas(layout_id, survey_id_json){
 	$.ajax({
 		url: 'phpcalls/area-from-survey.php',
 		type: 'get',
@@ -148,6 +150,7 @@ function queryAreas(layout_id){
 		success: function(data){
 			jsondata = JSON.parse(data);
 			popAreaMap(jsondata);
+			queryFurnitureInfo(survey_id_json, layout_id);
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown) {
 			console.log("Status: " + textStatus);
@@ -406,6 +409,9 @@ function addFurniture(){
 //it consolidates the furniture data based upon which area the furniture is located within
 function calculateAreaData(){
 	var iterateAreaMap = areaMap.values();
+	floorMaxSeats = 0;
+	total_floor_vistors = 0;
+	avgFloorPop = 0;
 
 	for(var i of areaMap){
 		var num_surveys = survey_id_array.length;
@@ -415,6 +421,7 @@ function calculateAreaData(){
 		var max_seats = 0;
 		var total_seats_used = 0;
 		var iterateFurnMap = furnMap.values();
+
 		for(var j of furnMap){
 			var cur_furn = iterateFurnMap.next().value;
 			if(cur_furn != undefined){
