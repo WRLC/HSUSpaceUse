@@ -6,6 +6,9 @@ $(function(){
         document.getElementById("mapid").style.display = "none";
         document.getElementById("multi-select").style.display = "block";
         document.getElementById("submit-surveys").style.display = "block";
+        report_added = false;
+        areaMap.clear();
+        furnMap.clear();
         
         var cur_date_start = document.getElementById("date-select-1").value;
         var cur_date_end = document.getElementById("date-select-2").value;
@@ -66,10 +69,11 @@ $(function(){
                 for(var i = 0; i < json_object.length; i++){
                     var obj = json_object[i];
                     lay_id = obj['layout_id'];
+                    lay_name = obj['layout_name'];
                     lay_date = obj['date_created'];
                     var option = document.createElement('option');
                     option.value = lay_id;
-                    option.innerHTML = "Layout: " + lay_id + " created " + lay_date;
+                    option.innerHTML = "Layout: " + lay_name + " created " + lay_date;
                     layout_select.appendChild(option);
                 }
             }
