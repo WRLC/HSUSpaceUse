@@ -190,6 +190,7 @@
 		});
 
 		$("#roomSubmit").click(function(e){
+
 			roomName = document.getElementById("roomName").value;
 			roomId = document.getElementById("roomId").value;
 			document.getElementById("roomName").value = "";
@@ -296,11 +297,13 @@
 		insertLayout.onclick = function(){
 			var layoutReady = true;
 			var outOfBoundsLatLng = [];
+			var roomCheck;
 			//calculate the area each piece of furniture is in.
 			furnMap.forEach(function(value, key, map){
 				//get the x,y for each piece of furniture
 				y = value.y;
 				x = value.x;
+				roomCheck = value.ftype;
 				area_id="TBD";
 
 				areaMap.forEach(function(jtem, key, mapObj){
@@ -313,31 +316,33 @@
 				if(area_id !== "TBD"){
 					value.inArea = area_id;
 				}
-        else {
-					layoutReady = false;
-					outOfBoundsLatLng = [y,x];
+        		else {
+					if(roomCheck != 20){
+						layoutReady = false;
+						outOfBoundsLatLng = [y,x];
+					}
 				}
 			});
 
 
 			//check if the layout is ready to insert
 			if(layoutReady){
-          var author = "<?= $_SESSION["username"]?>";
-          var name;
-          var person = prompt("Please enter a name for the layout:", author);
-          if (person == null || person == "") {
-              alert("User has canceled the layout submit.");
-          }
-          else{
-            var layout_name = person;
-  				  submitLayout(author, layout_name, floor_selection, furnMap, areaMap);
-          }
-			  }
-        else{
+				var author = "<?= $_SESSION["username"]?>";
+				var name;
+				var person = prompt("Please enter a name for the layout:", author);
+				if (person == null || person == "") {
+				alert("User has canceled the layout submit.");
+				}
+				else{
+					var layout_name = person;
+					submitLayout(author, layout_name, floor_selection, furnMap, areaMap);
+         		}
+			}
+        	else{
   				//layout not ready, alert the user and pan to last marker out of bounds.
   				alert("Not all of your furniture is in an area, fix this before re-submitting!");
   				mymap.panTo(outOfBoundsLatLng);
-			  }
+			}
 		}
 
 		//place a draggable marker onClick!
@@ -365,71 +370,6 @@
 
 				else{
 					createFurnObj();
-					/*/get the index of the selected item
-					var findex = furn.selectedIndex;
-					//get the options
-					var furnOption = furn.options;
-					//get the inner text of the selected furniture item to save the name.
-					var fname = furnOption[findex].text;
-
-
-					var selectedIcon = getIconObj(ftype);
-
-					var latlng = e.latlng;
-
-					//create the furniture object and store in map
-					var newFurn = new Furniture(mapKey, ftype, latlng, fname);
-					console.log(newFurn);
-
-					furnMap.set(mapKey, newFurn);
-					if(document.getElementById("popup") == null){
-							popupDiv = document.createElement("DIV");
-							popupDiv.id = "popup";
-							document.getElementById("popupHolder").appendChild(popupDiv);
-					}
-
-					var popup = document.getElementById("popup");
-					var popupDim =
-					{
-						'minWidth': '200',
-						'minHeight': '2000px',
-					};//This is the dimensions for the popup
-
-					marker = L.marker(e.latlng, {
-							fid: mapKey++,
-							icon: selectedIcon,
-							rotationAngle: 0,
-							draggable: true
-					}).addTo(furnitureLayer).bindPopup(popup,popupDim);
-					//give it an onclick function
-					marker.on('click', markerClick);
-
-					//define drag events
-					marker.on('drag', function(e) {
-						console.log('marker drag event');
-					});
-					marker.on('dragstart', function(e) {
-						console.log('marker dragstart event');
-						mymap.off('click', onMapClick);
-					});
-					marker.on('dragend', function(e) {
-						//update latlng for insert string
-						var changedPos = e.target.getLatLng();
-						var lat=changedPos.lat;
-						var lng=changedPos.lng;
-
-						selected_marker = this;
-						selected_furn = furnMap.get(selected_marker.options.fid);
-						selected_furn.x = lng;
-						selected_furn.y = lat;
-
-						//output to console to check values
-						console.log('marker dragend event');
-
-						setTimeout(function() {
-							mymap.on('click', onMapClick);
-						}, 10);
-					});*/
 				}
       		}
 		}
