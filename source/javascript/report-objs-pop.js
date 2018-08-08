@@ -8,6 +8,7 @@ var cur_month;
 var cur_day;
 var json_object;
 var survey_info_legend = L.control();
+var threshold_prompt = true;
 
 //define objects
 function Area(area_id, verts, area_name){
@@ -48,7 +49,7 @@ $('#year-select').on("change", function(){
   var form_info = document.getElementById("choose_survey_form");
   var month_select = document.getElementById("month-select");
   var day_select = document.getElementById("day-select");
-  var id_select = document.getElementById("survey_id_select");
+  var id_select = document.getElementById("survey-id-select");
   var survey_submit = document.getElementById("query_submit_button");
   month_select.style.display = "inline";
   day_select.style.display = "none";
@@ -139,12 +140,11 @@ $('#year-select').on("change", function(){
 $('#month-select').on("change", function(){
   var form_info = document.getElementById("choose_survey_form");
   var day_select = document.getElementById("day-select");
-  var id_select = document.getElementById("survey_id_select");
+  var id_select = document.getElementById("survey-id-select");
   var survey_submit = document.getElementById("query_submit_button");
   day_select.style.display = "inline";
   id_select.style.display = "none";
   survey_submit.style.display = "none";
-
   cur_month = form_info.elements["month-select"].value;
 
   //Get rid previous select options before repopulating
@@ -180,16 +180,16 @@ $('#month-select').on("change", function(){
 
 $('#day-select').on("change", function(){
   var form_info = document.getElementById("choose_survey_form");
-  var id_select = document.getElementById("survey_id_select");
+  var id_select = document.getElementById("survey-id-select");
   var survey_submit = document.getElementById("query_submit_button");
   id_select.style.display = "inline";
-  survey_submit.style.display = "inline";
+  survey_submit.style.display = "none";
   cur_day = form_info.elements["day-select"].value;
 
   cur_selected_date = cur_year + '-' + cur_month + '-' + cur_day;
 
   //Get rid previous select options before repopulating
-  var select = document.getElementById('survey_id_select');
+  var select = document.getElementById('survey-id-select');
   var length = select.options.length;
   if(length > 1){
       for(i = 0; i < length; i++){
@@ -203,7 +203,8 @@ $('#day-select').on("change", function(){
             data:{ 'selected_date': cur_selected_date },
             success: function(data){
                 json_object = JSON.parse(data);
-                var survey_select = document.getElementById('survey_id_select');
+				var survey_select = document.getElementById('survey-id-select');
+				//var thresold_input = document.getElementById('threshold');
 
                 for(var i = 0; i < json_object.length; i++){
                     var obj = json_object[i];
@@ -218,10 +219,18 @@ $('#day-select').on("change", function(){
                     option.value = surv_id;
                     option.innerHTML = "Survey: " + surv_id + " for Layout: " + lay_name + " on floor " + floor_num + " at " + surv_time;
                     survey_select.appendChild(option);
-                }
+				}
+				//thresold_input.style.display = "inline";
             }
         });
+	});
 });
+
+$(document).on("change", '#survey-id-select', function(){
+	var survey_submit = document.getElementById("query_submit_button");
+	var thresold_input = document.getElementById("threshold");
+	survey_submit.style.display = "inline";
+	thresold_input.style.display = "inline";
 });
 
 function printReport(){
@@ -595,12 +604,20 @@ function drawArea(area){
 		area_verts = area.verts[i];
 		curVerts.push([area_verts.x,area_verts.y]);
 	}
+
+	var form_info = document.getElementById("choose_survey_form");
+	threshold = form_info.elements["threshold"].value;
 	var poly = L.polygon(curVerts);
 	var use_percent = area.occupants/area.seats;
 	use_percent *= 100;
 	use_percent = use_percent.toFixed(2);
 	popupString = "<strong>"+area.area_name +"</strong></br>Average use: " + area.occupants + " of " + area.seats + " or " + use_percent + "%";
-	if (use_percent > 10)
+	
+	//convert the varables to numbers, if not you will get unexpected results
+	//https://www.w3schools.com/js/js_comparisons.asp
+	threshold = Number(threshold);
+	use_percent = Number(use_percent);
+	if (use_percent > threshold)
 	{
 		popupString = popupString.fontcolor("green");
 		poly.setStyle({fillColor: 'green'});

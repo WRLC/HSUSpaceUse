@@ -4,11 +4,12 @@
 	function nav_form(){
 		?>
 			<nav class="hidden">
-	            <p class="nav"><a href="home.php">Home</a></p>
-	            <p class="nav selected"><a href="data-collection.php">Data Collection</a></p>
-	            <p class="nav"><a href="query-select.php">Query Report</a></p>
-	            <p class="nav"><a href="editor.php">Layout Creator</a></p>
-	            <p class="nav"><a href="logout.php">Logout</a></p>
+					<p class="nav"><a href="home.php">Home</a></p>
+                    <p class="nav selected"><a href="data-collection.php">Data Collection</a></p>
+                    <p class="nav"><a href="query-select.php">Query Report</a></p>
+                    <p class="nav"><a href="editor.php">Layout Creator</a></p>
+                    <p class="nav"><a href="create-floor.php">Floor Creator</a></p>
+                    <p class="nav"><a href="logout.php">Logout</a></p>
 	        </nav>
         <?php
 	}

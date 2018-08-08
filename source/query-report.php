@@ -52,6 +52,7 @@
                     <p class="nav"><a href="data-collection.php">Data Collection</a></p>
                     <p class="nav selected"><a href="query-select.php">Query Report</a></p>
                     <p class="nav"><a href="editor.php">Layout Creator</a></p>
+                    <p class="nav"><a href="create-floor.php">Floor Creator</a></p>
                     <p class="nav"><a href="logout.php">Logout</a></p>
                 </nav>
     </header>
@@ -74,10 +75,12 @@
 				<select name="day" id="day-select" style="display:none">
                     <option value="0">Choose a Day</option>
                 </select>
-                <!--THIS IS A PLACEHOLDER! SELECT WILL BE POPULATED BY TIMES FROM DB-->
-                <select name="survey_id" id="survey_id_select" style="display:none">
-                    <option id="chosen_survey" value="">Choose a Survey</option>
+
+                <select name="survey_id" id="survey-id-select" style="display:none">
+                    <option id="chosen_survey" value="0">Choose a Survey</option>
                 </select>
+                <input type="number" id="threshold" name="threshold" value="<? echo isset($_GET['threshold']) ? $_GET['threshold'] : '10' ?>" 
+                    style="display: none;" min="1" max="100"/>
                 <input type="submit" name="submit-query" style="display:none" id="query_submit_button"/>
 				<input type="button" id="query_print_button" value="Print Report" style="display:none" onclick="printReport()"/>
             </fieldset>
@@ -101,11 +104,12 @@
 				//create maps and grab survey_id
 				var survey_id = <?= $_GET["survey_id"] ?>;
 				//used to keep track of all the seats on the floor and how many are being used
-			  var totalSeats = 0;
-			  var seatsUsed = 0;
-			  var print_header;
-			  var area_string;
-			  var modified_furn = 0;
+                var totalSeats = 0;
+                var seatsUsed = 0;
+                var print_header;
+                var area_string;
+                var modified_furn = 0;
+                var threshold;
 
 				//make map
 				var mymap = L.map('mapid', {crs: L.CRS.Simple});

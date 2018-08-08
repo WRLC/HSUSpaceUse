@@ -285,14 +285,14 @@ footer > p{
 #query_submit_button
 {
 	margin-left: 1em;
-	height:  40px;
+	height: 40px;
 	display: inline;
 }
 
-
-#survey_id_select
+#survey-id-select
 {
 	margin-left: 1em;
+	margin-right: 1em;
 }
 
 #query_header_container
@@ -334,6 +334,11 @@ footer > p{
 	border-radius: 25px;
 }
 
+#threshold{
+	width: 60px;
+	height: 16px;
+}
+
 #multi-select{
 	width: 80%;
 	display: block;
@@ -342,34 +347,52 @@ footer > p{
 }
 
 .furn_editor_select{
-display: block;
-position:  absolute;
-padding-right: 20px;
-padding-top: 11px;
+
+display: block;
+
+position:  absolute;
+
+padding-right: 20px;
+
+padding-top: 11px;
 }
 
 #editor_buttons{
-	display:  inline;
-	position:  absolute;
-	right: 10%;
-	top: 1.8%;
+	
+display:  inline;
+	
+position:  absolute;
+	
+right: 10%;
+	
+top: 1.8%;
 }
 
 #getAreas{
-height: 25px;
-width: 100px;
+
+height: 25px;
+
+width: 100px;
 }
 
 #insertLayout{
-	display: block;
-	text-align:  center;
-	width: 100px;
-	height: 25px;
-	margin-top: 7px;
+	
+display: block;
+	
+text-align:  center;
+	
+width: 100px;
+	
+height: 25px;
+	
+margin-top: 7px;
 }
 
 #submit_floor{
-	height: 25px;
-	width: 65px;
-	margin-left: 10px;
+	
+height: 25px;
+	
+width: 65px;
+	
+margin-left: 10px;
 }
