@@ -82,28 +82,43 @@
                     <p class="nav"><a href="data-collection.php">Data Collection</a></p>
                     <p class="nav selected"><a href="query-select.php">Query Report</a></p>
                     <p class="nav"><a href="editor.php">Layout Creator</a></p>
+                    <p class="nav"><a href="create-floor.php">Floor Creator</a></p>
                     <p class="nav"><a href="logout.php">Logout</a></p>
                 </nav>
     </header>
     <main>
         <form class="report-selector" id="choose_period_form">
             <fieldset>
-                <p class="p-inline"> Start Date: <input type="text" name="date1" id="date-select-1"></p>
+                <p class="p-inline"> Start Date: 
+                    <input type="text" name="date1" id="date-select-1">
+                </p>
 
-                <p class="p-inline"> End Date: <input type="text" name="date2" id="date-select-2"></p>
+                <p class="p-inline"> End Date: 
+                    <input type="text" name="date2" id="date-select-2">
+                </p>
 
-                <p class="p-inline"> Floor: <select name="in-floor" id="in_floor_select">
-                    <option value="">Choose Floor</option>
-                    <option value="1"> First Floor</option>
-                    <option value="2"> Second Floor</option>
-                    <option value="3"> Third Floor</option>
-                </select></p>
-                <p class="p-inline"> Layout: <select name="in-layout" id="in_layout_select">
-                    <option value="">Choose a Corresponding Layout</option>
-                </select></p>
-				<input type="button" id="query_print_button" value="Print Report" style="display:none" onclick="printReport()"/>
-					  </fieldset>
+                <p class="p-inline"> Floor: 
+                    <select name="in-floor" id="in_floor_select">
+                        <option value="">Choose Floor</option>
+                        <option value="1"> First Floor</option>
+                        <option value="2"> Second Floor</option>
+                        <option value="3"> Third Floor</option>
+                    </select>
+                </p>
+                <p class="p-inline"> Layout: 
+                    <select name="in-layout" id="in_layout_select">
+                        <option value="">Choose a Corresponding Layout</option>
+                    </select>
+                </p>
 
+                <p class="p-inline"> Area Use Threshold: 
+                    <input type="number" id="threshold" name="threshold" value="10" 
+                        style="display: inline;" min="1" max="100"/>
+                </p>
+
+                <input type="button" id="query_print_button" value="Print Report" style="display:none" onclick="printReport()"/>
+                
+			</fieldset>
         </form>
 
 

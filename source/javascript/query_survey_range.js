@@ -12,6 +12,7 @@ var floorMaxSeats = 0;
 var total_floor_vistors = 0;
 var queried_info_legend;
 var survey_info_legend;
+var threshold;
 
 //define objects
 function Area(area_id, verts, area_name){
@@ -57,6 +58,8 @@ function Activity(count, name){
 //Call this function to build the map when the user clicks "submit survey" button
 $(function(){
 	$('#submit-surveys').click(function(){
+		threshold = Number(document.getElementById("threshold").value);
+
 
 		if(mymap != null){
 			mymap.remove();
@@ -530,7 +533,11 @@ function drawArea(area){
 					+ "</br></br>";
 	}
 
-	if(area.avgPopArea/area.numSeats < .1){
+	//convert the varables to numbers, if not you will get unexpected results
+	//https://www.w3schools.com/js/js_comparisons.asp
+	var area_use = Number((area.avgPopArea/area.numSeats)*100);
+
+	if(area_use < threshold){
 		poly.setStyle({fillColor:"red"});
 	}
 	else{
@@ -542,7 +549,7 @@ function drawArea(area){
 
 //this function builds the text print out report
 function createPrintReport(){
-	//This is used for the printabe iFrame
+	//This is used for the printable iFrame
 		var report = document.getElementById("print_frame");
 		var report_header = document.createElement("H2");
 		var overview_header = document.createElement("H3");
