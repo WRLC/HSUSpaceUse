@@ -145,3 +145,14 @@ footer > p{
 	position: absolute;
 	left: -9999px
 }
+
+.area-creator-header{
+	display: table;
+	width: 100%;
+	height: 40px;
+	background-color: #87A625;
+	/* border-bottom: 5px solid #87A625; */
+}
+
+#addAreas{
+}

@@ -47,7 +47,10 @@
     </header>
     <main>
         <?php
+            //This is the path where the picture will be stored
             $target_dir = "/Applications/XAMPP/xamppfiles/htdocs/LibraryApp/library_app/source/images/";
+            //This is the path that will be uploaded to the DB
+            //This is needs to be different because we use the short path to upload the picture to the maps
             $db_dir = "images/";
             $imageFilePath = $target_dir . basename($_FILES["fileToUpload"]["name"]);
             $pathForDB = $db_dir . basename($_FILES["fileToUpload"]["name"]);
@@ -74,14 +77,14 @@
                 if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $imageFilePath)) {
                     $floor_name = $_POST["floorName"];
                     $floor_num = $_POST["floorNum"];
+                    $_SESSION["path"] = $pathForDB;
                     
                     //setup connection to DB
                     $dbh = new PDO($dbhost, $dbh_insert_user, $dbh_insert_pw);
 
                     $dbh->beginTransaction();
-                    $insert_image_stmt = $dbh->prepare('INSERT INTO floor_images 
-                    (name, path, floor_num) 
-                    VALUES (:floor_name, :pathForDB, :floor_num)');
+                    $insert_image_stmt = $dbh->prepare('INSERT INTO floor_images (name, path, floor_num) 
+                                                        VALUES (:floor_name, :pathForDB, :floor_num)');
                     $insert_image_stmt->bindParam(':floor_name', $floor_name, PDO::PARAM_STR);
                     $insert_image_stmt->bindParam(':floor_num', $floor_num, PDO::PARAM_INT);
                     $insert_image_stmt->bindParam(':pathForDB', $pathForDB, PDO::PARAM_STR);
@@ -90,7 +93,9 @@
                     $dbh->commit();
                     
                     echo "The file ". basename( $_FILES["fileToUpload"]["name"]). " has been uploaded. ";
-
+                    ?>
+                    <button class="floor_creator_button" onclick="window.location.href='create-area.php'"> Create Areas </button>
+                    <?php
                 } 
             }
         ?>

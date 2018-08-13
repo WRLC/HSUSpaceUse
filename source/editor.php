@@ -84,13 +84,13 @@
 						<button type="button" id="submit_floor" style="display: none;">Select</button>
 
 						<!--select a piece of furniture to place -->
-            <div class="furn_editor_select">
-						     <label style="padding-right: 10px; color: white; text-decoration:bold;">
-                   Select a piece of furniture:</label>
+            			<div class="furn_editor_select">
+							<label style="padding-right: 10px; color: white; text-decoration:bold;">
+                   				Select a piece of furniture:</label>
 
-						     <select name="furniture-select" id="furn_icons">
+						    <select name="furniture-select" id="furn_icons">
     						</select>
-            </div>
+            			</div>
 
             <div id="editor_buttons">
   						<button type="button" id="getAreas" style="display: none;">Generate Areas</button>
@@ -233,7 +233,7 @@
 			}
 
 			else if(floor_selection == -1){
-			addMapPic();
+				addMapPic();
 			}
 		}
 
@@ -363,7 +363,7 @@
       		}
 		}
 
-			//bind onMapClick function
+		//bind onMapClick function
 		mymap.on('click', onMapClick);
 
 		//On zoomend, resize the marker icons
