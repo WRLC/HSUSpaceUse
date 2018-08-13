@@ -48,22 +48,12 @@
     <main>
         <?php
             $target_dir = "/Applications/XAMPP/xamppfiles/htdocs/LibraryApp/library_app/source/images/";
+            $db_dir = "images/";
             $imageFilePath = $target_dir . basename($_FILES["fileToUpload"]["name"]);
+            $pathForDB = $db_dir . basename($_FILES["fileToUpload"]["name"]);
             $uploadOk = 1;
             $imageFileType = strtolower(pathinfo($imageFilePath,PATHINFO_EXTENSION));
-            // Check if image file is a actual image or fake image
-            if(isset($_POST["submit"])) {
-                $check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
-                if($check !== false) {
-                    echo "File is an image - " . $check["mime"] . ". ";
-                    $uploadOk = 1;
-                } 
-                
-                else {
-                    echo "File is not an image. ";
-                    $uploadOk = 0;
-                }
-            }
+           
             // Check if file already exists
             if (file_exists($imageFilePath)) {
                 $uploadOk = 0;
@@ -72,23 +62,16 @@
                 <button class="floor_creator_button" onclick="window.location.href='create-floor.php'"> Return </button>
             <?php
             }
-            // Check file size
-            if ($_FILES["fileToUpload"]["size"] > 500000) {
-                echo "Sorry, your file is too large. ";
-                $uploadOk = 0;
-            }
+
             // Allow certain file formats
-            if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
-            && $imageFileType != "gif" ) {
-                echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed. ";
+            if($imageFileType != "svg"  ) {
+                echo "Sorry, only SVG images are allowed. ";
                 $uploadOk = 0;
             }
             // Check if $uploadOk is set to 0 by an error
             if ($uploadOk != 0) {
 
                 if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $imageFilePath)) {
-                    echo "The file ". basename( $_FILES["fileToUpload"]["name"]). " has been uploaded. ";
-                    
                     $floor_name = $_POST["floorName"];
                     $floor_num = $_POST["floorNum"];
                     
@@ -98,13 +81,15 @@
                     $dbh->beginTransaction();
                     $insert_image_stmt = $dbh->prepare('INSERT INTO floor_images 
                     (name, path, floor_num) 
-                    VALUES (:floor_name, :imageFilePath, :floor_num)');
+                    VALUES (:floor_name, :pathForDB, :floor_num)');
                     $insert_image_stmt->bindParam(':floor_name', $floor_name, PDO::PARAM_STR);
                     $insert_image_stmt->bindParam(':floor_num', $floor_num, PDO::PARAM_INT);
-                    $insert_image_stmt->bindParam(':imageFilePath', $imageFilePath, PDO::PARAM_STR);
+                    $insert_image_stmt->bindParam(':pathForDB', $pathForDB, PDO::PARAM_STR);
 
                     $insert_image_stmt->execute();
-	                $dbh->commit();
+                    $dbh->commit();
+                    
+                    echo "The file ". basename( $_FILES["fileToUpload"]["name"]). " has been uploaded. ";
 
                 } 
             }

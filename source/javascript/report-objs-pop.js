@@ -211,7 +211,7 @@ $('#day-select').on("change", function(){
                     surv_id = obj['survey_id'];
                     lay_id = obj['layout_id'];
                     lay_name = obj['layout_name'];
-					floor_num = obj['floor'];
+					floor_num = obj['floor_num'];
 					surv_date_time = obj['survey_date'];
 					surv_date_time_arr = surv_date_time.split(" ");
 					surv_time = surv_date_time_arr[1];
@@ -249,7 +249,7 @@ function make_map(survey_id){
 	        json_id = JSON.parse(data);
 	        lay_id = json_id[0].layout_id;
 	        lay_name = json_id[0].layout_name;
-		    floor_num = json_id[0].floor;
+		    floor_num = json_id[0].floor_num;
 		    surv_date_time = json_id[0].survey_date;
 		    surv_date_time_arr = surv_date_time.split(" ");
 		    surv_time = surv_date_time_arr[1];
@@ -505,19 +505,18 @@ function popAreaMap(jsonAreas){
 }
 
 //place floor map
-function loadMap(floor){
-	switch(floor){
-		case 1:
-			image = L.imageOverlay('images/floor1.svg', bounds).addTo(mymap);
-			break;
-		case 2:
-			image = L.imageOverlay('images/floor2.svg', bounds).addTo(mymap);
-			break;
-		case 3:
-			image = L.imageOverlay('images/floor3.svg', bounds).addTo(mymap);
-			break;
-	}
-
+function loadMap(floor_ID){
+	$.ajax({
+		url: 'phpcalls/get-floor-path.php',
+		type: 'get',
+		async: false,
+		data:{ 'floor_ID': floor_ID },
+		success: function(data){
+			var json_object = JSON.parse(data);
+			floor_path = json_object;
+			image = L.imageOverlay(floor_path[0], bounds).addTo(mymap);
+		}
+	});
 }
 
 //iterate through furnMap adding all furniture to mymap

@@ -3,7 +3,8 @@
 	//to a leaflet map, storing areas in an areaMap, furniture in a furnMap.
 	//TODO: move functions out of data-collection to separate files.
     session_start();
-	require_once('./config.php');
+    require_once('get_floor_svg.php');
+    $_SESSION['path'];
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -68,10 +69,10 @@
     /******All contents in this if else statement inside this else to be replaced with AJAX calls, leading to dynamic creation of layout select******/
     else{
         nav_form();
-		$dbh = new PDO($dbhost, $dbh_select_user, $dbh_select_pw);
+		//$dbh = new PDO($dbhost, $dbh_select_user, $dbh_select_pw);
 
         /*Checks to see if you have selected a form, in order to build the proper layout select, if you have selected a floor, this if statement fires*/
-        /*********To Be Replaced with form function*********/
+        /*********To Be Replaced with form function*******/
         $_SESSION['cur_floor'] = $_POST['floor-select'];
 
         ?>
@@ -79,10 +80,10 @@
             <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" class="layout-selector" id="lay-select">
                 <fieldset>
                     <select name="floor-select" id="floor-select">
-                        <option value="0" selected="selected">Choose a Floor</option>
-                        <option value="1" >Floor 1</option>
-                        <option value="2">Floor 2</option>
-                        <option value="3">Floor 3</option>
+                        <option value="0" selected="selected">Choose a Floor-plan</option>
+                        <?php
+                    	    get_floor_svg();
+                        ?>
                     </select>
                     <select name="layout-select" id="current_layouts">
                         <option value="default">Choose a Layout</option>
@@ -125,6 +126,7 @@
         var selected_furn;
 		var selected_marker;
         var seat_num;
+        var floor_path;
 
 		//to store the seat_places array to be saved
 	    var temp_seat_places = [];
@@ -147,7 +149,7 @@
         var popup = document.getElementById("popupTest");
 
 		//set username variable to insert
-		var username = "<?php echo $_SESSION['username']?>";
+        var username = "<?php echo $_SESSION['username']?>";
 
         var popupDim =
         {
@@ -177,32 +179,29 @@
             this.ftype;
         }
 
-        //checks the constant state of the Layout and Builds out the view
         $(document).ready(function(){
+            floor_ID = '<?php echo $_SESSION['cur_floor'];?>';
+            $.ajax({
+                url: 'phpcalls/get-floor-path.php',
+                type: 'get',
+                async: false,
+                data:{ 'floor_ID': floor_ID },
+                success: function(data){
+                    var json_object = JSON.parse(data);
+                    floor_path = json_object;
+                }
+            });
+
             /*To be placed in seperate javascript function, when php is removed*/
             //Test using layout in localhost with .PDO connection ect.
             if( mymap.hasLayer(image)){
                 mymap.removeLayer(image);
             }
             var form_info = document.getElementById("lay-select");
-            floor_image = "<?php echo $_SESSION['cur_floor'] ?>";
             s_layout = form_info.elements["layout-select"].value;
-            floorIMGstr = String(floor_image);
-            var FLOOR1 = "1";
-            var FLOOR2 = "2";
-            var FLOOR3 = "3";
-            var floor_name;
-
-            switch(floorIMGstr){
-                case FLOOR1:
-                    image = L.imageOverlay('images/floor1.svg', bounds).addTo(mymap);
-                    break;
-                case FLOOR2:
-                    image = L.imageOverlay('images/floor2.svg', bounds).addTo(mymap);
-                    break;
-                case FLOOR3:
-                    image = L.imageOverlay('images/floor3.svg', bounds).addTo(mymap);
-                    break;
+            if(typeof floor_path[0] != 'undefined'){
+                console.log(floor_path[0]);
+                image = L.imageOverlay(floor_path[0], bounds).addTo(mymap);
             }
 
 
@@ -221,10 +220,10 @@
                 build_markers(layout);
             <?php
             }
-        ?>
+            ?>
             createAreas(layout);
         });
-
+        
         //On zoomend, resize the marker icons
         mymap.on('zoomend', function() {
             var markerSize;
