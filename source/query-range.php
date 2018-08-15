@@ -2,7 +2,8 @@
 	//The main page for any queries that the user will grab from the DB.
 	//Needs more queries such as activities, whiteboard use.
 	//  Load the state of the library during that survey to give us not only area_use, but furniture location
-	session_start();
+    session_start();
+    require_once('get_floor_svg.php');
     require_once('form_functions.php');
 ?>
 <!DOCTYPE html>
@@ -100,9 +101,9 @@
                 <p class="p-inline"> Floor: 
                     <select name="in-floor" id="in_floor_select">
                         <option value="">Choose Floor</option>
-                        <option value="1"> First Floor</option>
-                        <option value="2"> Second Floor</option>
-                        <option value="3"> Third Floor</option>
+                        <?php
+                    	    get_floor_svg();
+                        ?>
                     </select>
                 </p>
                 <p class="p-inline"> Layout: 

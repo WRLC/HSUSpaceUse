@@ -1,7 +1,7 @@
 <?php
 	//In this file, the core structure of editing a layout is implemented.
-    session_start();
-	require_once('./config.php');
+	session_start();
+	require_once('get_floor_svg.php');
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -21,6 +21,7 @@
   	 integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw=="
   	 crossorigin=""></script>
    <script src="./javascript/icons.js"></script>
+   <script src="./javascript/editor_helper.js"></script>
    <script src="./javascript/submit_layout.js"></script>
    <script src="./javascript/helpers.js"></script>
    <script src="./javascript/add-areas.js"></script>
@@ -76,34 +77,20 @@
                         <!-- Choose the floor to work from-->
                         <select name="floor-select" id="floor_dropdown">
                             <option value="default">Choose a Floor</option>
-                            <option value=1>Floor 1</option>
-                            <option value=2>Floor 2</option>
-                            <option value=3>Floor 3</option>
+							<?php
+                    	    	get_floor_svg();
+                        	?>
                         </select>
 						<button type="button" id="submit_floor" style="display: none;">Select</button>
 
 						<!--select a piece of furniture to place -->
-            <div class="furn_editor_select">
-						     <label style="padding-right: 10px; color: white; text-decoration:bold;">
-                   Select a piece of furniture:</label>
+            			<div class="furn_editor_select">
+							<label style="padding-right: 10px; color: white; text-decoration:bold;">
+                   				Select a piece of furniture:</label>
 
-						     <select name="furniture-select" >
-    							<?php
-    								//get furniture types to populate dropdown for placing on map
-    								$dbh = new PDO($dbhost, $dbh_select_user, $dbh_select_pw);
-
-    								$fTypeSelectStmt = $dbh->prepare("SELECT * FROM furniture_type");
-    								$fTypeSelectStmt->execute();
-    								$furnitureTypes = $fTypeSelectStmt->fetchAll();
-
-    								foreach($furnitureTypes as $row) {
-    							?>
-    							<option value=<?= $row['furniture_type_id'] ?>> <?= $row['furniture_name'] ?> </option>
-    							<?php
-    								}
-    							?>
+						    <select name="furniture-select" id="furn_icons">
     						</select>
-            </div>
+            			</div>
 
             <div id="editor_buttons">
   						<button type="button" id="getAreas" style="display: none;">Generate Areas</button>
@@ -246,7 +233,7 @@
 			}
 
 			else if(floor_selection == -1){
-			addMapPic();
+				addMapPic();
 			}
 		}
 
@@ -257,16 +244,17 @@
 		}
 
 		floor_selection = form_info.value;
-		var floorIMGstr;
-
-		switch(floor_selection){
-			case "1": floorIMGstr = "floor1.svg";break
-			case "2": floorIMGstr = "floor2.svg";break;
-			case "3": floorIMGstr = "floor3.svg";break;
-			default: floorIMGstr = "floor1.svg";break;
+		$.ajax({
+		url: 'phpcalls/get-floor-path.php',
+		type: 'get',
+		async: false,
+		data:{ 'floor_ID': floor_selection },
+		success: function(data){
+			var json_object = JSON.parse(data);
+			floor_path = json_object;
+			image = L.imageOverlay(floor_path[0], bounds).addTo(mymap);
 		}
-
-		image = L.imageOverlay('./images/' + floorIMGstr, bounds).addTo(mymap);
+	});
 		}
 
 		//get areas and place over map
@@ -375,7 +363,7 @@
       		}
 		}
 
-			//bind onMapClick function
+		//bind onMapClick function
 		mymap.on('click', onMapClick);
 
 		//On zoomend, resize the marker icons
