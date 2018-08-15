@@ -17,7 +17,9 @@ $(function(){
             type: 'get',
             data:{ 'floor_ID': floor_ID },
             success: function(data){
+                console.log(data);
                 var json_object = JSON.parse(data);
+                console.log(json_object);
                 var lay_select = document.getElementById('current_layouts');
 
                 for(var i = 0; i < json_object.length; i++){

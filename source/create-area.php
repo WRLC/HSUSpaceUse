@@ -1,4 +1,9 @@
 <?php
+    //TODO: Fix the FK constraint on areas that require a facilities_id from the room table
+    //At the moment we just created a fake room that all the new areas reference when inserting to DB
+
+
+
     session_start();
 	//Get's username from the login and greets the user to the homepage
 	//Also add instructions for new users to help navigate the page.
@@ -54,7 +59,11 @@
     <main>
         <div class="area-creator-header">
             <button type="button" id="addAreas" onclick="AddAreas()">Add an Area</button>
+            <button type="button" id="submitAreas" onclick="SubmitAreas()">Submit Areas</button>
         </div>
+        <div class="loading">
+			<img src="images/loadwheel.svg" id="load-image">
+		</div>
         <div id="mapid"></div>
 
         <!-- Modal -->
@@ -67,8 +76,6 @@
 					<div>
 						<label>Area Name: </label>
 						<input id="areaName" name="areaName" type="text">
-						<label>Area ID: </label>
-						<input id="areaId" name="areaId" type="text" placeholder="Example: LIB 101">
 						<input id="areaSubmit" type="submit" value="Submit">
 					</div>
 				</div>
@@ -88,8 +95,11 @@
         var addAreaButton = document.getElementById('addAreas');
         var areaName;
         var areaId;
+        var layoutId;
         var isAddAreas = false;
         var verts = [];
+        var vertObjs = [];
+        var vertString;
 		var coord;
 		var lat;
 		var lng;
@@ -102,7 +112,7 @@
 
 
 		//define our furniture object here
-		function AreaVert(areaName, areaId, coord){
+		function AreaVert(areaName, coord, areaId){
             this.areaName = areaName;
             this.areaId = areaId;
 			this.x = coord.lng;
@@ -115,6 +125,9 @@
 		}
         
         var floor_path = '<?= $_SESSION["path"]?>';
+        var floor_num = '<?= $_SESSION["floor_num"]?>';
+        var floor_name = '<?= $_SESSION["floor_name"]?>' + '-Default';
+        var user = '<?= $_SESSION["username"]?>';
 		image = L.imageOverlay(floor_path, bounds).addTo(mymap);
 
 
@@ -133,24 +146,24 @@
 				case 3: markerSize= 40; break;
 				case 4: markerSize= 80; break;
 			}
-			//alert(mymap.getZoom)());
+
 			var newzoom = '' + (markerSize) +'px';
 			var newLargeZoom = '' + (markerSize*2) +'px';
-			//marker = L.marker(e.latlng, {icon: couchFour }).addTo(furnitureLayer).bindPopup("I am a Computer Station.");
+			
 			$('#mapid .furnitureIcon').css({'width':newzoom,'height':newzoom});
 			$('#mapid .furnitureLargeIcon').css({'width':newLargeZoom,'height':newLargeZoom});
         });
         
-        
+        //This is the popup that asks the user what the name and facilities id the area is
 		$("#areaSubmit").click(function(e){
-
             areaName = document.getElementById("areaName").value;
-            areaId = document.getElementById("areaId").value;
+            //areaId = document.getElementById("areaId").value;
             document.getElementById("areaName").value = "";
-            document.getElementById("areaId").value = "";
+            //document.getElementById("areaId").value = "";
             $('#areaPopup').dialog('close');
         });
 
+        //Creates the popup and makes sure it doesn't popup on document load
         $(document).ready(function() {
 			$("#areaPopup").dialog({
 				autoOpen: false,
@@ -174,15 +187,71 @@
             }
 
             else{
+                //Put this here because we need to have the area_id for the newly created area in the AreaVert object
+                $.ajax({
+                    url: 'phpcalls/submit-area.php',
+                    type: 'post',
+                    async: false,
+                    data:{  'areaName': areaName },
+                    success: function(data){
+                        console.log(data);
+                        $.ajax({
+                            url: 'phpcalls/get-area-id.php',
+                            type: 'get',
+                            async: false,
+                            data:{},
+                            success: function(data){
+                                jsondata = JSON.parse(data);
+                                console.log(jsondata);
+                                areaId = jsondata[0];
+                            }
+                        });
+                    }
+                });
+
                 for (var i = 0; i < verts.length; i++)
                 {
-                    var newArea = new AreaVert(areaName, areaId, verts[i]);
+                    var newArea = new AreaVert(areaName, verts[i], areaId);
+                    vertObjs.push(newArea);
                     console.log(newArea);
                 }
                 isAddAreas = false;
+                verts = [];
                 addAreaButton.innerHTML = "Add an Area";
 
             }
+        }
+
+        function SubmitAreas(){
+            var errors;
+
+            $.ajax({
+                url: 'phpcalls/create-default-layout.php',
+                type: 'post',
+                async: false,
+                data:{ 'floor_num': floor_num,
+                       'floor_name': floor_name,
+                       'user': user },
+                success: function(data){
+                    console.log("create defualt layout");
+                    console.log(data);
+                    layoutId = JSON.parse(data);
+                    console.log(layoutId["layout_id"]);
+                }
+            });
+            
+            vertString = JSON.stringify(vertObjs);
+            $.ajax({
+                url: 'phpcalls/submit-area-verts.php',
+                type: 'post',
+                async: false,
+                data:{ 'verts': vertString,
+                        'layout_id': layoutId["layout_id"] },
+                success: function(data){
+                    console.log(data);
+                }
+            });
+
         }
         
     </script>

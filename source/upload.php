@@ -78,6 +78,8 @@
                     $floor_name = $_POST["floorName"];
                     $floor_num = $_POST["floorNum"];
                     $_SESSION["path"] = $pathForDB;
+                    $_SESSION["floor_num"] = $floor_num;
+                    $_SESSION["floor_name"] = $floor_name;
                     
                     //setup connection to DB
                     $dbh = new PDO($dbhost, $dbh_insert_user, $dbh_insert_pw);
