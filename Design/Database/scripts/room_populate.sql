@@ -99,3 +99,11 @@ INSERT INTO `hsu_library`.`room`
 (FACILITIES_ID, NAME)
 VALUES
 ("LIB 306", "Room 306");
+
+
+-- This is a temp room used to create an area, because areas need to referenece a room
+-- TODO: FIX THAT! So areas don't have to reference a room.
+INSERT INTO `hsu_library`.`room`
+(FACILITIES_ID, NAME)
+VALUES
+("TEMP 101", "Temp Room");

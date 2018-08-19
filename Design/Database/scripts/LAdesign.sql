@@ -17,13 +17,28 @@ CREATE TABLE `hsu_library`.`room` (
   PRIMARY KEY (`facilities_id`))
 COMMENT = 'Rooms are identified by a facilities id which is unique to the campus, and the also have a human readable name.';
 
+CREATE TABLE `hsu_library`.`floor_images` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  `path` VARCHAR(100) NOT NULL,
+  `floor_num` VARCHAR(10) NOT NULL,
+  PRIMARY KEY (`id`))
+COMMENT = 'Floor images are stored on the file system, this table holds the filepath and the image data (Name/Floor number).';
+
 CREATE TABLE `hsu_library`.`layout` (
   `layout_id` INT NOT NULL AUTO_INCREMENT,
   `layout_name` VARCHAR(45) NOT NULL,
   `author` VARCHAR(45) NOT NULL,
   `floor` INT NOT NULL,
+  `floor_id` INT NOT NULL,
   `date_created` DATETIME NULL,
-  PRIMARY KEY (`layout_id`))
+  PRIMARY KEY (`layout_id`),
+  INDEX `floor_id_idx` (`floor_id` ASC),
+  CONSTRAINT `floor_id_fk`
+    FOREIGN KEY (`floor_id`)
+    REFERENCES `hsu_library`.`floor_images` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 COMMENT = 'Layouts are the entities that unify which objects are on a certain floor, they also record the author and date of creation.';
 
 CREATE TABLE `hsu_library`.`area` (
@@ -257,7 +272,7 @@ CREATE TABLE `hsu_library`.`surveyed_room` (
 	REFERENCES `hsu_library`.`survey_record` (`survey_id`)
 	ON DELETE NO ACTION
 	ON UPDATE NO ACTION)
-COMMENT = 'The furniture room doesn\'t hold seat items, it holds a total number of people in the room.';
+COMMENT = 'The furniture room does not hold seat items, it holds a total number of people in the room.';
 
 CREATE TABLE `hsu_library`.`wb_has_activity` (
   `whiteboard_id` INT NOT NULL,

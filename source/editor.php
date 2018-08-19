@@ -238,34 +238,34 @@
 		}
 
 		function addMapPic(){
-		//remove old floor image and place newly selected floor image
-		if( mymap.hasLayer(image)){
-			mymap.removeLayer(image);
-		}
+			//remove old floor image and place newly selected floor image
+			if( mymap.hasLayer(image)){
+				mymap.removeLayer(image);
+			}
 
-		floor_selection = form_info.value;
-		$.ajax({
-		url: 'phpcalls/get-floor-path.php',
-		type: 'get',
-		async: false,
-		data:{ 'floor_ID': floor_selection },
-		success: function(data){
-			var json_object = JSON.parse(data);
-			floor_path = json_object;
-			image = L.imageOverlay(floor_path[0], bounds).addTo(mymap);
-		}
-	});
+			//floor_selection is the number of the floor(ex. Floor 2 is the second floor so floor selection is 2)
+			floor_selection = form_info.value;
+			$.ajax({
+				url: 'phpcalls/get-floor-path.php',
+				type: 'get',
+				async: false,
+				data:{ 'floor_ID': floor_selection },
+				success: function(data){
+					var json_object = JSON.parse(data);
+					floor_path = json_object;
+					image = L.imageOverlay(floor_path[0], bounds).addTo(mymap);
+				}
+			});
 		}
 
 		//get areas and place over map
 		var getAreas = document.getElementById("getAreas");
 		getAreas.onclick = function(){
 			//get areas for this floor
-			//TODO: create new areas or select different areas/
-			//currently, it associates floor number with layout to get areas from L1 for floor 1, 2 for floor 2, etc.
       		//check if the areaMap has been populated already
       		//create areas if the map is empty
 			if(!mapPopulated){
+				
 				createAreas(floor_selection);
         		getAreas.innerHTML = "Remove Areas";
   				mapPopulated = true;
@@ -340,27 +340,26 @@
 		lat = coord.lat;
 		lng = coord.lng;
 
-		if(lat > latMax || lat < latMin || lng > longMax || lng < longMin){
+		/*if(lat > latMax || lat < latMin || lng > longMax || lng < longMin){
 			alert("Please place the furniture inside the map");
-		}
+		}*/
 
-		else{
-				//get the furniture select element
-				furn = document.getElementById("lay-select").elements.namedItem("furniture-select");
-				//get the type id from the value
-				ftype = furn.value;
-				//convert the string furniture type into an int to send to getIconObj(int ftype)
-				ftype = parseInt(ftype);
+			//get the furniture select element
+			furn = document.getElementById("lay-select").elements.namedItem("furniture-select");
+			//get the type id from the value
+			ftype = furn.value;
+			//convert the string furniture type into an int to send to getIconObj(int ftype)
+			ftype = parseInt(ftype);
 
-				//Prompt user for Room Info
-				if(ftype == 20){
-					$('#roomPopup').dialog('open');
-				}
+			//Prompt user for Room Info
+			if(ftype == 20){
+				$('#roomPopup').dialog('open');
+			}
 
-				else{
-					createFurnObj();
-				}
-      		}
+			else{
+				createFurnObj();
+			}
+    
 		}
 
 		//bind onMapClick function

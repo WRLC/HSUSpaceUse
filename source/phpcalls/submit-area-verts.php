@@ -30,7 +30,7 @@ foreach($vert as $key => $value){
 	
 	$dbh->beginTransaction();
 	$insert_vert_stmt = $dbh->prepare("INSERT INTO area_vertices (area_id, v_y, v_x, load_order)
-                                       VALUES (:areaId, :x , :y , :order)");
+                                       VALUES (:areaId, :y , :x , :order)");
 	$insert_vert_stmt->bindParam(':x', $x, PDO::PARAM_INT);
 	$insert_vert_stmt->bindParam(':y', $y, PDO::PARAM_INT);
 	$insert_vert_stmt->bindParam(':areaId', $areaId, PDO::PARAM_INT);
