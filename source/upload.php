@@ -112,7 +112,7 @@
                     ?>
                     <div class="area-creator-header">
                         <button type="button" id="addAreas" onclick="AddAreas()">Add an Area</button>
-                        <button type="button" id="submitAreas" onclick="SubmitAreas()">Submit Areas</button>
+                        <button type="button" id="submitAreas" onclick="SubmitAreas()" style="display: none;">Submit Areas</button>
                     </div>
                     <div class="loading">
                         <img src="images/loadwheel.svg" id="load-image">
@@ -147,17 +147,19 @@
                     var mymap = L.map('mapid', {crs: L.CRS.Simple, minZoom: 0, maxZoom: 4});
                     var furnitureLayer = L.layerGroup().addTo(mymap);
                     var areaLayer = L.layerGroup().addTo(mymap);
-                    var drawnItems = new L.FeatureGroup();
                     var bounds = [[0,0], [360,550]];
                     mymap.fitBounds(bounds);
 
                     //setup global variables
                     var mapPopulated = false;
                     var addAreaButton = document.getElementById('addAreas');
+                    var formSubmitting = false;
+                    var marker;
                     var areaName;
                     var areaId;
                     var layoutId;
                     var isAddAreas = false;
+                    var markerArray = [];
                     var verts = [];
                     var vertObjs = [];
                     var vertString;
@@ -193,6 +195,21 @@
                     image = L.imageOverlay(floor_path, bounds).addTo(mymap);
 
 
+                    // https://stackoverflow.com/questions/7317273/warn-user-before-leaving-web-page-with-unsaved-changes/7317311#7317311
+                    window.onload = function() {
+                        window.addEventListener("beforeunload", function (e) {
+                            if (formSubmitting) {
+                                return undefined;
+                            }
+
+                            var confirmationMessage = 'Please save the new areas before leaving this page.'
+                                                    + 'Leaving without saving can cause issues.';
+
+                            (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+                            return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
+                        });
+                    };                    
+
                     //bind onMapClick function
                     mymap.on('click', onMapClick);
 
@@ -223,6 +240,7 @@
                         document.getElementById("areaName").value = "";
                         //document.getElementById("areaId").value = "";
                         $('#areaPopup').dialog('close');
+                        isAddAreas = true;
                     });
 
                     function onMapClick(e){
@@ -230,13 +248,37 @@
                             console.log(coord.lat + ', ' + coord.lng);
                             if(isAddAreas){
                                 verts.push(coord);
-                            }
-                        }
+                                marker = new L.marker(coord, {
+                                                    draggable: true,
+                                                    id: (verts.length - 1)
+                                                    }).addTo(mymap);
+
+                                markerArray.push(marker);
+
+                                marker.bindPopup("Marker position number: " + verts.length + "</br>Area name: " + areaName);
+
+                                marker.on('dragend', function(e) {
+                                    console.log(markerArray);
+                                    //update latlng for insert string
+                                    var changedPos = e.target.getLatLng();
+                                    var markerID = this.options.id;
+
+                                    verts[markerID] = changedPos;
+
+                                    setTimeout(function() {
+                                        mymap.on('click', onMapClick);
+                                    }, 10);
+                                });
                     
+                            }
+
+                        }
+
+                  
                     function AddAreas(){
+                        document.getElementById('submitAreas').style.display = "inline";
                         if(!isAddAreas){
                             addAreaButton.innerHTML = "Finish Area";
-                            isAddAreas = true;
                             $('#areaPopup').dialog('open');
                         }
 
@@ -267,10 +309,15 @@
                             {
                                 var newArea = new AreaVert(areaName, verts[i], areaId);
                                 vertObjs.push(newArea);
-                                console.log(newArea);
+                                //markerArray[i].options.draggable = false;
+                                markerArray[i].dragging.disable();
                             }
+
+                            console.log(markerArray);
                             isAddAreas = false;
                             verts = [];
+                            markerArray = [];
+                            console.log(markerArray);
                             addAreaButton.innerHTML = "Add an Area";
 
                         }
@@ -279,36 +326,43 @@
                     function SubmitAreas(){
                         var errors;
 
-                        $.ajax({
-                            url: 'phpcalls/create-default-layout.php',
-                            type: 'post',
-                            async: false,
-                            data:{ 'floor_num': floor_num,
-                                'floor_name': floor_name,
-                                'floor_id': floor_id,
-                                'user': user },
-                            success: function(data){
-                                //console.log("create defualt layout");
-                                //console.log(data);
-                                layoutId = JSON.parse(data);
-                                //console.log(layoutId["layout_id"]);
-                            }
-                        });
-                        
-                        vertString = JSON.stringify(vertObjs);
-                        $.ajax({
-                            url: 'phpcalls/submit-area-verts.php',
-                            type: 'post',
-                            async: false,
-                            data:{ 'verts': vertString,
-                                    'layout_id': layoutId["layout_id"] },
-                            success: function(data){
-                                //console.log(data);
-                            }
-                        });
+                        if(!isAddAreas){
+                            formSubmitting = true;
 
-                        document.location.href = 'floor-success.php';
+                            $.ajax({
+                                url: 'phpcalls/create-default-layout.php',
+                                type: 'post',
+                                async: false,
+                                data:{ 'floor_num': floor_num,
+                                    'floor_name': floor_name,
+                                    'floor_id': floor_id,
+                                    'user': user },
+                                success: function(data){
+                                    //console.log("create defualt layout");
+                                    //console.log(data);
+                                    layoutId = JSON.parse(data);
+                                    //console.log(layoutId["layout_id"]);
+                                }
+                            });
+                            
+                            vertString = JSON.stringify(vertObjs);
+                            $.ajax({
+                                url: 'phpcalls/submit-area-verts.php',
+                                type: 'post',
+                                async: false,
+                                data:{ 'verts': vertString,
+                                        'layout_id': layoutId["layout_id"] },
+                                success: function(data){
+                                    //console.log(data);
+                                }
+                            });
 
+                            document.location.href = 'floor-success.php';
+                        }
+
+                        else{
+                            alert("Please finish adding the area before submitting.")
+                        }
                     }
                     
                 </script>
