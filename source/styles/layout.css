@@ -355,52 +355,63 @@ footer > p{
 }
 
 .furn_editor_select{
-
-display: block;
-
-position:  absolute;
-
-padding-right: 20px;
-
-padding-top: 11px;
+	display: block;
+	position:  absolute;
+	padding-right: 20px;
+	padding-top: 11px;
 }
 
 #editor_buttons{
-	
-display:  inline;
-	
-position:  absolute;
-	
-right: 10%;
-	
-top: 1.8%;
+	display:  inline;	
+	position:  absolute;
+	right: 10%;
+	top: 1.8%;
 }
 
 #getAreas{
-
-height: 25px;
-
-width: 100px;
+	height: 25px;
+	width: 100px;
 }
 
 #insertLayout{
-	
-display: block;
-	
-text-align:  center;
-	
-width: 100px;
-	
-height: 25px;
-	
-margin-top: 7px;
+	display: block;
+	text-align:  center;
+	width: 100px;	
+	height: 25px;
+	margin-top: 7px;
 }
 
 #submit_floor{
-	
-height: 25px;
-	
-width: 65px;
-	
-margin-left: 10px;
+	height: 25px;
+	width: 65px;
+	margin-left: 10px;
+}
+
+.floor-uploader{
+	background: gainsboro;
+	padding: 20px 30px 30px;
+	border-radius: 5%;
+	border-style: outset;
+	margin: 0 auto;
+	width: 250px;
+}
+
+.upload{
+	padding-top:  10px;
+}
+
+#upload_submit{
+	border-radius: 5%;
+	border: 1px solid #25551b;
+	background-color: #efe988;
+	color: #25551b;
+	font-size: 12px;
+	cursor: pointer;
+	font-weight: bolder;
+	font-family: 'Lato', sans-serif;
+	width: 100px;
+	height: 40px;
+	margin-top: 25px;
+	margin-left: auto;
+	margin-right:  auto;
 }

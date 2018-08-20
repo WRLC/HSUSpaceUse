@@ -44,15 +44,23 @@
                 </nav>
     </header>
     <main>
-        <h2>Welcome <?= $_SESSION["username"]?> please upload a floor blueprint image: </h2>
-        <form action="upload.php" method="post" enctype="multipart/form-data">
-            <p>Select image to upload:</p>
-            <input type="file" name="fileToUpload" id="fileToUpload">
-            <p>Please enter the name of the floor: </p>
-            <input type="text" name="floorName" id="imageFloorName" value="" required>
-            <p>Please enter a floor number: </p>
-            <input type="number" name="floorNum" id="imageFloorNum" value="1" required>
-            <input type="submit" value="Upload Image" name="submit">
+        <h2>Please upload a floor blueprint image: </h2>
+        <form class="floor-uploader" action="upload.php" method="post" enctype="multipart/form-data">
+            <div class="upload">
+                <p>Select image to upload:</p>
+                <input type="file" name="fileToUpload" id="fileToUpload">
+            </div>
+
+            <div class="upload">
+                <p>Please enter the name of the floor: </p>
+                <input type="text" name="floorName" id="imageFloorName" value="" required>
+            </div>
+
+            <div class="upload">
+                <p>Please enter a floor number: </p>
+                <input type="number" name="floorNum" id="imageFloorNum" value="1" min="1" required>
+            </div>
+            <input type="submit" value="Upload Image" name="submit" id="upload_submit">
         </form>
     </main>
                 <?php

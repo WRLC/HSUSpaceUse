@@ -150,9 +150,11 @@ footer > p{
 	display: table;
 	width: 100%;
 	height: 40px;
-	background-color: #87A625;
+	background-color: #B65300;
 	/* border-bottom: 5px solid #87A625; */
 }
 
-#addAreas{
-}
+#addAreas{margin: 10px 15px 10px 15px;height: 30px;}
+
+#submitAreas{position: sticky;height: 30px;left: 93%;}
+

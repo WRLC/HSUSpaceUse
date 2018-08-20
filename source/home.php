@@ -55,6 +55,9 @@
                     <button class="nav_button" onclick="window.location.href='editor.php'">
                         Layout Creator
                     </button>
+                    <button class="nav_button" onclick="window.location.href='create-floor.php'">
+                        Floor Creator
+                    </button>
                 </div>
     </main>
                 <?php

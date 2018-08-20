@@ -1,9 +1,25 @@
--- These scripts are intended to insert area, areas_in_layout and area_vertices entities into hsu_library schema
+-- These scripts are intended to insert floor images, area, areas_in_layout and area_vertices entities into hsu_library schema
+
+-- Starting with populating the floor_images table with the floor name, path, and ID
+insert into `hsu_library`.`floor_images`
+(name, path, floor_num)
+values ("Floor 1", "images/floor1.svg", "1");
+
+insert into `hsu_library`.`floor_images`
+(name, path, floor_num)
+values ("Floor 2", "images/floor2.svg", "2");
+
+insert into `hsu_library`.`floor_images`
+(name, path, floor_num)
+values ("Floor 3", "images/floor3.svg", "3");
+
+
+
 -- This is the Main lobby (Area 1, Floor 1)
 INSERT INTO `hsu_library`.`layout`
-(AUTHOR, FLOOR, DATE_CREATED)
+(AUTHOR, FLOOR, FLOOR_ID, DATE_CREATED)
 VALUES
-('SRA', 1, NOW());
+('SRA', 1, 1, NOW());
 
 insert into `hsu_library`.`area`
 (`name`, `facilities_id`)
@@ -182,9 +198,9 @@ values
 (4, 170, 56, 10);
 
 INSERT INTO `hsu_library`.`layout`
-(AUTHOR, FLOOR, DATE_CREATED)
+(AUTHOR, FLOOR, FLOOR_ID, DATE_CREATED)
 VALUES
-('SRA', 2, NOW());
+('SRA', 2, 2, NOW());
 
 -- This is the Quiet Study Area (Area 5, Floor 2)
 insert into `hsu_library`.`area`
@@ -566,9 +582,9 @@ values
 (12, 96, 461, 7);
 
 INSERT INTO `hsu_library`.`layout`
-(AUTHOR, FLOOR, DATE_CREATED)
+(AUTHOR, FLOOR, FLOOR_ID, DATE_CREATED)
 VALUES
-('SRA', 3, NOW());
+('SRA', 3, 3, NOW());
 
 
 -- This is the Quiet Area (Area 13, Floor 3)

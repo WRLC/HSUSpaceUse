@@ -11,7 +11,7 @@ $dbh = new PDO($dbhost, $dbh_insert_user, $dbh_insert_pw);
 $dbh->beginTransaction();
 
 $stmt1 = $dbh->prepare('INSERT INTO area (name, facilities_id) 
-                        VALUES (:areaName, "TEMP 111")');
+                        VALUES (:areaName, "TEMP 101")');
 
 $stmt1->bindParam(':areaName', $areaName, PDO::PARAM_STR);
 

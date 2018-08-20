@@ -8,6 +8,7 @@
 //Once all areas have been created add to areaLayer (attached to mymap)
 
 function createAreas(layout){
+	console.log(layout);
 	$.ajax({
 	    url: 'phpcalls/area-select.php',
 	    type: 'get',

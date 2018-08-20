@@ -1,5 +1,5 @@
 -- These scripts implement the tables for hsu_library schema
--- Last modified: 4/9/18
+-- Last modified: 8/15/18
 DROP SCHEMA `hsulibra_space_app` ;
 CREATE SCHEMA `hsulibra_space_app` ;
 
@@ -17,12 +17,28 @@ CREATE TABLE `hsulibra_space_app`.`room` (
   PRIMARY KEY (`facilities_id`))
 COMMENT = 'Rooms are identified by a facilities id which is unique to the campus, and the also have a human readable name.';
 
+CREATE TABLE `hsulibra_space_app`.`floor_images` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  `path` VARCHAR(100) NOT NULL,
+  `floor_num` VARCHAR(10) NOT NULL,
+  PRIMARY KEY (`id`))
+COMMENT = 'Floor images are stored on the file system, this table holds the filepath and the image data (Name/Floor number).';
+
 CREATE TABLE `hsulibra_space_app`.`layout` (
   `layout_id` INT NOT NULL AUTO_INCREMENT,
+  `layout_name` VARCHAR(45) NOT NULL,
   `author` VARCHAR(45) NOT NULL,
   `floor` INT NOT NULL,
+  `floor_id` INT NOT NULL,
   `date_created` DATETIME NULL,
-  PRIMARY KEY (`layout_id`))
+  PRIMARY KEY (`layout_id`),
+  INDEX `floor_id_idx` (`floor_id` ASC),
+  CONSTRAINT `floor_id_fk`
+    FOREIGN KEY (`floor_id`)
+    REFERENCES `hsu_library`.`floor_images` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 COMMENT = 'Layouts are the entities that unify which objects are on a certain floor, they also record the author and date of creation.';
 
 CREATE TABLE `hsulibra_space_app`.`area` (
