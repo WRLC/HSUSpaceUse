@@ -149,6 +149,7 @@
 		var coord;
 		var lat;
 		var lng;
+		var cur_floor_id;
 
 		//Create the boundries for placing furniture
 		var latMax = 359.75;
@@ -242,7 +243,8 @@
 			if( mymap.hasLayer(image)){
 				mymap.removeLayer(image);
 			}
-			
+
+			//floor_id_selection is the number of the floor(ex. Floor 2 is the second floor so floor selection is 2)
 			floor_id_selection = form_info.value;
 			$.ajax({
 				url: 'phpcalls/get-floor-path.php',
