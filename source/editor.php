@@ -140,7 +140,7 @@
 		var selected_marker;
 		var selected_furn;
 		var mapPopulated = false;
-		var floor_selection = -1;
+		var floor_id_selection = -1;
 		var form_info = document.getElementById("floor_dropdown");
 		var floor_image = "local";
 		var polyArea;
@@ -149,6 +149,7 @@
 		var coord;
 		var lat;
 		var lng;
+		var cur_floor_id;
 
 		//Create the boundries for placing furniture
 		var latMax = 359.75;
@@ -212,7 +213,7 @@
 		selectFloor.onclick = function(){
 			document.getElementById("getAreas").style.display = "block";
 			document.getElementById("insertLayout").style.display = "block";
-			if(floor_selection > 0 && form_info.value != floor_selection){
+			if(floor_id_selection > 0 && form_info.value != floor_id_selection){
 			if (confirm("You are about to change the floor image and delete all of the furniture added to the map, are you sure you want to continue?")) {
 				//Remove the current markers and areas
 				mymap.removeLayer(furnitureLayer);
@@ -228,11 +229,11 @@
 				//insertLayout.style.display = "none";
 			}
 			else {
-				form_info.options[floor_selection].selected = true;
+				form_info.options[floor_id_selection].selected = true;
 			}
 			}
 
-			else if(floor_selection == -1){
+			else if(floor_id_selection == -1){
 				addMapPic();
 			}
 		}
@@ -243,13 +244,13 @@
 				mymap.removeLayer(image);
 			}
 
-			//floor_selection is the number of the floor(ex. Floor 2 is the second floor so floor selection is 2)
-			floor_selection = form_info.value;
+			//floor_id_selection is the number of the floor(ex. Floor 2 is the second floor so floor selection is 2)
+			floor_id_selection = form_info.value;
 			$.ajax({
 				url: 'phpcalls/get-floor-path.php',
 				type: 'get',
 				async: false,
-				data:{ 'floor_ID': floor_selection },
+				data:{ 'floor_ID': floor_id_selection },
 				success: function(data){
 					var json_object = JSON.parse(data);
 					floor_path = json_object;
@@ -266,7 +267,7 @@
       		//create areas if the map is empty
 			if(!mapPopulated){
 				
-				createAreas(floor_selection);
+				createAreas(floor_id_selection);
         		getAreas.innerHTML = "Remove Areas";
   				mapPopulated = true;
        
@@ -324,7 +325,7 @@
 				}
 				else{
 					var layout_name = person;
-					submitLayout(author, layout_name, floor_selection, furnMap, areaMap);
+					submitLayout(author, layout_name, floor_id_selection, furnMap, areaMap);
          		}
 			}
         	else{
