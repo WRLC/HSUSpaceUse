@@ -112,7 +112,7 @@
                     ?>
                     <div class="area-creator-header">
                         <button type="button" id="addAreas" onclick="AddAreas()">Add an Area</button>
-                        <button type="button" id="submitAreas" onclick="SubmitAreas()" style="display: none;">Submit Areas</button>
+                        <button type="button" id="submitAreas" onclick="SubmitAreas()">Submit Areas</button>
                     </div>
                     <div class="loading">
                         <img src="images/loadwheel.svg" id="load-image">
@@ -147,27 +147,23 @@
                     var mymap = L.map('mapid', {crs: L.CRS.Simple, minZoom: 0, maxZoom: 4});
                     var furnitureLayer = L.layerGroup().addTo(mymap);
                     var areaLayer = L.layerGroup().addTo(mymap);
+                    var drawnItems = new L.FeatureGroup();
                     var bounds = [[0,0], [360,550]];
                     mymap.fitBounds(bounds);
 
                     //setup global variables
                     var mapPopulated = false;
                     var addAreaButton = document.getElementById('addAreas');
-                    var formSubmitting = false;
-                    var marker;
                     var areaName;
                     var areaId;
                     var layoutId;
                     var isAddAreas = false;
-                    var markerArray = [];
-                    var beginToEndLine;
-                    var tempVerts = [];
                     var verts = [];
                     var vertObjs = [];
-                    var newLine;
-                    var lines = [];
                     var vertString;
                     var coord;
+                    var lat;
+                    var lng;
 
                     //create a container for areas
                     var areaMap = new Map();
@@ -196,21 +192,6 @@
                     var user = '<?= $_SESSION["username"]?>';
                     image = L.imageOverlay(floor_path, bounds).addTo(mymap);
 
-
-                    // https://stackoverflow.com/questions/7317273/warn-user-before-leaving-web-page-with-unsaved-changes/7317311#7317311
-                    window.onload = function() {
-                        window.addEventListener("beforeunload", function (e) {
-                            if (formSubmitting) {
-                                return undefined;
-                            }
-
-                            var confirmationMessage = 'Please save the new areas before leaving this page.'
-                                                    + 'Leaving without saving can cause issues.';
-
-                            (e || window.event).returnValue = confirmationMessage; //Gecko + IE
-                            return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
-                        });
-                    };                    
 
                     //bind onMapClick function
                     mymap.on('click', onMapClick);
@@ -242,7 +223,6 @@
                         document.getElementById("areaName").value = "";
                         //document.getElementById("areaId").value = "";
                         $('#areaPopup').dialog('close');
-                        isAddAreas = true;
                     });
 
                     function onMapClick(e){
@@ -250,125 +230,13 @@
                             console.log(coord.lat + ', ' + coord.lng);
                             if(isAddAreas){
                                 verts.push(coord);
-                                marker = new L.marker(coord, {
-                                                    draggable: true,
-                                                    id: (verts.length - 1)
-                                                    }).addTo(mymap);
-
-                                markerArray.push(marker);
-
-                                //If the user has added more then one marker create the area line
-                                if(markerArray.length == 2)
-                                {
-                                    tempVerts = [verts[0], verts[1]];
-                                    newLine = new L.polyline(tempVerts).addTo(mymap);
-                                    lines.push(newLine);
-                                }
-
-                                else if(markerArray.length > 2)
-                                {
-                                    if(markerArray.length > 3){
-                                        mymap.removeLayer(lines[lines.length - 1]);
-                                        lines.pop();
-                                    }
-                                    var beginToEndVerts = [verts[0], verts[(verts.length - 1)]];
-                                    tempVerts = [verts[(verts.length - 2)], verts[(verts.length - 1)]];
-                                    newLine = new L.polyline(tempVerts).addTo(mymap);
-                                    beginToEndLine = new L.polyline(beginToEndVerts).addTo(mymap);
-                                    lines.push(newLine);
-                                    lines.push(beginToEndLine);
-                                }
-
-                                marker.bindPopup("Marker position number: " + verts.length + "</br>Area name: " + areaName);
-
-                                marker.on('dragend', function(e) {
-                                    console.log(markerArray);
-                                    //update latlng for insert string
-                                    var changedPos = e.target.getLatLng();
-                                    var markerID = this.options.id;
-                                    
-                                    console.log(lines);
-                                    
-                                    if(markerID == 0){
-                                        mymap.removeLayer(lines[0]);
-                                        mymap.removeLayer(lines[(lines.length - 1)]);
-                                    }
-
-                                    else{
-                                        mymap.removeLayer(lines[(markerID - 1)]);
-                                        mymap.removeLayer(lines[markerID]);
-                                    }
-                                    
-                                    var firstMarker;
-                                    var secondMarker;
-
-                                    //If the marker being moved is the first marker placed, grab the second and last markers placed
-                                    if(markerID == 0){
-                                        //First marker equals the last marker placed by the user
-                                        firstMarker = markerArray[(markerArray.length - 1)];
-
-                                        //Second marker equals the second marker placed by the user
-                                        secondMarker = markerArray[(markerID + 1)];
-                                    }
-
-                                    //If the marker being moved is the last marker placed, grab the first marker
-                                    else if(markerID == (markerArray.length - 1)){
-                                        //First marker equals the second to last marker placed by user
-                                        firstMarker = markerArray[markerID - 1];
-
-                                        //Second marker equals the first marker placed by user
-                                        secondMarker = markerArray[0];
-                                    }
-
-                                    else{
-                                        //First marker equals the marker before the marker getting moved
-                                        //EX: if the user is moving marker 3, first marker = marker 2
-                                        firstMarker = markerArray[markerID - 1];
-
-                                        //Second marker equals the marker after the marker getting moved
-                                        //EX: if the user is moving marker 3, second marker = marker 4
-                                        secondMarker = markerArray[markerID + 1];
-                                    }
-
-                                    var firstLine = [firstMarker._latlng, changedPos];
-                                    var secondLine = [secondMarker._latlng, changedPos];
-
-                                    //Check for edge cases
-                                    if(markerID == 0){
-                                        newLine = new L.polyline(firstLine).addTo(mymap);
-                                        lines[lines.length - 1] = newLine;
-
-                                        newLine = new L.polyline(secondLine).addTo(mymap);
-                                        lines[0] = newLine;
-                                    }
-
-                                    else{
-                                        newLine = new L.polyline(firstLine).addTo(mymap);
-                                        lines[(markerID - 1)] = newLine;
-
-                                        newLine = new L.polyline(secondLine).addTo(mymap);
-                                        lines[markerID] = newLine;
-                                    }
-                                  
-
-                                    console.log(lines);
-
-                                    verts[markerID] = changedPos;
-
-                                    setTimeout(function() {
-                                        mymap.on('click', onMapClick);
-                                    }, 10);
-                                });
-                    
                             }
-
                         }
-
-                  
+                    
                     function AddAreas(){
-                        document.getElementById('submitAreas').style.display = "inline";
                         if(!isAddAreas){
                             addAreaButton.innerHTML = "Finish Area";
+                            isAddAreas = true;
                             $('#areaPopup').dialog('open');
                         }
 
@@ -399,57 +267,48 @@
                             {
                                 var newArea = new AreaVert(areaName, verts[i], areaId);
                                 vertObjs.push(newArea);
-                                //markerArray[i].options.draggable = false;
-                                markerArray[i].dragging.disable();
+                                console.log(newArea);
                             }
-
-                            console.log(markerArray);
                             isAddAreas = false;
                             verts = [];
-                            markerArray = [];
-                            console.log(markerArray);
                             addAreaButton.innerHTML = "Add an Area";
 
                         }
                     }
 
                     function SubmitAreas(){
-                        if(!isAddAreas){
-                            formSubmitting = true;
+                        var errors;
 
-                            $.ajax({
-                                url: 'phpcalls/create-default-layout.php',
-                                type: 'post',
-                                async: false,
-                                data:{ 'floor_num': floor_num,
-                                    'floor_name': floor_name,
-                                    'floor_id': floor_id,
-                                    'user': user },
-                                success: function(data){
-                                    //console.log("create defualt layout");
-                                    //console.log(data);
-                                    layoutId = JSON.parse(data);
-                                    //console.log(layoutId["layout_id"]);
-                                }
-                            });
-                            
-                            vertString = JSON.stringify(vertObjs);
-                            $.ajax({
-                                url: 'phpcalls/submit-area-verts.php',
-                                type: 'post',
-                                async: false,
-                                data:{ 'verts': vertString,
-                                        'layout_id': layoutId["layout_id"] },
-                                success: function(data){
-                                    //console.log(data);
-                                    document.location.href = 'floor-success.php';
-                                }
-                            });   
-                        }
+                        $.ajax({
+                            url: 'phpcalls/create-default-layout.php',
+                            type: 'post',
+                            async: false,
+                            data:{ 'floor_num': floor_num,
+                                'floor_name': floor_name,
+                                'floor_id': floor_id,
+                                'user': user },
+                            success: function(data){
+                                //console.log("create defualt layout");
+                                //console.log(data);
+                                layoutId = JSON.parse(data);
+                                //console.log(layoutId["layout_id"]);
+                            }
+                        });
+                        
+                        vertString = JSON.stringify(vertObjs);
+                        $.ajax({
+                            url: 'phpcalls/submit-area-verts.php',
+                            type: 'post',
+                            async: false,
+                            data:{ 'verts': vertString,
+                                    'layout_id': layoutId["layout_id"] },
+                            success: function(data){
+                                //console.log(data);
+                            }
+                        });
 
-                        else{
-                            alert("Please finish adding the area before submitting.")
-                        }
+                        document.location.href = 'floor-success.php';
+
                     }
                     
                 </script>
