@@ -160,12 +160,14 @@
                     var layoutId;
                     var isAddAreas = false;
                     var markerArray = [];
+                    var beginToEndLine;
+                    var tempVerts = [];
                     var verts = [];
                     var vertObjs = [];
+                    var newLine;
+                    var lines = [];
                     var vertString;
                     var coord;
-                    var lat;
-                    var lng;
 
                     //create a container for areas
                     var areaMap = new Map();
@@ -255,6 +257,28 @@
 
                                 markerArray.push(marker);
 
+                                //If the user has added more then one marker create the area line
+                                if(markerArray.length == 2)
+                                {
+                                    tempVerts = [verts[0], verts[1]];
+                                    newLine = new L.polyline(tempVerts).addTo(mymap);
+                                    lines.push(newLine);
+                                }
+
+                                else if(markerArray.length > 2)
+                                {
+                                    if(markerArray.length > 3){
+                                        mymap.removeLayer(lines[lines.length - 1]);
+                                        lines.pop();
+                                    }
+                                    var beginToEndVerts = [verts[0], verts[(verts.length - 1)]];
+                                    tempVerts = [verts[(verts.length - 2)], verts[(verts.length - 1)]];
+                                    newLine = new L.polyline(tempVerts).addTo(mymap);
+                                    beginToEndLine = new L.polyline(beginToEndVerts).addTo(mymap);
+                                    lines.push(newLine);
+                                    lines.push(beginToEndLine);
+                                }
+
                                 marker.bindPopup("Marker position number: " + verts.length + "</br>Area name: " + areaName);
 
                                 marker.on('dragend', function(e) {
@@ -262,6 +286,72 @@
                                     //update latlng for insert string
                                     var changedPos = e.target.getLatLng();
                                     var markerID = this.options.id;
+                                    
+                                    console.log(lines);
+                                    
+                                    if(markerID == 0){
+                                        mymap.removeLayer(lines[0]);
+                                        mymap.removeLayer(lines[(lines.length - 1)]);
+                                    }
+
+                                    else{
+                                        mymap.removeLayer(lines[(markerID - 1)]);
+                                        mymap.removeLayer(lines[markerID]);
+                                    }
+                                    
+                                    var firstMarker;
+                                    var secondMarker;
+
+                                    //If the marker being moved is the first marker placed, grab the second and last markers placed
+                                    if(markerID == 0){
+                                        //First marker equals the last marker placed by the user
+                                        firstMarker = markerArray[(markerArray.length - 1)];
+
+                                        //Second marker equals the second marker placed by the user
+                                        secondMarker = markerArray[(markerID + 1)];
+                                    }
+
+                                    //If the marker being moved is the last marker placed, grab the first marker
+                                    else if(markerID == (markerArray.length - 1)){
+                                        //First marker equals the second to last marker placed by user
+                                        firstMarker = markerArray[markerID - 1];
+
+                                        //Second marker equals the first marker placed by user
+                                        secondMarker = markerArray[0];
+                                    }
+
+                                    else{
+                                        //First marker equals the marker before the marker getting moved
+                                        //EX: if the user is moving marker 3, first marker = marker 2
+                                        firstMarker = markerArray[markerID - 1];
+
+                                        //Second marker equals the marker after the marker getting moved
+                                        //EX: if the user is moving marker 3, second marker = marker 4
+                                        secondMarker = markerArray[markerID + 1];
+                                    }
+
+                                    var firstLine = [firstMarker._latlng, changedPos];
+                                    var secondLine = [secondMarker._latlng, changedPos];
+
+                                    //Check for edge cases
+                                    if(markerID == 0){
+                                        newLine = new L.polyline(firstLine).addTo(mymap);
+                                        lines[lines.length - 1] = newLine;
+
+                                        newLine = new L.polyline(secondLine).addTo(mymap);
+                                        lines[0] = newLine;
+                                    }
+
+                                    else{
+                                        newLine = new L.polyline(firstLine).addTo(mymap);
+                                        lines[(markerID - 1)] = newLine;
+
+                                        newLine = new L.polyline(secondLine).addTo(mymap);
+                                        lines[markerID] = newLine;
+                                    }
+                                  
+
+                                    console.log(lines);
 
                                     verts[markerID] = changedPos;
 
@@ -324,8 +414,6 @@
                     }
 
                     function SubmitAreas(){
-                        var errors;
-
                         if(!isAddAreas){
                             formSubmitting = true;
 
@@ -354,10 +442,9 @@
                                         'layout_id': layoutId["layout_id"] },
                                 success: function(data){
                                     //console.log(data);
+                                    document.location.href = 'floor-success.php';
                                 }
-                            });
-
-                            document.location.href = 'floor-success.php';
+                            });   
                         }
 
                         else{
