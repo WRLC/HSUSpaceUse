@@ -55,7 +55,7 @@
         <h2>Welcome <?= $_SESSION["username"]?> please select what you would like to upload: </h2>
         <div id="nav_form">
             <button class="nav_button"  onclick="window.location ='create-floor.php'">Upload Floor Plan</button>
-            <button style="font-size: 24.7px;"class="nav_button"  onclick="window.location ='create-furn.php'">Upload Furnture or Activities</button>
+            <button style="font-size: 24.7px;"class="nav_button"  onclick="window.location ='create-furn.php'">Upload Furniture or Activities</button>
         </div>
     </main>
             <?php
