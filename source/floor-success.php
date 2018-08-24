@@ -42,7 +42,7 @@
                 <p class="nav"><a href="data-collection.php">Data Collection</a></p>
                 <p class="nav"><a href="query-select.php">Query Report</a></p>
                 <p class="nav"><a href="editor.php">Layout Creator</a></p>
-                <p class="nav"><a href="create-floor.php">Floor Creator</a></p>
+                <p class="nav"><a href="upload-select.php">Upload</a></p>
                 <p class="nav"><a href="logout.php">Logout</a></p>
             </nav>
     </header>
