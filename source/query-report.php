@@ -52,7 +52,7 @@
                     <p class="nav"><a href="data-collection.php">Data Collection</a></p>
                     <p class="nav selected"><a href="query-select.php">Query Report</a></p>
                     <p class="nav"><a href="editor.php">Layout Creator</a></p>
-                    <p class="nav"><a href="create-floor.php">Floor Creator</a></p>
+                    <p class="nav"><a href="upload-select.php">Upload</a></p>
                     <p class="nav"><a href="logout.php">Logout</a></p>
                 </nav>
     </header>
@@ -79,8 +79,10 @@
                 <select name="survey_id" id="survey-id-select" style="display:none">
                     <option id="chosen_survey" value="0">Choose a Survey</option>
                 </select>
+                <p style="display: none;" id="areaUseThreshold">Area Use Threshold %:</p>
                 <input type="number" id="threshold" name="threshold" value="<? echo isset($_GET['threshold']) ? $_GET['threshold'] : '10' ?>" 
                     style="display: none;" min="1" max="100"/>
+                
                 <input type="submit" name="submit-query" style="display:none" id="query_submit_button"/>
 				<input type="button" id="query_print_button" value="Print Report" style="display:none" onclick="printReport()"/>
             </fieldset>

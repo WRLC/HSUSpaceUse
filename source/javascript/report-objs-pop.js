@@ -204,7 +204,7 @@ $('#day-select').on("change", function(){
             success: function(data){
                 json_object = JSON.parse(data);
 				var survey_select = document.getElementById('survey-id-select');
-				//var thresold_input = document.getElementById('threshold');
+				//var threshold_input = document.getElementById('threshold');
 
                 for(var i = 0; i < json_object.length; i++){
                     var obj = json_object[i];
@@ -220,7 +220,7 @@ $('#day-select').on("change", function(){
                     option.innerHTML = "Survey: " + surv_id + " for Layout: " + lay_name + " on floor " + floor_num + " at " + surv_time;
                     survey_select.appendChild(option);
 				}
-				//thresold_input.style.display = "inline";
+				//threshold_input.style.display = "inline";
             }
         });
 	});
@@ -228,9 +228,11 @@ $('#day-select').on("change", function(){
 
 $(document).on("change", '#survey-id-select', function(){
 	var survey_submit = document.getElementById("query_submit_button");
-	var thresold_input = document.getElementById("threshold");
+	var threshold_text = document.getElementById("areaUseThreshold");
+	var threshold_input = document.getElementById("threshold");
 	survey_submit.style.display = "inline";
-	thresold_input.style.display = "inline";
+	threshold_input.style.display = "inline";
+	threshold_text.style.display = "inline";
 });
 
 function printReport(){

@@ -83,7 +83,7 @@
                     <p class="nav"><a href="data-collection.php">Data Collection</a></p>
                     <p class="nav selected"><a href="query-select.php">Query Report</a></p>
                     <p class="nav"><a href="editor.php">Layout Creator</a></p>
-                    <p class="nav"><a href="create-floor.php">Floor Creator</a></p>
+                    <p class="nav"><a href="upload-select.php">Upload</a></p>
                     <p class="nav"><a href="logout.php">Logout</a></p>
                 </nav>
     </header>
@@ -112,7 +112,7 @@
                     </select>
                 </p>
 
-                <p class="p-inline"> Area Use Threshold: 
+                <p class="p-inline"> Area Use Threshold %: 
                     <input type="number" id="threshold" name="threshold" value="10" 
                         style="display: inline;" min="1" max="100"/>
                 </p>

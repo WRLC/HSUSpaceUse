@@ -45,17 +45,17 @@
                 <nav>
                     <p class="nav"><a href="home.php">Home</a></p>
                     <p class="nav"><a href="data-collection.php">Data Collection</a></p>
-					<p class="nav selected"><a href="query-select.php">Query Report</a></p>
+					<p class="nav"><a href="query-select.php">Query Report</a></p>
                     <p class="nav"><a href="editor.php">Layout Creator</a></p>
-                    <p class="nav"><a href="upload-select.php">Upload</a></p>
+                    <p class="nav selected"><a href="upload-select.php">Upload</a></p>
                     <p class="nav"><a href="logout.php">Logout</a></p>
                 </nav>
     </header>
     <main>
-        <h2>Welcome <?= $_SESSION["username"]?> please select a query type: </h2>
+        <h2>Welcome <?= $_SESSION["username"]?> please select what you would like to upload: </h2>
         <div id="nav_form">
-            <button class="nav_button"  onclick="window.location = 'query-report.php'">Query Single Report</button>
-            <button class="nav_button"  onclick="window.location ='query-range.php'">Query Range of Reports</button>
+            <button class="nav_button"  onclick="window.location ='create-floor.php'">Upload Floor Plan</button>
+            <button style="font-size: 24.7px;"class="nav_button"  onclick="window.location ='create-furn.php'">Upload Furnture or Activities</button>
         </div>
     </main>
             <?php

@@ -51,7 +51,7 @@
                     <p class="nav"><a href="data-collection.php">Data Collection</a></p>
                     <p class="nav"><a href="query-select.php">Query Report</a></p>
                     <p class="nav"><a href="editor.php">Layout Creator</a></p>
-                    <p class="nav selected"><a href="create-floor.php">Floor Creator</a></p>
+                    <p class="nav selected"><a href="upload-select.php">Upload</a></p>
                     <p class="nav"><a href="logout.php">Logout</a></p>
                 </nav>
     </header>
@@ -72,7 +72,7 @@
                 $uploadOk = 0;
                 $_SESSION['error'] = "Sorry, file already exists. Please try again.";
             ?>  
-                <script>document.location.href = 'floor-failure.php';</script>
+                <script>document.location.href = 'upload-failure.php';</script>
             <?php
             }
 
@@ -81,7 +81,7 @@
                 $_SESSION['error'] = "Sorry, only SVG images are allowed. ";
                 $uploadOk = 0;
                 ?>  
-                <script>document.location.href = 'floor-failure.php';</script>
+                <script>document.location.href = 'upload-failure.php';</script>
             <?php
             }
             // Check if $uploadOk is set to 0 by an error
@@ -98,7 +98,7 @@
                     $dbh = new PDO($dbhost, $dbh_insert_user, $dbh_insert_pw);
 
                     $dbh->beginTransaction();
-                    $insert_image_stmt = $dbh->prepare('INSERT INTO floor_images (name, path, floor_num) 
+                    $insert_image_stmt = $dbh->prepare('INSERT INTO furniture_type (furniture_name, path, floor_num) 
                                                         VALUES (:floor_name, :pathForDB, :floor_num)');
                     $insert_image_stmt->bindParam(':floor_name', $floor_name, PDO::PARAM_STR);
                     $insert_image_stmt->bindParam(':floor_num', $floor_num, PDO::PARAM_INT);
