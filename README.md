@@ -38,7 +38,7 @@ To get the Upload functionality working you might have to change the path for th
 For the full list of contributors please visit [here](https://github.com/LibrarySpaceUse/HSUSpaceUse/graphs/contributors).
 
 ## Acknowledgements
-* From everyone of the SpecaUse team, we would like to thank the Humboldt State University Library staff, as well as, Kris Anderson for the help and support throughout the project.
+* From everyone on the SpaceUse team, we would like to thank the Humboldt State University Library staff, as well as, Kris Anderson for the help and support throughout the project.
 
 ## Contents
 
