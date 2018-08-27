@@ -12,12 +12,30 @@ $dbh = new PDO($dbhost, $dbh_insert_user, $dbh_insert_pw);
 //json data holds the furnMap, iterate through all pieces of furniture
 foreach($jsondata as $key => $value){
 	//get basic furniture data
-	
 	$x = $value['x'];
 	$y = $value['y'];
 	$degreeOffset = $value['degreeOffset'];
 	$ftype = $value['ftype'];
 	$inArea = $value['inArea'];
+
+	if($value['roomID'] != "" && $value['roomName'] != ""){
+		$roomID = $value['roomID'];
+		$roomName = $value['roomName'];
+
+		$dbh->beginTransaction();
+
+		$insert_room_stmt = $dbh->prepare('
+			INSERT INTO area (facilities_id, name)
+			VALUES (:roomID, :roomName)');
+
+		$insert_room_stmt->bindParam(':roomID', $roomID, PDO::PARAM_STR);
+		$insert_room_stmt->bindParam(':roomName', $RoomName, PDO::PARAM_STR);
+		$insert_room_stmt->execute();
+
+		//$insert_area_stmt = $dbh->prepare()
+
+		//$insert_arealayout_stmt		
+	}
 	
 	$dbh->beginTransaction();
 	$insert_furn_stmt = $dbh->prepare('INSERT INTO furniture 
@@ -37,7 +55,7 @@ foreach($jsondata as $key => $value){
 	
 	$insert_furn_stmt->execute();
 	$dbh->commit();
-
+	
 }
 
 print json_encode($insert_furn_stmt->rowCount());
