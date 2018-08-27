@@ -66,7 +66,7 @@
                 <p class="nav"><a href="data-collection.php">Data Collection</a></p>
                 <p class="nav"><a href="query-select.php">Query Report</a></p>
 				<p class="nav selected"><a href="editor.php">Layout Creator</a></p>
-				<p class="nav"><a href="create-floor.php">Floor Creator</a></p>
+				<p class="nav"><a href="upload-select.php">Upload</a></p>
                 <p class="nav"><a href="logout.php">Logout</a></p>
             </nav>
             <main class="to-top">
@@ -243,8 +243,7 @@
 			if( mymap.hasLayer(image)){
 				mymap.removeLayer(image);
 			}
-
-			//floor_id_selection is the number of the floor(ex. Floor 2 is the second floor so floor selection is 2)
+			
 			floor_id_selection = form_info.value;
 			$.ajax({
 				url: 'phpcalls/get-floor-path.php',

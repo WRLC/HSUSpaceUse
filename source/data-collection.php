@@ -4,6 +4,7 @@
 	//TODO: move functions out of data-collection to separate files.
     session_start();
     require_once('get_floor_svg.php');
+    $_SESSION['path'];
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
