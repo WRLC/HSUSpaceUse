@@ -39,13 +39,13 @@
                     <p class="nav"><a href="data-collection.php">Data Collection</a></p>
                     <p class="nav"><a href="query-select.php">Query Report</a></p>
                     <p class="nav"><a href="editor.php">Layout Creator</a></p>
-                    <p class="nav selected"><a href="create-floor.php">Floor Creator</a></p>
+                    <p class="nav selected"><a href="upload-select.php">Upload</a></p>
                     <p class="nav"><a href="logout.php">Logout</a></p>
                 </nav>
     </header>
     <main>
         <h2>Please upload a floor blueprint image: </h2>
-        <form class="floor-uploader" action="upload.php" method="post" enctype="multipart/form-data">
+        <form class="uploader" action="upload-floor.php" method="post" enctype="multipart/form-data">
             <div class="upload">
                 <p>Select image to upload:</p>
                 <input type="file" name="fileToUpload" id="fileToUpload">
@@ -53,12 +53,12 @@
 
             <div class="upload">
                 <p>Please enter the name of the floor: </p>
-                <input type="text" name="floorName" id="imageFloorName" value="" required>
+                <input type="text" name="floorName" id="imageName" value="" required>
             </div>
 
             <div class="upload">
                 <p>Please enter a floor number: </p>
-                <input type="number" name="floorNum" id="imageFloorNum" value="1" min="1" required>
+                <input type="number" name="floorNum" id="imageNum" value="1" min="1" required>
             </div>
             <input type="submit" value="Upload Image" name="submit" id="upload_submit">
         </form>

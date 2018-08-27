@@ -387,13 +387,23 @@ footer > p{
 	margin-left: 10px;
 }
 
-.floor-uploader{
+.uploader{
 	background: gainsboro;
 	padding: 20px 30px 30px;
 	border-radius: 5%;
 	border-style: outset;
 	margin: 0 auto;
 	width: 250px;
+}
+
+.uploader_furn{
+	background: gainsboro;
+	padding: 20px 30px 30px;
+	border-radius: 5%;
+	border-style: outset;
+	margin: 0 auto;
+	width: 300px;
+	height: 150px;
 }
 
 .upload{
@@ -414,4 +424,20 @@ footer > p{
 	margin-top: 25px;
 	margin-left: auto;
 	margin-right:  auto;
+}
+
+#furn_upload_container{
+	text-align:  center;
+}
+
+.furn_upload_div{
+	display: inline-grid;
+	margin: 20px;
+}
+
+#act_upload{
+}
+
+#furn_upload{
+
 }
