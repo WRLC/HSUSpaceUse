@@ -22,8 +22,20 @@ Setting up the database:
       10. update L3.sql (located in updateScriptsForFloorLayout)
       11. activity_populate.sql
  
- #### Deployment Notes
- To get the Upload functionalility working you might have to change the path for the images folder to the correct path for your server, you can find this file in source/upload-floor.php on line 61.
+#### Deployment Notes
+To get the Upload functionality working you might have to change the path for the images folder to the correct path for your server, you can find this file in source/upload-floor.php on line 61.
+
+## Built With
+[LeafLet.js](https://leafletjs.com/) - JavaScript plug-in used to make the map.
+[JQuery](https://jquery.com/) and [JQueryUI](https://jqueryui.com/)
+
+## Authors
+* **Sam Alston** 
+* **Eric Mott**
+* **Ben Miller**
+
+## Acknowledgements
+* From everyone of the SpecaUse team, we would like to thank the Humboldt State University Library staff, as well as, Kris Anderson for the help and support throughout the project.
 
 ## Contents
 
