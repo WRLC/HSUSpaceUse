@@ -27,6 +27,7 @@ To get the Upload functionality working you might have to change the path for th
 
 ## Built With
 [LeafLet.js](https://leafletjs.com/) - JavaScript plug-in used to make the map.
+
 [JQuery](https://jquery.com/) and [JQueryUI](https://jqueryui.com/)
 
 ## Authors
