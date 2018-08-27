@@ -310,6 +310,10 @@
 						layoutReady = false;
 						outOfBoundsLatLng = [y,x];
 					}
+
+					if(roomCheck == 20){
+						value.inArea = 0;
+					}
 				}
 			});
 
