@@ -210,6 +210,10 @@ function addRoomInput(currentOccupants){
 	seat.textContent="Room activity";
 	document.getElementById("checkbox1").style.display = "none";
 	document.getElementById("checkall").style.display = "none";
+	document.getElementById("lock").style.display = "none";
+	document.getElementById("rotate").style.display = "none";
+	document.getElementById("plus").style.display = "none";
+	document.getElementById("minus").style.display = "none";
 	document.getElementById("save").style.top = "33%";
 	
 	

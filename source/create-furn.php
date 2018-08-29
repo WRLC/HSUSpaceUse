@@ -7,7 +7,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-    <title> SpaceUse Furniture Upload </title>
+    <title> SpaceUse Furniture/Activity Upload </title>
     <meta charset="utf-8" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link rel="stylesheet" href="styles/layout.css" type="text/css" >
