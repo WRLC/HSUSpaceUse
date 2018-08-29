@@ -30,6 +30,8 @@ To get the Upload functionality working you might have to change the path for th
 
 [JQuery](https://jquery.com/) and [JQueryUI](https://jqueryui.com/)
 
+[leaflet.browser.print](https://github.com/Igor-Vladyka/leaflet.browser.print) - Leaflet plugin to print the map.
+
 ## Authors
 * **Sam Alston** 
 * **Eric Mott**
