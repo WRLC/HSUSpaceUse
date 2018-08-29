@@ -35,7 +35,7 @@ To get the Upload functionality working you might have to change the path for th
 ## Authors
 * **Sam Alston** 
 * **Eric Mott**
-* **Ben Miller**
+* **Benjamin Miller**
 
 For the full list of contributors please visit [here](https://github.com/LibrarySpaceUse/HSUSpaceUse/graphs/contributors).
 
