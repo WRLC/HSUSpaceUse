@@ -4,7 +4,6 @@
 	//TODO: move functions out of data-collection to separate files.
     session_start();
     require_once('get_floor_svg.php');
-    $_SESSION['path'];
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -73,7 +72,9 @@
 
         /*Checks to see if you have selected a form, in order to build the proper layout select, if you have selected a floor, this if statement fires*/
         /*********To Be Replaced with form function*******/
-        $_SESSION['cur_floor'] = $_POST['floor-select'];
+        //if(array_key_exists('floor-select', $_POST)){
+            $_SESSION['cur_floor'] = $_POST['floor-select'];
+        //}
 
         ?>
         <main class="to-top">
