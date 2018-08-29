@@ -7,7 +7,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-    <title> SpaceUse Query Report </title>
+    <title> SpaceUse Upload</title>
     <meta charset="utf-8" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css"
@@ -55,7 +55,7 @@
         <h2>Welcome <?= $_SESSION["username"]?> please select what you would like to upload: </h2>
         <div id="nav_form">
             <button class="nav_button"  onclick="window.location ='create-floor.php'">Upload Floor Plan</button>
-            <button style="font-size: 24.7px;"class="nav_button"  onclick="window.location ='create-furn.php'">Upload Furniture or Activities</button>
+            <button style="font-size: 23.7px;"class="nav_button"  onclick="window.location ='create-furn.php'">Upload Furniture or Activities</button>
         </div>
     </main>
             <?php

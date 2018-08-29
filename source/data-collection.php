@@ -72,7 +72,9 @@
 
         /*Checks to see if you have selected a form, in order to build the proper layout select, if you have selected a floor, this if statement fires*/
         /*********To Be Replaced with form function*******/
-        $_SESSION['cur_floor'] = $_POST['floor-select'];
+        //if(array_key_exists('floor-select', $_POST)){
+            $_SESSION['cur_floor'] = $_POST['floor-select'];
+        //}
 
         ?>
         <main class="to-top">

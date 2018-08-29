@@ -4,11 +4,11 @@ SpaceUse is an open-source web application that can be used to collect data on h
 SpaceUse has the ability to compile all the data that gets collected in an easily readable fashion, whether that is in text format or visually on a map of the specific area. Users of SpaceUse have the ability to add new floor plans, add new activities for the furniture, add new layouts for each floor plan and more. 
 
 ## Getting Started
-1) SpaceUse uses a XAMPP technology stack. This means if you would like to set up a localhost environment one will need to download          [XAMPP](https://www.apachefriends.org/index.html).
-2) Download the repo and copy the files into the htdocs folder made by XAMPP.
-3) Setting up the database:
+SpaceUse was developed on a XAMPP technology stack so set up on any server that uses XAMPP is a breeze.
+   - Just download the source folder in the repository and paste the files into the public_html (or the equivalent) folder. 
+Setting up the database:
    - Open design->database->scripts
-   - In this location you will find all of the scripts to run and set up the database to be used for the first time
+   - In this location, you will find all of the scripts to run and set up the database to be used for the first time
    - Run the scripts in this order
       1. LAdesign.sql
       2. room_populate.sql
@@ -21,7 +21,26 @@ SpaceUse has the ability to compile all the data that gets collected in an easil
       9. update L2.sql (located in updateScriptsForFloorLayout)
       10. update L3.sql (located in updateScriptsForFloorLayout)
       11. activity_populate.sql
-3) Go to localhost/(name_of_folder) to run the application. 
+ 
+#### Deployment Notes
+To get the Upload functionality working you might have to change the path for the images folder to the correct path for your server, you can find this file in source/upload-floor.php on line 61.
+
+## Built With
+[LeafLet.js](https://leafletjs.com/) - JavaScript plug-in used to make the map.
+
+[JQuery](https://jquery.com/) and [JQueryUI](https://jqueryui.com/)
+
+[leaflet.browser.print](https://github.com/Igor-Vladyka/leaflet.browser.print) - Leaflet plugin to print the map.
+
+## Authors
+* **Sam Alston** 
+* **Eric Mott**
+* **Benjamin Miller**
+
+For the full list of contributors please visit [here](https://github.com/LibrarySpaceUse/HSUSpaceUse/graphs/contributors).
+
+## Acknowledgements
+* From everyone on the SpaceUse team, we would like to thank the Humboldt State University Library staff, as well as, Kris Anderson for the help and support throughout the project.
 
 ## Contents
 
