@@ -266,8 +266,20 @@
       		//check if the areaMap has been populated already
       		//create areas if the map is empty
 			if(!mapPopulated){
+				var cur_layout_id;
+				$.ajax({
+					url:'phpcalls/get-layout-id-from-floor.php',
+					type: 'get',
+					async: false,
+					data:{ 'floor_ID': floor_id_selection },
+					success: function(data){
+						var json_object = JSON.parse(data);
+						cur_layout_id = json_object[0];
+
+					}
+				})
 				
-				createAreas(floor_id_selection);
+				createAreas(cur_layout_id);
         		getAreas.innerHTML = "Remove Areas";
   				mapPopulated = true;
        

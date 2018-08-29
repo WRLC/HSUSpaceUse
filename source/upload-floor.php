@@ -58,7 +58,7 @@
     <main>
         <?php
             //This is the path where the picture will be stored
-            $target_dir = 'C:\xampp\htdocs\check_master\images';
+            $target_dir = 'images/';
             //This is the path that will be uploaded to the DB
             //This is needs to be different because we use the short path to upload the picture to the maps
             $db_dir = "images/";

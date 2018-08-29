@@ -9,7 +9,7 @@ $dbh = new PDO($dbhost, $dbh_select_user, $dbh_select_pw);
 
 $stmt1 = $dbh->prepare("SELECT layout_id, layout_name, date_created 
 						FROM layout
-						WHERE floor = :in_floor");
+						WHERE floor_id = :in_floor");
 
 $stmt1->bindParam(':in_floor', $get_floor, PDO::PARAM_INT);
 

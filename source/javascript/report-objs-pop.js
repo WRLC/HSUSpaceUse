@@ -326,7 +326,7 @@ function populateObjs(survey_id){
 		success: function(data){
 			jsondata = JSON.parse(data);
 			queryArea(jsondata.layout);
-			loadMap(parseInt(jsondata.floor));
+			loadMap(parseInt(jsondata.floor_id));
 			queryFurniture(survey_id,jsondata.layout);
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown) {
