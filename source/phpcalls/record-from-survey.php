@@ -8,7 +8,7 @@
 	$dbh = new PDO($dbhost, $dbh_select_user, $dbh_select_pw);
 	
 	$record_stmt = $dbh->prepare("
-		SELECT layout.layout_id cur_layout, floor 
+		SELECT layout.layout_id cur_layout, floor, floor_id 
 		FROM survey_record, layout 
 		WHERE survey_id = :survey_id
 		AND survey_record.layout_id = layout.layout_id");
@@ -19,7 +19,8 @@
 	$record = $record_stmt->fetch(PDO::FETCH_BOTH);
 	//place row in array
 	$data = array("layout"=>$record[0],
-				"floor"=>$record[1]);
+				"floor"=>$record[1],
+				"floor_id"=>$record[2]);
 	
 	print json_encode($data);
 ?>

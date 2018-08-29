@@ -182,6 +182,7 @@
 
 			roomName = document.getElementById("roomName").value;
 			roomId = document.getElementById("roomId").value;
+
 			document.getElementById("roomName").value = "";
 			document.getElementById("roomId").value = "";
 			$('#roomPopup').dialog('close');
@@ -265,8 +266,20 @@
       		//check if the areaMap has been populated already
       		//create areas if the map is empty
 			if(!mapPopulated){
+				var cur_layout_id;
+				$.ajax({
+					url:'phpcalls/get-layout-id-from-floor.php',
+					type: 'get',
+					async: false,
+					data:{ 'floor_ID': floor_id_selection },
+					success: function(data){
+						var json_object = JSON.parse(data);
+						cur_layout_id = json_object[0];
+
+					}
+				})
 				
-				createAreas(floor_id_selection);
+				createAreas(cur_layout_id);
         		getAreas.innerHTML = "Remove Areas";
   				mapPopulated = true;
        
@@ -309,6 +322,27 @@
 					if(roomCheck != 20){
 						layoutReady = false;
 						outOfBoundsLatLng = [y,x];
+					}
+
+					if(roomCheck == 20){
+						cur_room_id = value.roomId;
+						$.ajax({
+							url: 'phpcalls/check-room.php',
+							type: 'get',
+							async: false,
+							data:{ 'roomId': cur_room_id },
+							success: function(data){
+								var json_object = JSON.parse(data);
+								if(json_object.length == 0){
+									value.inArea = 0;
+								}
+								else{
+									get_area_id = json_object[0];
+									value.inArea = get_area_id[0];
+								}
+								
+							}
+						});
 					}
 				}
 			});

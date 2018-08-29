@@ -58,7 +58,7 @@
     <main>
         <?php
             //This is the path where the picture will be stored
-            $target_dir = "/Applications/XAMPP/xamppfiles/htdocs/LibraryApp/library_app/source/images/";
+            $target_dir = 'images/';
             //This is the path that will be uploaded to the DB
             //This is needs to be different because we use the short path to upload the picture to the maps
             $db_dir = "images/";
@@ -96,7 +96,7 @@
                     $dbh = new PDO($dbhost, $dbh_insert_user, $dbh_insert_pw);
                     $dbh->beginTransaction();
                     $insert_image_stmt = $dbh->prepare('INSERT INTO floor_images (name, path, floor_num) 
-                                                        VALUES (:floor_name, :pathForDB, :floor_num)');
+                        VALUES (:floor_name, :pathForDB, :floor_num)');
                     $insert_image_stmt->bindParam(':floor_name', $floor_name, PDO::PARAM_STR);
                     $insert_image_stmt->bindParam(':floor_num', $floor_num, PDO::PARAM_INT);
                     $insert_image_stmt->bindParam(':pathForDB', $pathForDB, PDO::PARAM_STR);
