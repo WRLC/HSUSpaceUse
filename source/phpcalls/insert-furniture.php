@@ -21,7 +21,6 @@ foreach($jsondata as $key => $value){
 
 	$checkArea = (int)$inArea;
 
-	 	
 	if($checkArea == 0){
 
 		$roomID = $value['roomId'];
@@ -46,19 +45,20 @@ foreach($jsondata as $key => $value){
 		//get the ID of the inserted room/area
 
 		$area_id = $dbh->lastInsertId();
-
-
 		$inArea = $area_id;
 
+		
+	}
+	
+	if((int)$ftype == 20){
 		$insert_arealayout_stmt = $dbh->prepare('
 			INSERT INTO area_in_layout (area_id, layout_id)
 			VALUES (:areaID, :layoutID)');
 
-		$insert_arealayout_stmt->bindParam(':areaID', $area_id, PDO::PARAM_INT);
+		$insert_arealayout_stmt->bindParam(':areaID', $inArea, PDO::PARAM_INT);
 		$insert_arealayout_stmt->bindParam(':layoutID', $layout_id, PDO::PARAM_INT);
 		$insert_arealayout_stmt->execute();
 	}
-	
 	
 	$insert_furn_stmt = $dbh->prepare('INSERT INTO furniture 
 	(x_location, y_location, degree_offset, layout_id, furniture_type, default_seat_type, in_area) 

@@ -182,6 +182,7 @@
 
 			roomName = document.getElementById("roomName").value;
 			roomId = document.getElementById("roomId").value;
+
 			document.getElementById("roomName").value = "";
 			document.getElementById("roomId").value = "";
 			$('#roomPopup').dialog('close');
@@ -312,7 +313,24 @@
 					}
 
 					if(roomCheck == 20){
-						value.inArea = 0;
+						cur_room_id = value.roomId;
+						$.ajax({
+							url: 'phpcalls/check-room.php',
+							type: 'get',
+							async: false,
+							data:{ 'roomId': cur_room_id },
+							success: function(data){
+								var json_object = JSON.parse(data);
+								if(json_object.length == 0){
+									value.inArea = 0;
+								}
+								else{
+									get_area_id = json_object[0];
+									value.inArea = get_area_id[0];
+								}
+								
+							}
+						});
 					}
 				}
 			});
