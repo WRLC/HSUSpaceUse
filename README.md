@@ -21,9 +21,6 @@ Setting up the database:
       9. update L2.sql (located in updateScriptsForFloorLayout)
       10. update L3.sql (located in updateScriptsForFloorLayout)
       11. activity_populate.sql
- 
-#### Deployment Notes
-To get the Upload functionality working you might have to change the path for the images folder to the correct path for your server, you can find this file in source/upload-floor.php on line 61.
 
 ## Built With
 [LeafLet.js](https://leafletjs.com/) - JavaScript plug-in used to make the map.
