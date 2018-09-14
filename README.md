@@ -39,6 +39,9 @@ For the full list of contributors please visit [here](https://github.com/Library
 ## Acknowledgements
 * From everyone on the SpaceUse team, we would like to thank the Humboldt State University Library staff, as well as, Kris Anderson for the help and support throughout the project.
 
+## SpaceUse User Manual
+[User Manual](https://docs.google.com/document/d/1Qbb-dlis2u87KZwG1Kl00LwKjKE1OTeb29Rze8zwXgI/edit?usp=sharing)
+
 ## Contents
 
 ### Design
