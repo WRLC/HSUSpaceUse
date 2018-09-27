@@ -71,7 +71,7 @@
 		//$dbh = new PDO($dbhost, $dbh_select_user, $dbh_select_pw);
 
         /*Checks to see if you have selected a form, in order to build the proper layout select, if you have selected a floor, this if statement fires*/
-        /*********To Be Replaced with form function*******/
+      
         //if(array_key_exists('floor-select', $_POST)){
             $_SESSION['cur_floor'] = $_POST['floor-select'];
         //}
@@ -119,9 +119,9 @@
     <script>
         //generates a map location
         var submit = document.getElementById("sub_layout");
-        var floor_image = "local";
-        var s_layout = "local";
-        var layout ="default";
+        var floor_image = "";
+        var s_layout = "";
+        var layout ="";
 
         var image;
         var selected_furn;
@@ -182,16 +182,18 @@
 
         $(document).ready(function(){
             floor_ID = '<?php echo $_SESSION['cur_floor'];?>';
-            $.ajax({
-                url: 'phpcalls/get-floor-path.php',
-                type: 'get',
-                async: false,
-                data:{ 'floor_ID': floor_ID },
-                success: function(data){
-                    var json_object = JSON.parse(data);
-                    floor_path = json_object;
-                }
-            });
+            if(floor_ID != ''){
+                $.ajax({
+                    url: 'phpcalls/get-floor-path.php',
+                    type: 'get',
+                    async: false,
+                    data:{ 'floor_ID': floor_ID },
+                    success: function(data){
+                        var json_object = JSON.parse(data);
+                        floor_path = json_object;
+                    }
+                });
+            }
 
             /*To be placed in seperate javascript function, when php is removed*/
             //Test using layout in localhost with .PDO connection ect.
@@ -200,7 +202,7 @@
             }
             var form_info = document.getElementById("lay-select");
             s_layout = form_info.elements["layout-select"].value;
-            if(typeof floor_path[0] != 'undefined'){
+            if(typeof floor_path != 'undefined'){
                 console.log(floor_path[0]);
                 image = L.imageOverlay(floor_path[0], bounds).addTo(mymap);
             }
@@ -222,7 +224,9 @@
             <?php
             }
             ?>
-            createAreas(layout);
+            if(layout != ""){
+                createAreas(layout);
+            }
         });
         
         //On zoomend, resize the marker icons
