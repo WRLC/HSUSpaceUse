@@ -6,6 +6,7 @@ SpaceUse has the ability to compile all the data that gets collected in an easil
 ## Getting Started
 SpaceUse was developed on a XAMPP technology stack so set up on any server that uses XAMPP is a breeze.
    - Just download the source folder in the repository and paste the files into the public_html (or the equivalent) folder. 
+
 Setting up the database:
    - Open design->database->scripts
    - In this location, you will find all of the scripts to run and set up the database to be used for the first time
