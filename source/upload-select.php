@@ -25,8 +25,8 @@
 
 <body>
     <header>
-        <img class="logo" src="images/hsu-wm.svg">
-        <h1>SpaceUse</h1>
+        <img class="logo" src="images/logo.svg">
+        
 
 
         <?php

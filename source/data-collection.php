@@ -46,8 +46,8 @@
     <button class="hide_nav" id="nav_toggle"><p id="hide_nav_plus">&plus;</p></button>
     <button class="submit_survey hidden" id="submit_survey" onclick="if(confirm('Are you sure you want to submit this survey?')) submitSurveyHelper();">Submit Survey</button>
     <header class="hidden">
-        <img class="logo" src="images/hsu-wm.svg">
-        <h1>SpaceUse</h1>
+        <img class="logo" src="images/logo.svg">
+        
     <?php
         if (array_key_exists("username", $_SESSION)){
             ?>

@@ -19,8 +19,8 @@
 </head>
 <body>
     <header>
-    	<img class="logo" src="images/hsu-wm.svg">
-    	<h1>SpaceUse</h1>
+    	<img class="logo" src="images/logo.svg">
+    	
     </header>
     <main class="login_main">
     	<?php

@@ -15,10 +15,11 @@ header{
 }
 
 .logo{
+	position: relative;
 	display: block;
-	width: 50%;
 	margin: auto;
-	margin-top: 1em;
+	top: -90%;
+	height: 250%;
 }
 
 header > h1{
