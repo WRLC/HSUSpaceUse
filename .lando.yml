@@ -1,0 +1,5 @@
+name: spaceuse
+recipe: lamp
+config:
+  webroot: source
+  database: mariadb
