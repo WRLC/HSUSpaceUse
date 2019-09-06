@@ -2,4 +2,10 @@ name: spaceuse
 recipe: lamp
 config:
   webroot: source
-  database: mariadb
+services:
+  database:
+    type: mariadb
+    creds:
+      user: lamp
+      password: lamp
+      database: hsu_library
